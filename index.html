@@ -4,17 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dasgar</title>
-
-    <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Dasgar">
     <meta name="theme-color" content="#0a0f0a">
     <meta name="background-color" content="#0a0f0a">
-
-    <!-- Manifest will be set dynamically -->
     <link rel="manifest" id="manifest-link">
-
     <style>
         :root {
             --bg: #0a0f0a;
@@ -30,530 +25,170 @@
             --border: #1e2e1e;
             --border-light: #263626;
             --danger: #ef4444;
-            --danger-hover: #dc2626;
             --radius: 16px;
             --radius-sm: 10px;
             --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            --top-panel-height: auto;
-            min-height: 200px;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
-        }
-
-        html, body {
-            height: 100%;
-        }
-
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; outline:none; }
+        html, body { height:100%; }
         body {
             font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--bg);
             color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height:100vh; overflow-x:hidden;
+            -webkit-font-smoothing:antialiased;
+            display:flex; align-items:center; justify-content:center;
         }
-
         button, a, input, textarea, select, .btn, .drawer-link, .skin-card, .upload-zone {
-            -webkit-tap-highlight-color: transparent;
-            -webkit-user-select: none;
-            user-select: none;
+            -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none;
         }
         button:focus, a:focus, input:focus, textarea:focus, select:focus, .btn:focus, .drawer-link:focus {
-            outline: none;
-            box-shadow: none;
-            background-color: inherit;
+            outline:none; box-shadow:none; background-color:inherit;
         }
 
-        /* AUTH CONTAINER – always centered and visible by default */
+        /* Auth container */
         .auth-container {
             background: var(--bg-card);
-            border: 1px solid var(--border-light);
+            border:1px solid var(--border-light);
             border-radius: var(--radius);
-            padding: 40px;
-            width: 100%;
-            max-width: 420px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-            margin: auto;
+            padding:40px; width:100%; max-width:420px;
+            box-shadow:0 12px 30px rgba(0,0,0,0.6);
+            margin:auto;
         }
-        .auth-container h2 {
-            text-align: center;
-            margin-bottom: 24px;
-            color: var(--green-bright);
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
+        .auth-container h2 { text-align:center; margin-bottom:24px; color:var(--green-bright); }
+        .form-group { margin-bottom:16px; }
+        .form-group label { display:block; font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:6px; }
         .form-group input {
-            width: 100%;
-            padding: 10px 14px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-light);
-            background: #0d160d;
-            color: #fff;
-            font-size: 0.9rem;
+            width:100%; padding:10px 14px; border-radius:var(--radius-sm);
+            border:1px solid var(--border-light); background:#0d160d; color:#fff; font-size:0.9rem;
         }
-        .form-group input:focus {
-            border-color: var(--green);
-            box-shadow: 0 0 10px var(--green-glow);
+        .form-group input:focus { border-color:var(--green); box-shadow:0 0 10px var(--green-glow); }
+
+        /* Password wrapper for eye toggle */
+        .password-wrapper { position:relative; }
+        .password-wrapper input { padding-right:45px; }
+        .eye-toggle {
+            position:absolute; right:10px; top:50%; transform:translateY(-50%);
+            background:none; border:none; color:var(--text-muted); font-size:1.2rem;
+            cursor:pointer; padding:4px; line-height:1;
+            transition: var(--transition);
         }
+        .eye-toggle:hover { color: var(--green-bright); }
+
         .upload-zone {
-            border: 2px dashed var(--border-light);
-            border-radius: var(--radius-sm);
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            margin-bottom: 12px;
-            background: #0d160d;
-            position: relative;
+            border:2px dashed var(--border-light); border-radius:var(--radius-sm);
+            padding:20px; text-align:center; cursor:pointer; margin-bottom:12px;
+            background:#0d160d; position:relative;
         }
-        .upload-zone:hover {
-            border-color: var(--green);
-        }
-        .upload-zone input {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
+        .upload-zone:hover { border-color:var(--green); }
+        .upload-zone input { position:absolute; inset:0; opacity:0; cursor:pointer; }
         .logo-preview {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin: 8px auto;
-            background-size: cover;
-            background-position: center;
-            border: 2px solid var(--green);
+            width:60px; height:60px; border-radius:50%; margin:8px auto;
+            background-size:cover; background-position:center; border:2px solid var(--green);
         }
         .btn {
-            padding: 11px 22px;
-            border-radius: 40px;
-            border: none;
-            cursor: pointer;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            transition: var(--transition);
-            width: 100%;
-            background: var(--green);
-            color: #000;
-            box-shadow: 0 0 18px var(--green-glow);
+            padding:11px 22px; border-radius:40px; border:none; cursor:pointer;
+            font-weight:700; text-transform:uppercase; font-size:0.85rem; transition:var(--transition);
+            width:100%; background:var(--green); color:#000; box-shadow:0 0 18px var(--green-glow);
         }
-        .btn:hover {
-            background: var(--green-bright);
-        }
-        .auth-toggle {
-            text-align: center;
-            margin-top: 16px;
-            color: var(--text-muted);
-        }
-        .auth-toggle span {
-            color: var(--green);
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .remember-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-        }
+        .btn:hover { background:var(--green-bright); }
+        .auth-toggle { text-align:center; margin-top:16px; color:var(--text-muted); }
+        .auth-toggle span { color:var(--green); cursor:pointer; font-weight:600; }
+        .remember-row { display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--text-muted); margin-bottom:16px; }
 
-        /* MAIN APP hidden by default */
-        #mainApp {
-            display: none;
-            width: 100%;
-            min-height: 100vh;
-            flex-direction: column;
-        }
-
-        .app-container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* HEADER */
+        /* Main app hidden initially */
+        #mainApp { display:none; width:100%; min-height:100vh; flex-direction:column; }
+        .app-container { max-width:1300px; margin:0 auto; padding:0 24px; display:flex; flex-direction:column; min-height:100vh; }
         .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 0;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: rgba(10, 15, 10, 0.85);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            position: relative;
+            display:flex; align-items:center; justify-content:space-between; padding:18px 0;
+            border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50;
+            background:rgba(10,15,10,0.85); backdrop-filter:blur(18px); position:relative;
         }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-            height: 48px;
-            z-index: 1;
-            position: relative;
-        }
-        .logo-img {
-            height: 100%;
-            width: auto;
-            max-height: 48px;
-            display: block;
-            object-fit: contain;
-            border-radius: 50%;
-        }
-
-        /* CENTERED DASGAR NAME */
+        .logo-area { display:flex; align-items:center; cursor:pointer; user-select:none; height:48px; z-index:1; position:relative; }
+        .logo-img { height:100%; width:auto; max-height:48px; display:block; object-fit:contain; border-radius:50%; }
         .logo-name {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1.8rem;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            background: linear-gradient(45deg, #4ade80, #a3e635, #22c55e, #4ade80);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: greenGradientShift 3s ease infinite;
-            will-change: background-position;
-            z-index: 0;
-            white-space: nowrap;
+            position:absolute; left:50%; transform:translateX(-50%); font-size:1.8rem; font-weight:900;
+            letter-spacing:-0.5px; background:linear-gradient(45deg, #4ade80, #a3e635, #22c55e, #4ade80);
+            background-size:300% 300%; -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            animation:greenGradientShift 3s ease infinite; will-change:background-position; z-index:0; white-space:nowrap;
         }
         @keyframes greenGradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% { background-position:0% 50%; } 50% { background-position:100% 50%; } 100% { background-position:0% 50%; }
         }
-
-        .menu-toggle {
-            background: transparent;
-            border: none;
-            color: var(--green-bright);
-            font-size: 1.8rem;
-            cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 8px;
-            transition: var(--transition);
-            line-height: 1;
-            z-index: 99;
-        }
-        .menu-toggle:hover {
-            background: rgba(74, 222, 128, 0.1);
-        }
-
-        /* User dropdown (logo click) */
+        .menu-toggle { background:transparent; border:none; color:var(--green-bright); font-size:1.8rem; cursor:pointer; padding:6px 12px; border-radius:8px; z-index:99; }
+        .menu-toggle:hover { background:rgba(74,222,128,0.1); }
         .user-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            margin-top: 8px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-sm);
-            padding: 10px;
-            min-width: 160px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-            display: none;
-            z-index: 60;
+            position:absolute; top:100%; left:0; margin-top:8px; background:var(--bg-card); border:1px solid var(--border-light);
+            border-radius:var(--radius-sm); padding:10px; min-width:160px; box-shadow:0 8px 20px rgba(0,0,0,0.6); display:none; z-index:60;
         }
-        .user-dropdown.open {
-            display: block;
-        }
-        .user-dropdown button {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: var(--text);
-            padding: 10px 14px;
-            text-align: left;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: var(--transition);
-        }
-        .user-dropdown button:hover {
-            background: rgba(74, 222, 128, 0.1);
-        }
+        .user-dropdown.open { display:block; }
+        .user-dropdown button { width:100%; background:transparent; border:none; color:var(--text); padding:10px 14px; text-align:left; border-radius:var(--radius-sm); cursor:pointer; }
+        .user-dropdown button:hover { background:rgba(74,222,128,0.1); }
 
-        /* DRAWER MENU – VERTICAL LAYOUT */
-        .drawer-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s;
-        }
-        .drawer-overlay.open {
-            opacity: 1;
-            visibility: visible;
-        }
+        /* Drawer */
+        .drawer-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; opacity:0; visibility:hidden; transition:0.3s; }
+        .drawer-overlay.open { opacity:1; visibility:visible; }
         .drawer-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: #0d160d;
-            border-bottom: 1px solid var(--border-light);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
-            z-index: 101;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 20px;
-            transform: translateY(-100%);
-            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
-            max-height: 80vh;
+            position:fixed; top:0; left:0; width:100%; background:#0d160d; border-bottom:1px solid var(--border-light);
+            box-shadow:0 8px 30px rgba(0,0,0,0.7); z-index:101; display:flex; flex-direction:column; align-items:center;
+            justify-content:flex-start; padding:20px; transform:translateY(-100%); transition:transform 0.35s; overflow-y:auto; max-height:80vh;
         }
-        .drawer-panel.open {
-            transform: translateY(0);
-        }
-        .drawer-close {
-            position: absolute;
-            top: 14px;
-            right: 20px;
-            background: transparent;
-            border: none;
-            color: var(--green-bright);
-            font-size: 1.8rem;
-            cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 8px;
-            transition: var(--transition);
-            line-height: 1;
-            z-index: 2;
-        }
-        .drawer-nav {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            max-width: 320px;
-            margin-top: 20px;
-        }
+        .drawer-panel.open { transform:translateY(0); }
+        .drawer-close { position:absolute; top:14px; right:20px; background:none; border:none; color:var(--green-bright); font-size:1.8rem; cursor:pointer; z-index:2; }
+        .drawer-nav { display:flex; flex-direction:column; align-items:center; gap:12px; width:100%; max-width:320px; margin-top:20px; }
         .drawer-link {
-            padding: 12px 18px;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: var(--transition);
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
-            letter-spacing: 0.2px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
+            padding:12px 18px; border-radius:var(--radius-sm); cursor:pointer; font-weight:600; font-size:0.9rem;
+            border:none; background:transparent; color:var(--text-muted); width:100%; text-align:center;
         }
-        .drawer-link.active {
-            background: var(--green-dark);
-            color: #fff;
-            box-shadow: 0 0 18px var(--green-glow);
-        }
-        .drawer-link:hover:not(.active) {
-            color: #c8e6c9;
-            background: rgba(255, 255, 255, 0.04);
-        }
+        .drawer-link.active { background:var(--green-dark); color:#fff; box-shadow:0 0 18px var(--green-glow); }
+        .drawer-link:hover:not(.active) { color:#c8e6c9; background:rgba(255,255,255,0.04); }
 
-        /* MAIN CONTENT */
-        .main-content {
-            flex: 1;
-            padding: 0 0 40px;
-        }
-        .page {
-            display: none;
-            animation: fadeSlideIn 0.4s ease;
-        }
-        .page.active {
-            display: block;
-        }
-        @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .section-header {
-            margin-bottom: 28px;
-            text-align: center;
-        }
-        .section-header h2 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-            color: #fff;
-            margin-bottom: 6px;
-        }
-        .page-name-indicator {
-            text-align: center;
-            padding: 12px 0 4px;
-            color: var(--green-muted);
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
+        .main-content { flex:1; padding:0 0 40px; }
+        .page { display:none; animation:fadeSlideIn 0.4s; }
+        .page.active { display:block; }
+        @keyframes fadeSlideIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        .section-header { margin-bottom:28px; text-align:center; }
+        .section-header h2 { font-size:3.5rem; font-weight:800; color:#fff; margin-bottom:6px; }
+        .page-name-indicator { text-align:center; padding:12px 0 4px; color:var(--green-muted); font-size:0.8rem; text-transform:uppercase; opacity:0.8; }
 
-        /* SKINS GRID */
-        .skins-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
-            padding: 0 4px;
-        }
+        .skins-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:20px; padding:0 4px; }
         .skin-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius);
-            padding: 20px 16px 18px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
+            background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius);
+            padding:20px 16px 18px; cursor:pointer; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px;
         }
-        .skin-card:hover {
-            background: var(--bg-card-hover);
-            border-color: #335533;
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.5);
-        }
+        .skin-card:hover { background:var(--bg-card-hover); border-color:#335533; transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,0.5); }
         .skin-blob-preview {
-            width: 100px;
-            height: 100px;
-            border-radius: 43% 57% 44% 56% / 51% 49% 55% 45%;
-            background-size: cover;
-            background-position: center;
-            box-shadow: inset 0 2px 6px rgba(255,255,255,0.1);
+            width:100px; height:100px; border-radius:43% 57% 44% 56% / 51% 49% 55% 45%;
+            background-size:cover; background-position:center; box-shadow:inset 0 2px 6px rgba(255,255,255,0.1);
         }
 
-        /* ADMIN PANELS */
-        .admin-panel {
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius);
-            padding: 24px;
-            margin-bottom: 28px;
-        }
-        .user-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .user-table th, .user-table td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-light);
-            font-size: 0.85rem;
-        }
-        .user-table th {
-            color: var(--green-bright);
-            text-transform: uppercase;
-            font-size: 0.7rem;
-        }
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 0.7rem;
-            margin: 2px;
-            border-radius: 20px;
-            background: transparent;
-            border: 1px solid var(--green);
-            color: var(--green);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .btn-sm:hover {
-            background: var(--green);
-            color: #000;
-        }
-        .btn-danger {
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-        .btn-danger:hover {
-            background: var(--danger);
-            color: #fff;
-        }
-        .btn-warning {
-            border-color: #f59e0b;
-            color: #f59e0b;
-        }
-        .btn-warning:hover {
-            background: #f59e0b;
-            color: #000;
-        }
+        .admin-panel { background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius); padding:24px; margin-bottom:28px; }
+        .user-table { width:100%; border-collapse:collapse; }
+        .user-table th, .user-table td { padding:8px; text-align:left; border-bottom:1px solid var(--border-light); font-size:0.85rem; }
+        .user-table th { color:var(--green-bright); text-transform:uppercase; font-size:0.7rem; }
+        .btn-sm { padding:6px 12px; font-size:0.7rem; margin:2px; border-radius:20px; background:transparent; border:1px solid var(--green); color:var(--green); cursor:pointer; }
+        .btn-sm:hover { background:var(--green); color:#000; }
+        .btn-danger { border-color:var(--danger); color:var(--danger); }
+        .btn-danger:hover { background:var(--danger); color:#fff; }
+        .btn-warning { border-color:#f59e0b; color:#f59e0b; }
+        .btn-warning:hover { background:#f59e0b; color:#000; }
 
-        .footer {
-            text-align: center;
-            padding: 16px 0;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            border-top: 1px solid var(--border);
-            margin-top: auto;
-        }
-
+        .footer { text-align:center; padding:16px 0; color:var(--text-muted); font-size:0.75rem; border-top:1px solid var(--border); margin-top:auto; }
         .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(120px);
-            background: #1a2e1a;
-            border: 1px solid var(--green-dark);
-            color: #c8e6c9;
-            padding: 12px 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            z-index: 200;
-            pointer-events: none;
-            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 28px rgba(0,0,0,0.6);
+            position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(120px);
+            background:#1a2e1a; border:1px solid var(--green-dark); color:#c8e6c9; padding:12px 24px;
+            border-radius:40px; font-weight:600; z-index:200; pointer-events:none; transition:0.35s;
+            box-shadow:0 8px 28px rgba(0,0,0,0.6);
         }
-        .toast.show { transform: translateX(-50%) translateY(0); }
-        .toast.error { border-color: var(--danger); color: #fca5a5; background: #1e1515; }
+        .toast.show { transform:translateX(-50%) translateY(0); }
+        .toast.error { border-color:var(--danger); color:#fca5a5; background:#1e1515; }
 
-        @media (max-width: 850px) {
-            .section-header h2 { font-size: 2.5rem; }
-        }
-        @media (max-width: 480px) {
-            .section-header h2 { font-size: 2rem; }
-            .logo-name { font-size: 1.4rem; }
-        }
+        @media (max-width:850px) { .section-header h2 { font-size:2.5rem; } }
+        @media (max-width:480px) { .section-header h2 { font-size:2rem; } .logo-name { font-size:1.4rem; } }
     </style>
 </head>
 <body>
-    <!-- ========== AUTH PAGE (always visible unless logged in) ========== -->
+    <!-- AUTH PAGE -->
     <div id="authContainer" class="auth-container">
         <div id="loginForm">
             <h2>Sign In</h2>
@@ -563,7 +198,10 @@
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="loginPass" placeholder="••••••">
+                <div class="password-wrapper">
+                    <input type="password" id="loginPass" placeholder="••••••">
+                    <button type="button" class="eye-toggle" onclick="togglePassword('loginPass', this)">👁️</button>
+                </div>
             </div>
             <div class="remember-row">
                 <input type="checkbox" id="rememberMe"> Remember me
@@ -593,7 +231,10 @@
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="signupPass" placeholder="••••••">
+                <div class="password-wrapper">
+                    <input type="password" id="signupPass" placeholder="••••••">
+                    <button type="button" class="eye-toggle" onclick="togglePassword('signupPass', this)">👁️</button>
+                </div>
             </div>
             <button class="btn" onclick="signup()">Sign Up</button>
             <div class="auth-toggle">
@@ -602,7 +243,7 @@
         </div>
     </div>
 
-    <!-- ========== MAIN APP (hidden until login) ========== -->
+    <!-- MAIN APP -->
     <div id="mainApp" class="app-container">
         <header class="header">
             <div class="logo-area" onclick="toggleUserMenu()">
@@ -614,7 +255,6 @@
             <span class="logo-name">Dasgar</span>
             <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
         </header>
-
         <div class="drawer-overlay" id="drawerOverlay"></div>
         <aside class="drawer-panel" id="drawerPanel">
             <button class="drawer-close" id="drawerClose" aria-label="Close menu">✕</button>
@@ -625,24 +265,20 @@
                 <button class="drawer-link" id="nav-about" onclick="navigateTo('about')">ℹ️ About</button>
             </nav>
         </aside>
-
         <main class="main-content">
             <section class="page active" id="page-home">
                 <div class="page-name-indicator">Home</div>
                 <div class="section-header"><h2>Welcome</h2></div>
             </section>
-
             <section class="page" id="page-skins">
                 <div class="page-name-indicator">Skins</div>
                 <div class="section-header"><h2>Choose Your Skin</h2></div>
                 <div class="skins-grid" id="skinsGrid"></div>
             </section>
-
             <section class="page" id="page-about">
                 <div class="page-name-indicator">About</div>
                 <div class="section-header"><h2>About</h2></div>
             </section>
-
             <section class="page" id="page-admin">
                 <div class="page-name-indicator">Admin</div>
                 <div class="section-header"><h2>Admin Panel</h2></div>
@@ -681,402 +317,254 @@
                 </div>
             </section>
         </main>
-
         <footer class="footer">Dasgar &copy; 2024</footer>
     </div>
-
     <div class="toast" id="toast"></div>
-
     <script>
+        // PWA setup (unchanged)
+        function generateIcon() {
+            const canvas = document.createElement('canvas'); canvas.width = canvas.height = 192;
+            const ctx = canvas.getContext('2d');
+            ctx.beginPath(); ctx.arc(96, 96, 80, 0, Math.PI*2); ctx.fillStyle = '#4ade80'; ctx.fill();
+            ctx.shadowColor = '#000'; ctx.shadowBlur = 20; ctx.fill(); ctx.shadowBlur = 0;
+            ctx.beginPath(); ctx.arc(70, 70, 20, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill();
+            return canvas.toDataURL('image/png');
+        }
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    const CACHE_NAME = 'dasgar-cache-v1';
+                    self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll([self.location.href])).then(() => self.skipWaiting())));
+                    self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
+                `;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+            }
+        }
+        function setupManifest() {
+            const manifest = {
+                name: 'Dasgar', short_name: 'Dasgar', start_url: window.location.href,
+                display: 'standalone', background_color: '#0a0f0a', theme_color: '#0a0f0a',
+                icons: [{ src: generateIcon(), sizes: '192x192', type: 'image/png' }]
+            };
+            const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+            document.getElementById('manifest-link').href = URL.createObjectURL(blob);
+        }
+        setupManifest(); registerServiceWorker();
+
+        // Password toggle function
+        window.togglePassword = function(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁️';
+            }
+        };
+
+        // ---- App logic ----
+        const USERS_KEY = 'site_users_v2', SKINS_KEY = 'agarskins_data_v2', ADMIN_EMAIL = 'dasgari769@gmail.com';
+        let currentUser = null, signupLogoData = null, uploadedSkinImage = null;
+
+        // Migration: ensure all emails are lowercase and update storage
+        function migrateEmailsToLowercase() {
+            const users = getUsers();
+            let changed = false;
+            users.forEach(u => {
+                if (u.email !== u.email.toLowerCase()) {
+                    u.email = u.email.toLowerCase();
+                    changed = true;
+                }
+            });
+            if (changed) {
+                saveUsers(users);
+            }
+        }
+
+        function showToast(msg, type='') {
+            const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + type + ' show';
+            clearTimeout(t._time); t._time = setTimeout(() => t.classList.remove('show'), 2500);
+        }
+        function getUsers() { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch(e) { return []; } }
+        function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+
+        // Run migration immediately
+        migrateEmailsToLowercase();
+
+        window.showSignup = () => { document.getElementById('loginForm').style.display='none'; document.getElementById('signupForm').style.display='block'; };
+        window.showLogin = () => { document.getElementById('signupForm').style.display='none'; document.getElementById('loginForm').style.display='block'; };
+
+        document.getElementById('signupLogoFile').addEventListener('change', function(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image(); img.onload = function() {
+                    const canvas = document.createElement('canvas'); canvas.width = canvas.height = 100;
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 100, 100);
+                    signupLogoData = canvas.toDataURL('image/png');
+                    document.getElementById('signupLogoPreview').style.backgroundImage = `url(${signupLogoData})`;
+                    document.getElementById('signupLogoPreview').style.display = 'block';
+                }; img.src = e.target.result;
+            }; reader.readAsDataURL(file);
+        });
+
+        // Pre-fill remembered email (now always lowercase)
         (function() {
-            // ---------- PWA SETUP ----------
-            function generateIcon() {
-                const canvas = document.createElement('canvas');
-                canvas.width = canvas.height = 192;
-                const ctx = canvas.getContext('2d');
-                ctx.beginPath();
-                ctx.arc(96, 96, 80, 0, Math.PI*2);
-                ctx.fillStyle = '#4ade80';
-                ctx.fill();
-                ctx.shadowColor = '#000';
-                ctx.shadowBlur = 20;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-                ctx.beginPath();
-                ctx.arc(70, 70, 20, 0, Math.PI*2);
-                ctx.fillStyle = 'rgba(255,255,255,0.4)';
-                ctx.fill();
-                return canvas.toDataURL('image/png');
+            const rememberedEmail = localStorage.getItem('remembered_email');
+            if (rememberedEmail) {
+                document.getElementById('loginEmail').value = rememberedEmail;
+                document.getElementById('rememberMe').checked = true;
             }
-
-            function registerServiceWorker() {
-                if ('serviceWorker' in navigator) {
-                    const swCode = `
-                        const CACHE_NAME = 'dasgar-cache-v1';
-                        const urlsToCache = [
-                            self.location.href
-                        ];
-
-                        self.addEventListener('install', event => {
-                            event.waitUntil(
-                                caches.open(CACHE_NAME)
-                                    .then(cache => cache.addAll(urlsToCache))
-                                    .then(() => self.skipWaiting())
-                            );
-                        });
-
-                        self.addEventListener('fetch', event => {
-                            event.respondWith(
-                                caches.match(event.request)
-                                    .then(response => response || fetch(event.request))
-                            );
-                        });
-                    `;
-                    const blob = new Blob([swCode], { type: 'application/javascript' });
-                    const swUrl = URL.createObjectURL(blob);
-                    navigator.serviceWorker.register(swUrl)
-                        .then(reg => console.log('Service Worker registered'))
-                        .catch(err => console.warn('SW registration failed', err));
-                }
-            }
-
-            function setupManifest() {
-                const icon = generateIcon();
-                const manifest = {
-                    name: 'Dasgar',
-                    short_name: 'Dasgar',
-                    start_url: window.location.href,
-                    display: 'standalone',
-                    background_color: '#0a0f0a',
-                    theme_color: '#0a0f0a',
-                    icons: [{
-                        src: icon,
-                        sizes: '192x192',
-                        type: 'image/png'
-                    }]
-                };
-                const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-                const manifestUrl = URL.createObjectURL(blob);
-                document.getElementById('manifest-link').href = manifestUrl;
-            }
-
-            setupManifest();
-            registerServiceWorker();
-
-            // ---------- EXISTING APP CODE ----------
-            const USERS_KEY = 'site_users_v2';
-            const SKINS_KEY = 'agarskins_data_v2';
-            const ADMIN_EMAIL = 'dasgari769@gmail.com';
-            let currentUser = null;
-            let signupLogoData = null;
-            let uploadedSkinImage = null;
-
-            function showToast(msg, type='') {
-                const t = document.getElementById('toast');
-                t.textContent = msg; t.className = 'toast ' + type + ' show';
-                clearTimeout(t._time); t._time = setTimeout(() => t.classList.remove('show'), 2500);
-            }
-
-            function getUsers() { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch(e) { return []; } }
-            function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
-
-            window.showSignup = () => {
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('signupForm').style.display = 'block';
-            };
-            window.showLogin = () => {
-                document.getElementById('signupForm').style.display = 'none';
-                document.getElementById('loginForm').style.display = 'block';
-            };
-
-            document.getElementById('signupLogoFile').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = canvas.height = 100;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, 100, 100);
-                        signupLogoData = canvas.toDataURL('image/png');
-                        document.getElementById('signupLogoPreview').style.backgroundImage = `url(${signupLogoData})`;
-                        document.getElementById('signupLogoPreview').style.display = 'block';
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
-
-            (function() {
-                const rememberedEmail = localStorage.getItem('remembered_email');
-                if (rememberedEmail) {
-                    document.getElementById('loginEmail').value = rememberedEmail;
-                    document.getElementById('rememberMe').checked = true;
-                }
-            })();
-
-            window.login = function() {
-                const email = document.getElementById('loginEmail').value.trim();
-                const pass = document.getElementById('loginPass').value;
-                const users = getUsers();
-                const user = users.find(u => u.email === email);
-                if (!user) return showToast('User not found', 'error');
-                if (user.blocked) return showToast('Account blocked', 'error');
-                if (user.password !== pass) return showToast('Wrong password', 'error');
-                currentUser = user;
-                if (document.getElementById('rememberMe').checked) {
-                    localStorage.setItem('remembered_email', user.email);
-                } else {
-                    localStorage.removeItem('remembered_email');
-                }
-                showApp();
-            };
-
-            window.signup = function() {
-                const username = document.getElementById('signupUsername').value.trim();
-                const email = document.getElementById('signupEmail').value.trim();
-                const pass = document.getElementById('signupPass').value;
-                if (!username || !email || !pass) return showToast('All fields required', 'error');
-                const users = getUsers();
-                if (users.find(u => u.email === email)) return showToast('Email already used', 'error');
-                const newUser = {
-                    id: Date.now().toString(),
-                    username,
-                    email,
-                    password: pass,
-                    logo: signupLogoData || '',
-                    role: (email === ADMIN_EMAIL ? 'admin' : 'user'),
-                    blocked: false
-                };
-                users.push(newUser);
-                saveUsers(users);
-                currentUser = newUser;
-                if (document.getElementById('rememberMe').checked) {
-                    localStorage.setItem('remembered_email', newUser.email);
-                }
-                showApp();
-            };
-
-            window.logout = function() {
-                currentUser = null;
-                document.getElementById('mainApp').style.display = 'none';
-                document.getElementById('authContainer').style.display = 'block';
-                document.body.style.display = 'flex';
-                document.getElementById('loginEmail').value = '';
-                document.getElementById('loginPass').value = '';
-                hideAllPages();
-                document.getElementById('userDropdown').classList.remove('open');
-            };
-
-            function showApp() {
-                document.getElementById('authContainer').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'flex';
-                document.body.style.display = 'block';
-                document.getElementById('headerLogo').src = currentUser.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E";
-                if (currentUser.email === ADMIN_EMAIL) {
-                    document.getElementById('nav-admin').style.display = 'flex';
-                } else {
-                    document.getElementById('nav-admin').style.display = 'none';
-                }
-                navigateTo('home');
-            }
-
-            window.toggleUserMenu = function() {
-                document.getElementById('userDropdown').classList.toggle('open');
-            };
-            document.addEventListener('click', function(e) {
-                const logo = document.querySelector('.logo-area');
-                const dropdown = document.getElementById('userDropdown');
-                if (logo && dropdown && !logo.contains(e.target) && dropdown.classList.contains('open')) {
-                    dropdown.classList.remove('open');
-                }
-            });
-
-            const $menuToggle = document.getElementById('menuToggle');
-            const $drawerOverlay = document.getElementById('drawerOverlay');
-            const $drawerPanel = document.getElementById('drawerPanel');
-            function openPanel() { $drawerPanel.classList.add('open'); $drawerOverlay.classList.add('open'); }
-            function closePanel() { $drawerPanel.classList.remove('open'); $drawerOverlay.classList.remove('open'); }
-            $menuToggle.addEventListener('click', () => $drawerPanel.classList.contains('open') ? closePanel() : openPanel());
-            document.getElementById('drawerClose').addEventListener('click', closePanel);
-            $drawerOverlay.addEventListener('click', closePanel);
-            document.querySelectorAll('.drawer-link').forEach(link => link.addEventListener('click', closePanel));
-
-            function hideAllPages() {
-                ['home','skins','about','admin'].forEach(p => {
-                    document.getElementById('page-'+p).classList.remove('active');
-                    document.getElementById('nav-'+p).classList.remove('active');
-                });
-            }
-            window.navigateTo = function(page) {
-                hideAllPages();
-                document.getElementById('page-'+page).classList.add('active');
-                document.getElementById('nav-'+page).classList.add('active');
-                if (page === 'admin') renderAdminPage();
-                else if (page === 'skins') renderSkinsPage();
-                window.scrollTo(0,0);
-            };
-
-            let skins = [];
-            function loadSkins() {
-                try { skins = JSON.parse(localStorage.getItem(SKINS_KEY)) || []; } catch(e) { skins = []; }
-            }
-            function saveSkins() { localStorage.setItem(SKINS_KEY, JSON.stringify(skins)); }
-
-            function renderSkinsPage() {
-                const grid = document.getElementById('skinsGrid');
-                if (!grid) return;
-                loadSkins();
-                grid.innerHTML = '';
-                if (skins.length === 0) {
-                    grid.innerHTML = '<p style="text-align:center; color: var(--text-muted);">No skins yet.</p>';
-                    return;
-                }
-                skins.forEach(skin => {
-                    const card = document.createElement('div');
-                    card.className = 'skin-card';
-                    let bg = skin.color || '#4ade80';
-                    if (skin.imageData) bg = `url(${skin.imageData}) center/cover`;
-                    card.innerHTML = `<div class="skin-blob-preview" style="background:${bg};"></div><div class="skin-name">${skin.name}</div>`;
-                    grid.appendChild(card);
-                });
-            }
-
-            window.addSkin = function() {
-                const name = document.getElementById('skinName').value.trim();
-                if (!name) return showToast('Enter a skin name', 'error');
-                const color = document.getElementById('skinColor').value;
-                const imageData = uploadedSkinImage;
-                const newSkin = {
-                    id: 'sk_' + Date.now(),
-                    name,
-                    color,
-                    imageData: imageData || null,
-                    type: imageData ? 'image' : 'color'
-                };
-                skins.push(newSkin);
-                saveSkins();
-                renderAdminSkinsList();
-                document.getElementById('skinName').value = '';
-                document.getElementById('uploadPreview').style.display = 'none';
-                uploadedSkinImage = null;
-                showToast('Skin added!');
-            };
-
-            document.getElementById('fileInput').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = canvas.height = 200;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, 200, 200);
-                        uploadedSkinImage = canvas.toDataURL('image/png');
-                        document.getElementById('uploadPreview').style.backgroundImage = `url(${uploadedSkinImage})`;
-                        document.getElementById('uploadPreview').style.display = 'block';
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
-
-            function renderAdminSkinsList() {
-                const container = document.getElementById('adminSkinsList');
-                if (!container) return;
-                container.innerHTML = skins.length ? '' : '<p>No skins.</p>';
-                skins.forEach(skin => {
-                    const div = document.createElement('div');
-                    div.className = 'skin-card';
-                    div.style.flexDirection = 'row';
-                    div.style.justifyContent = 'space-between';
-                    let bg = skin.color || '#4ade80';
-                    if (skin.imageData) bg = `url(${skin.imageData}) center/cover`;
-                    div.innerHTML = `<div style="display:flex; align-items:center; gap:10px;">
-                        <div class="skin-blob-preview" style="width:40px;height:40px;background:${bg};"></div>
-                        <span>${skin.name}</span>
-                    </div>
-                    <button class="btn-sm btn-danger" onclick="deleteSkin('${skin.id}')">🗑</button>`;
-                    container.appendChild(div);
-                });
-            }
-
-            window.deleteSkin = function(id) {
-                skins = skins.filter(s => s.id !== id);
-                saveSkins();
-                renderAdminSkinsList();
-            };
-
-            function renderAdminPage() {
-                if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
-                    document.getElementById('userTableContainer').innerHTML = '<p>Access denied.</p>';
-                    document.getElementById('adminSkinsList').innerHTML = '';
-                    return;
-                }
-                const users = getUsers();
-                let html = `<table class="user-table">
-                    <thead><tr><th>Logo</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
-                    <tbody>`;
-                users.forEach(u => {
-                    html += `<tr>
-                        <td><img src="${u.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E'}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;"></td>
-                        <td>${u.username}</td>
-                        <td>${u.email}</td>
-                        <td>${u.role}</td>
-                        <td>${u.blocked ? '🚫 Blocked' : '✅ Active'}</td>
-                        <td>
-                            <button class="btn-sm" onclick="renameUser('${u.id}')">✏️</button>
-                            <button class="btn-sm" onclick="changePass('${u.id}')">🔑</button>
-                            <button class="btn-sm ${u.role==='admin'?'btn-warning':''}" onclick="toggleAdmin('${u.id}')">${u.role==='admin'?'⬇️':'⬆️'}</button>
-                            <button class="btn-sm btn-danger" onclick="toggleBlock('${u.id}')">${u.blocked?'🔓':'🔒'}</button>
-                            <button class="btn-sm btn-danger" onclick="deleteUser('${u.id}')">🗑</button>
-                        </td>
-                    </tr>`;
-                });
-                html += '</tbody></table>';
-                document.getElementById('userTableContainer').innerHTML = html;
-                loadSkins();
-                renderAdminSkinsList();
-            }
-
-            window.renameUser = function(id) {
-                const name = prompt('New username:');
-                if (!name) return;
-                const users = getUsers();
-                const user = users.find(u => u.id === id);
-                if (user) { user.username = name; saveUsers(users); renderAdminPage(); }
-            };
-            window.changePass = function(id) {
-                const pass = prompt('New password:');
-                if (!pass) return;
-                const users = getUsers();
-                const user = users.find(u => u.id === id);
-                if (user) { user.password = pass; saveUsers(users); renderAdminPage(); }
-            };
-            window.toggleAdmin = function(id) {
-                const users = getUsers();
-                const user = users.find(u => u.id === id);
-                if (user) { user.role = user.role === 'admin' ? 'user' : 'admin'; saveUsers(users); renderAdminPage(); }
-            };
-            window.toggleBlock = function(id) {
-                const users = getUsers();
-                const user = users.find(u => u.id === id);
-                if (user) { user.blocked = !user.blocked; saveUsers(users); renderAdminPage(); }
-            };
-            window.deleteUser = function(id) {
-                if (!confirm('Delete user permanently?')) return;
-                let users = getUsers();
-                users = users.filter(u => u.id !== id);
-                saveUsers(users);
-                renderAdminPage();
-            };
-
-            loadSkins();
         })();
+
+        window.login = function() {
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const pass = document.getElementById('loginPass').value;
+            const users = getUsers();
+            const user = users.find(u => u.email === email);
+            if (!user) return showToast('User not found', 'error');
+            if (user.blocked) return showToast('Account blocked', 'error');
+            if (user.password !== pass) return showToast('Wrong password', 'error');
+            currentUser = user;
+            if (document.getElementById('rememberMe').checked) localStorage.setItem('remembered_email', user.email);
+            else localStorage.removeItem('remembered_email');
+            showApp();
+        };
+
+        window.signup = function() {
+            const username = document.getElementById('signupUsername').value.trim();
+            const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+            const pass = document.getElementById('signupPass').value;
+            if (!username || !email || !pass) return showToast('All fields required', 'error');
+            const users = getUsers();
+            if (users.find(u => u.email === email)) return showToast('Email already used', 'error');
+            const newUser = {
+                id: Date.now().toString(), username, email, password: pass,
+                logo: signupLogoData || '', role: (email === ADMIN_EMAIL ? 'admin' : 'user'), blocked: false
+            };
+            users.push(newUser); saveUsers(users); currentUser = newUser;
+            if (document.getElementById('rememberMe').checked) localStorage.setItem('remembered_email', newUser.email);
+            showApp();
+        };
+
+        window.logout = function() {
+            currentUser = null; document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('authContainer').style.display = 'block'; document.body.style.display = 'flex';
+            document.getElementById('loginEmail').value = ''; document.getElementById('loginPass').value = '';
+            hideAllPages(); document.getElementById('userDropdown').classList.remove('open');
+        };
+
+        function showApp() {
+            document.getElementById('authContainer').style.display = 'none'; document.getElementById('mainApp').style.display = 'flex';
+            document.body.style.display = 'block'; document.getElementById('headerLogo').src = currentUser.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E";
+            if (currentUser.email === ADMIN_EMAIL) document.getElementById('nav-admin').style.display='flex';
+            else document.getElementById('nav-admin').style.display='none';
+            navigateTo('home');
+        }
+
+        window.toggleUserMenu = function() { document.getElementById('userDropdown').classList.toggle('open'); };
+        document.addEventListener('click', function(e) {
+            const logo = document.querySelector('.logo-area'), dropdown = document.getElementById('userDropdown');
+            if (logo && dropdown && !logo.contains(e.target) && dropdown.classList.contains('open')) dropdown.classList.remove('open');
+        });
+
+        const $menuToggle = document.getElementById('menuToggle'), $drawerOverlay = document.getElementById('drawerOverlay'), $drawerPanel = document.getElementById('drawerPanel');
+        function openPanel() { $drawerPanel.classList.add('open'); $drawerOverlay.classList.add('open'); }
+        function closePanel() { $drawerPanel.classList.remove('open'); $drawerOverlay.classList.remove('open'); }
+        $menuToggle.addEventListener('click', () => $drawerPanel.classList.contains('open') ? closePanel() : openPanel());
+        document.getElementById('drawerClose').addEventListener('click', closePanel);
+        $drawerOverlay.addEventListener('click', closePanel);
+        document.querySelectorAll('.drawer-link').forEach(link => link.addEventListener('click', closePanel));
+
+        function hideAllPages() { ['home','skins','about','admin'].forEach(p => { document.getElementById('page-'+p).classList.remove('active'); document.getElementById('nav-'+p).classList.remove('active'); }); }
+        window.navigateTo = function(page) {
+            hideAllPages(); document.getElementById('page-'+page).classList.add('active'); document.getElementById('nav-'+page).classList.add('active');
+            if (page === 'admin') renderAdminPage(); else if (page === 'skins') renderSkinsPage();
+            window.scrollTo(0,0);
+        };
+
+        let skins = [];
+        function loadSkins() { try { skins = JSON.parse(localStorage.getItem(SKINS_KEY)) || []; } catch(e) { skins = []; } }
+        function saveSkins() { localStorage.setItem(SKINS_KEY, JSON.stringify(skins)); }
+        function renderSkinsPage() {
+            const grid = document.getElementById('skinsGrid'); if (!grid) return; loadSkins();
+            grid.innerHTML = skins.length ? '' : '<p style="text-align:center;color:var(--text-muted);">No skins yet.</p>';
+            skins.forEach(skin => {
+                const card = document.createElement('div'); card.className = 'skin-card';
+                let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`;
+                card.innerHTML = `<div class="skin-blob-preview" style="background:${bg};"></div><div class="skin-name">${skin.name}</div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        window.addSkin = function() {
+            const name = document.getElementById('skinName').value.trim();
+            if (!name) return showToast('Enter a skin name', 'error');
+            const color = document.getElementById('skinColor').value, imageData = uploadedSkinImage;
+            const newSkin = { id: 'sk_' + Date.now(), name, color, imageData: imageData || null, type: imageData ? 'image' : 'color' };
+            skins.push(newSkin); saveSkins(); renderAdminSkinsList();
+            document.getElementById('skinName').value = ''; document.getElementById('uploadPreview').style.display = 'none';
+            uploadedSkinImage = null; showToast('Skin added!');
+        };
+
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image(); img.onload = function() {
+                    const canvas = document.createElement('canvas'); canvas.width = canvas.height = 200;
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 200, 200);
+                    uploadedSkinImage = canvas.toDataURL('image/png');
+                    document.getElementById('uploadPreview').style.backgroundImage = `url(${uploadedSkinImage})`;
+                    document.getElementById('uploadPreview').style.display = 'block';
+                }; img.src = e.target.result;
+            }; reader.readAsDataURL(file);
+        });
+
+        function renderAdminSkinsList() {
+            const container = document.getElementById('adminSkinsList'); if (!container) return;
+            container.innerHTML = skins.length ? '' : '<p>No skins.</p>';
+            skins.forEach(skin => {
+                const div = document.createElement('div'); div.className = 'skin-card'; div.style.flexDirection = 'row'; div.style.justifyContent = 'space-between';
+                let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`;
+                div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><div class="skin-blob-preview" style="width:40px;height:40px;background:${bg};"></div><span>${skin.name}</span></div><button class="btn-sm btn-danger" onclick="deleteSkin('${skin.id}')">🗑</button>`;
+                container.appendChild(div);
+            });
+        }
+        window.deleteSkin = function(id) { skins = skins.filter(s => s.id !== id); saveSkins(); renderAdminSkinsList(); };
+
+        function renderAdminPage() {
+            if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+                document.getElementById('userTableContainer').innerHTML = '<p>Access denied.</p>'; document.getElementById('adminSkinsList').innerHTML = ''; return;
+            }
+            const users = getUsers();
+            let html = `<table class="user-table"><thead><tr><th>Logo</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody>`;
+            users.forEach(u => {
+                html += `<tr>
+                    <td><img src="${u.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E'}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;"></td>
+                    <td>${u.username}</td><td>${u.email}</td><td>${u.role}</td>
+                    <td>${u.blocked ? '🚫 Blocked' : '✅ Active'}</td>
+                    <td>
+                        <button class="btn-sm" onclick="renameUser('${u.id}')">✏️</button>
+                        <button class="btn-sm" onclick="changePass('${u.id}')">🔑</button>
+                        <button class="btn-sm ${u.role==='admin'?'btn-warning':''}" onclick="toggleAdmin('${u.id}')">${u.role==='admin'?'⬇️':'⬆️'}</button>
+                        <button class="btn-sm btn-danger" onclick="toggleBlock('${u.id}')">${u.blocked?'🔓':'🔒'}</button>
+                        <button class="btn-sm btn-danger" onclick="deleteUser('${u.id}')">🗑</button>
+                    </td></tr>`;
+            });
+            html += '</tbody></table>'; document.getElementById('userTableContainer').innerHTML = html;
+            loadSkins(); renderAdminSkinsList();
+        }
+
+        window.renameUser = function(id) { const name = prompt('New username:'); if (name) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.username = name; saveUsers(users); renderAdminPage(); } } };
+        window.changePass = function(id) { const pass = prompt('New password:'); if (pass) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.password = pass; saveUsers(users); renderAdminPage(); } } };
+        window.toggleAdmin = function(id) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.role = user.role === 'admin' ? 'user' : 'admin'; saveUsers(users); renderAdminPage(); } };
+        window.toggleBlock = function(id) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.blocked = !user.blocked; saveUsers(users); renderAdminPage(); } };
+        window.deleteUser = function(id) { if (confirm('Delete user permanently?')) { let users = getUsers(); users = users.filter(u => u.id !== id); saveUsers(users); renderAdminPage(); } };
+
+        loadSkins();
     </script>
 </body>
 </html>
