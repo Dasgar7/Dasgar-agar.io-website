@@ -287,137 +287,138 @@
     </div>
     <div class="toast" id="toast"></div>
     <script>
-        // PWA setup (unchanged)
-        function generateIcon() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 192; const ctx = canvas.getContext('2d'); ctx.beginPath(); ctx.arc(96, 96, 80, 0, Math.PI*2); ctx.fillStyle = '#4ade80'; ctx.fill(); ctx.shadowColor = '#000'; ctx.shadowBlur = 20; ctx.fill(); ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(70, 70, 20, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill(); return canvas.toDataURL('image/png'); }
-        function registerServiceWorker() { if ('serviceWorker' in navigator) { const swCode = `const CACHE_NAME='dasgar-cache-v1';self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll([self.location.href])).then(()=>self.skipWaiting())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`; navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode],{type:'application/javascript'}))).catch(()=>{}); } }
-        function setupManifest() { const manifest = {name:'Dasgar',short_name:'Dasgar',start_url:window.location.href,display:'standalone',background_color:'#0a0f0a',theme_color:'#0a0f0a',icons:[{src:generateIcon(),sizes:'192x192',type:'image/png'}]}; document.getElementById('manifest-link').href = URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/json'})); }
-        setupManifest(); registerServiceWorker();
+        document.addEventListener('DOMContentLoaded', function() {
+            // PWA setup
+            function generateIcon() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 192; const ctx = canvas.getContext('2d'); ctx.beginPath(); ctx.arc(96, 96, 80, 0, Math.PI*2); ctx.fillStyle = '#4ade80'; ctx.fill(); ctx.shadowColor = '#000'; ctx.shadowBlur = 20; ctx.fill(); ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(70, 70, 20, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill(); return canvas.toDataURL('image/png'); }
+            function registerServiceWorker() { if ('serviceWorker' in navigator) { const swCode = `const CACHE_NAME='dasgar-cache-v1';self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll([self.location.href])).then(()=>self.skipWaiting())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`; navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode],{type:'application/javascript'}))).catch(()=>{}); } }
+            function setupManifest() { const manifest = {name:'Dasgar',short_name:'Dasgar',start_url:window.location.href,display:'standalone',background_color:'#0a0f0a',theme_color:'#0a0f0a',icons:[{src:generateIcon(),sizes:'192x192',type:'image/png'}]}; document.getElementById('manifest-link').href = URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/json'})); }
+            setupManifest(); registerServiceWorker();
 
-        window.togglePassword = function(inputId, btn) { const input = document.getElementById(inputId); if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; } else { input.type = 'password'; btn.textContent = '👁️'; } };
+            window.togglePassword = function(inputId, btn) { const input = document.getElementById(inputId); if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; } else { input.type = 'password'; btn.textContent = '👁️'; } };
 
-        // ---- APP LOGIC WITH AUTO-LOGIN ----
-        const USERS_KEY = 'site_users_v2', SKINS_KEY = 'agarskins_data_v2', ADMIN_EMAIL = 'dasgari769@gmail.com';
-        const REMEMBER_KEY = 'remembered_user_id';
-        let currentUser = null, signupLogoData = null, uploadedSkinImage = null;
-        const CATEGORIES = ['free skins','vip skins','exclusive skins','premium skins','custom skins','mystery skins','golden pass skins','adventure skins','veteran skins','quest skins','youtuber skins','pokemon skins','thunderbirds skins'];
+            const USERS_KEY = 'site_users_v2', SKINS_KEY = 'agarskins_data_v2', ADMIN_EMAIL = 'dasgari769@gmail.com';
+            const REMEMBER_KEY = 'remembered_user_id';
+            let currentUser = null, signupLogoData = null, uploadedSkinImage = null;
+            const CATEGORIES = ['free skins','vip skins','exclusive skins','premium skins','custom skins','mystery skins','golden pass skins','adventure skins','veteran skins','quest skins','youtuber skins','pokemon skins','thunderbirds skins'];
 
-        function migrateEmailsToLowercase() { const users = getUsers(); let changed = false; users.forEach(u => { if (u.email !== u.email.toLowerCase()) { u.email = u.email.toLowerCase(); changed = true; } }); if (changed) saveUsers(users); }
-        function showToast(msg, type='') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + type + ' show'; clearTimeout(t._time); t._time = setTimeout(() => t.classList.remove('show'), 2500); }
-        function getUsers() { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch(e) { return []; } }
-        function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+            function migrateEmailsToLowercase() { const users = getUsers(); let changed = false; users.forEach(u => { if (u.email !== u.email.toLowerCase()) { u.email = u.email.toLowerCase(); changed = true; } }); if (changed) saveUsers(users); }
+            function showToast(msg, type='') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + type + ' show'; clearTimeout(t._time); t._time = setTimeout(() => t.classList.remove('show'), 2500); }
+            function getUsers() { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch(e) { return []; } }
+            function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
 
-        migrateEmailsToLowercase();
+            migrateEmailsToLowercase();
 
-        window.showSignup = () => { document.getElementById('loginForm').style.display='none'; document.getElementById('signupForm').style.display='block'; };
-        window.showLogin = () => { document.getElementById('signupForm').style.display='none'; document.getElementById('loginForm').style.display='block'; };
+            window.showSignup = () => { document.getElementById('loginForm').style.display='none'; document.getElementById('signupForm').style.display='block'; };
+            window.showLogin = () => { document.getElementById('signupForm').style.display='none'; document.getElementById('loginForm').style.display='block'; };
 
-        document.getElementById('signupLogoFile').addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 100; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 100, 100); signupLogoData = canvas.toDataURL('image/png'); document.getElementById('signupLogoPreview').style.backgroundImage = `url(${signupLogoData})`; document.getElementById('signupLogoPreview').style.display = 'block'; }; img.src = e.target.result; }; reader.readAsDataURL(file); });
+            document.getElementById('signupLogoFile').addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 100; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 100, 100); signupLogoData = canvas.toDataURL('image/png'); document.getElementById('signupLogoPreview').style.backgroundImage = `url(${signupLogoData})`; document.getElementById('signupLogoPreview').style.display = 'block'; }; img.src = e.target.result; }; reader.readAsDataURL(file); });
 
-        window.login = function() {
-            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-            const pass = document.getElementById('loginPass').value;
-            const users = getUsers();
-            const user = users.find(u => u.email === email);
-            if (!user) return showToast('User not found', 'error');
-            if (user.blocked) return showToast('Account blocked', 'error');
-            if (user.password !== pass) return showToast('Wrong password', 'error');
-            currentUser = user;
-            if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, user.id);
-            else localStorage.removeItem(REMEMBER_KEY);
-            showApp();
-        };
-
-        window.signup = function() {
-            const username = document.getElementById('signupUsername').value.trim();
-            const email = document.getElementById('signupEmail').value.trim().toLowerCase();
-            const pass = document.getElementById('signupPass').value;
-            if (!username || !email || !pass) return showToast('All fields required', 'error');
-            const users = getUsers();
-            if (users.find(u => u.email === email)) return showToast('Email already used', 'error');
-            const newUser = { id: Date.now().toString(), username, email, password: pass, logo: signupLogoData || '', role: (email === ADMIN_EMAIL ? 'admin' : 'user'), blocked: false };
-            users.push(newUser); saveUsers(users); currentUser = newUser;
-            if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, newUser.id);
-            else localStorage.removeItem(REMEMBER_KEY);
-            showApp();
-        };
-
-        window.logout = function() {
-            currentUser = null;
-            localStorage.removeItem(REMEMBER_KEY);
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('authContainer').style.display = 'block';
-            document.body.style.display = 'flex';
-            document.getElementById('loginEmail').value = ''; document.getElementById('loginPass').value = '';
-            hideAllPages();
-            document.getElementById('userDropdown').classList.remove('open');
-        };
-
-        function showApp() {
-            document.getElementById('authContainer').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'flex';
-            document.body.style.display = 'block';
-            document.getElementById('headerLogo').src = currentUser.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E";
-            if (currentUser.email === ADMIN_EMAIL) document.getElementById('nav-admin').style.display='flex';
-            else document.getElementById('nav-admin').style.display='none';
-            navigateTo('home');
-        }
-
-        // Auto-login on page load
-        (function autoLogin() {
-            const rememberedId = localStorage.getItem(REMEMBER_KEY);
-            if (rememberedId) {
+            // ---- all functions defined before any calls ----
+            window.login = function() {
+                const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+                const pass = document.getElementById('loginPass').value;
                 const users = getUsers();
-                const user = users.find(u => u.id === rememberedId && !u.blocked);
-                if (user) {
-                    currentUser = user;
-                    showApp();
-                } else {
-                    localStorage.removeItem(REMEMBER_KEY); // invalid or blocked user
-                }
+                const user = users.find(u => u.email === email);
+                if (!user) return showToast('User not found', 'error');
+                if (user.blocked) return showToast('Account blocked', 'error');
+                if (user.password !== pass) return showToast('Wrong password', 'error');
+                currentUser = user;
+                if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, user.id);
+                else localStorage.removeItem(REMEMBER_KEY);
+                showApp();
+            };
+            window.signup = function() {
+                const username = document.getElementById('signupUsername').value.trim();
+                const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+                const pass = document.getElementById('signupPass').value;
+                if (!username || !email || !pass) return showToast('All fields required', 'error');
+                const users = getUsers();
+                if (users.find(u => u.email === email)) return showToast('Email already used', 'error');
+                const newUser = { id: Date.now().toString(), username, email, password: pass, logo: signupLogoData || '', role: (email === ADMIN_EMAIL ? 'admin' : 'user'), blocked: false };
+                users.push(newUser); saveUsers(users); currentUser = newUser;
+                if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, newUser.id);
+                else localStorage.removeItem(REMEMBER_KEY);
+                showApp();
+            };
+            window.logout = function() {
+                currentUser = null;
+                localStorage.removeItem(REMEMBER_KEY);
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('authContainer').style.display = 'block';
+                document.body.style.display = 'flex';
+                document.getElementById('loginEmail').value = ''; document.getElementById('loginPass').value = '';
+                hideAllPages();
+                document.getElementById('userDropdown').classList.remove('open');
+            };
+
+            function showApp() {
+                document.getElementById('authContainer').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'flex';
+                document.body.style.display = 'block';
+                document.getElementById('headerLogo').src = currentUser.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E";
+                if (currentUser.email === ADMIN_EMAIL) document.getElementById('nav-admin').style.display='flex';
+                else document.getElementById('nav-admin').style.display='none';
+                navigateTo('home');
             }
-        })();
 
-        window.toggleUserMenu = function() { document.getElementById('userDropdown').classList.toggle('open'); };
-        document.addEventListener('click', function(e) { const logo = document.querySelector('.logo-area'), dropdown = document.getElementById('userDropdown'); if (logo && dropdown && !logo.contains(e.target) && dropdown.classList.contains('open')) dropdown.classList.remove('open'); });
+            function hideAllPages() { ['home','skins','about','admin'].forEach(p => { document.getElementById('page-'+p).classList.remove('active'); document.getElementById('nav-'+p).classList.remove('active'); }); }
+            window.navigateTo = function(page) { hideAllPages(); document.getElementById('page-'+page).classList.add('active'); document.getElementById('nav-'+page).classList.add('active'); if (page === 'admin') renderAdminPage(); else if (page === 'skins') renderSkinsPage(); window.scrollTo(0,0); };
 
-        const $menuToggle = document.getElementById('menuToggle'), $drawerOverlay = document.getElementById('drawerOverlay'), $drawerPanel = document.getElementById('drawerPanel');
-        function openPanel() { $drawerPanel.classList.add('open'); $drawerOverlay.classList.add('open'); }
-        function closePanel() { $drawerPanel.classList.remove('open'); $drawerOverlay.classList.remove('open'); }
-        $menuToggle.addEventListener('click', () => $drawerPanel.classList.contains('open') ? closePanel() : openPanel());
-        document.getElementById('drawerClose').addEventListener('click', closePanel);
-        $drawerOverlay.addEventListener('click', closePanel);
-        document.querySelectorAll('.drawer-link').forEach(link => link.addEventListener('click', closePanel));
-        function hideAllPages() { ['home','skins','about','admin'].forEach(p => { document.getElementById('page-'+p).classList.remove('active'); document.getElementById('nav-'+p).classList.remove('active'); }); }
-        window.navigateTo = function(page) { hideAllPages(); document.getElementById('page-'+page).classList.add('active'); document.getElementById('nav-'+page).classList.add('active'); if (page === 'admin') renderAdminPage(); else if (page === 'skins') renderSkinsPage(); window.scrollTo(0,0); };
+            window.toggleUserMenu = function() { document.getElementById('userDropdown').classList.toggle('open'); };
+            document.addEventListener('click', function(e) { const logo = document.querySelector('.logo-area'), dropdown = document.getElementById('userDropdown'); if (logo && dropdown && !logo.contains(e.target) && dropdown.classList.contains('open')) dropdown.classList.remove('open'); });
 
-        // ---- SKINS CODE (unchanged) ----
-        let skins = [];
-        function loadSkins() { try { skins = JSON.parse(localStorage.getItem(SKINS_KEY)) || []; skins = skins.map(s => ({ ...s, category: s.category || 'free skins' })); } catch(e) { skins = []; } }
-        function saveSkins() { localStorage.setItem(SKINS_KEY, JSON.stringify(skins)); }
+            const $menuToggle = document.getElementById('menuToggle'), $drawerOverlay = document.getElementById('drawerOverlay'), $drawerPanel = document.getElementById('drawerPanel');
+            function openPanel() { $drawerPanel.classList.add('open'); $drawerOverlay.classList.add('open'); }
+            function closePanel() { $drawerPanel.classList.remove('open'); $drawerOverlay.classList.remove('open'); }
+            $menuToggle.addEventListener('click', () => $drawerPanel.classList.contains('open') ? closePanel() : openPanel());
+            document.getElementById('drawerClose').addEventListener('click', closePanel);
+            $drawerOverlay.addEventListener('click', closePanel);
+            document.querySelectorAll('.drawer-link').forEach(link => link.addEventListener('click', closePanel));
 
-        function renderSkinsPage() { const container = document.getElementById('skinsCategoriesContainer'); if (!container) return; loadSkins(); container.innerHTML = ''; const grouped = {}; CATEGORIES.forEach(cat => grouped[cat] = []); skins.forEach(skin => { if (!grouped[skin.category]) grouped[skin.category] = []; grouped[skin.category].push(skin); }); CATEGORIES.forEach(cat => { const skinsInCat = grouped[cat] || []; if (skinsInCat.length === 0) return; const section = document.createElement('div'); section.className = 'category-section'; const title = document.createElement('div'); title.className = 'category-title'; title.textContent = cat.toUpperCase(); section.appendChild(title); const grid = document.createElement('div'); grid.className = 'skins-grid'; skinsInCat.forEach(skin => { const card = document.createElement('div'); card.className = 'skin-card'; let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`; card.innerHTML = `<div class="skin-blob-preview" style="background:${bg};"></div><div class="skin-name">${skin.name}</div>`; grid.appendChild(card); }); section.appendChild(grid); container.appendChild(section); }); if (skins.length === 0) { container.innerHTML = '<p style="text-align:center;color:var(--text-muted);">No skins yet.</p>'; } }
+            // Skins logic
+            let skins = [];
+            function loadSkins() { try { skins = JSON.parse(localStorage.getItem(SKINS_KEY)) || []; skins = skins.map(s => ({ ...s, category: s.category || 'free skins' })); } catch(e) { skins = []; } }
+            function saveSkins() { localStorage.setItem(SKINS_KEY, JSON.stringify(skins)); }
 
-        window.addSkin = function() { const name = document.getElementById('skinName').value.trim(); if (!name) return showToast('Enter a skin name', 'error'); const category = document.getElementById('skinCategory').value; const color = document.getElementById('skinColor').value; const imageData = uploadedSkinImage; const newSkin = { id: 'sk_' + Date.now(), name, category, color, imageData: imageData || null, type: imageData ? 'image' : 'color' }; skins.push(newSkin); saveSkins(); renderAdminSkinsList(); document.getElementById('skinName').value = ''; document.getElementById('skinCategory').value = 'free skins'; document.getElementById('uploadPreview').style.display = 'none'; uploadedSkinImage = null; showToast('Skin added!'); };
-        document.getElementById('fileInput').addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 200; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 200, 200); uploadedSkinImage = canvas.toDataURL('image/png'); document.getElementById('uploadPreview').style.backgroundImage = `url(${uploadedSkinImage})`; document.getElementById('uploadPreview').style.display = 'block'; }; img.src = e.target.result; }; reader.readAsDataURL(file); });
-        function renderAdminSkinsList() { const container = document.getElementById('adminSkinsList'); if (!container) return; container.innerHTML = skins.length ? '' : '<p>No skins.</p>'; skins.forEach(skin => { const div = document.createElement('div'); div.className = 'skin-card'; div.style.flexDirection = 'row'; div.style.justifyContent = 'space-between'; let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`; div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><div class="skin-blob-preview" style="width:40px;height:40px;background:${bg};"></div><span>${skin.name} <small style="color:var(--text-muted);">(${skin.category})</small></span></div><button class="btn-sm btn-danger" onclick="deleteSkin('${skin.id}')">🗑</button>`; container.appendChild(div); }); }
-        window.deleteSkin = function(id) { skins = skins.filter(s => s.id !== id); saveSkins(); renderAdminSkinsList(); };
+            function renderSkinsPage() { const container = document.getElementById('skinsCategoriesContainer'); if (!container) return; loadSkins(); container.innerHTML = ''; const grouped = {}; CATEGORIES.forEach(cat => grouped[cat] = []); skins.forEach(skin => { if (!grouped[skin.category]) grouped[skin.category] = []; grouped[skin.category].push(skin); }); CATEGORIES.forEach(cat => { const skinsInCat = grouped[cat] || []; if (skinsInCat.length === 0) return; const section = document.createElement('div'); section.className = 'category-section'; const title = document.createElement('div'); title.className = 'category-title'; title.textContent = cat.toUpperCase(); section.appendChild(title); const grid = document.createElement('div'); grid.className = 'skins-grid'; skinsInCat.forEach(skin => { const card = document.createElement('div'); card.className = 'skin-card'; let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`; card.innerHTML = `<div class="skin-blob-preview" style="background:${bg};"></div><div class="skin-name">${skin.name}</div>`; grid.appendChild(card); }); section.appendChild(grid); container.appendChild(section); }); if (skins.length === 0) { container.innerHTML = '<p style="text-align:center;color:var(--text-muted);">No skins yet.</p>'; } }
 
-        function renderAdminPage() {
-            if (!currentUser || currentUser.email !== ADMIN_EMAIL) { document.getElementById('userTableContainer').innerHTML = '<p>Access denied.</p>'; document.getElementById('adminSkinsList').innerHTML = ''; return; }
-            const users = getUsers();
-            let html = `<table class="user-table"><thead><tr><th>Logo</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody>`;
-            users.forEach(u => { html += `<tr><td><img src="${u.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E'}" class="user-avatar"></td><td>${u.username}</td><td>${u.email}</td><td><span class="role-badge ${u.role==='admin'?'admin':''}">${u.role}</span></td><td><span class="status-badge ${u.blocked?'status-blocked':'status-active'}">${u.blocked ? '🚫 Blocked' : '✅ Active'}</span></td><td><button class="btn-sm" onclick="renameUser('${u.id}')" title="Rename">✏️</button><button class="btn-sm" onclick="changePass('${u.id}')" title="Password">🔑</button><button class="btn-sm ${u.role==='admin'?'btn-warning':''}" onclick="toggleAdmin('${u.id}')" title="Toggle admin">${u.role==='admin'?'⬇️':'⬆️'}</button><button class="btn-sm btn-danger" onclick="toggleBlock('${u.id}')" title="${u.blocked?'Unblock':'Block'}">${u.blocked?'🔓':'🔒'}</button><button class="btn-sm btn-danger" onclick="deleteUser('${u.id}')" title="Delete">🗑</button></td></tr>`; });
-            html += '</tbody></table>'; document.getElementById('userTableContainer').innerHTML = html;
-            loadSkins(); renderAdminSkinsList();
-        }
+            window.addSkin = function() { const name = document.getElementById('skinName').value.trim(); if (!name) return showToast('Enter a skin name', 'error'); const category = document.getElementById('skinCategory').value; const color = document.getElementById('skinColor').value; const imageData = uploadedSkinImage; const newSkin = { id: 'sk_' + Date.now(), name, category, color, imageData: imageData || null, type: imageData ? 'image' : 'color' }; skins.push(newSkin); saveSkins(); renderAdminSkinsList(); document.getElementById('skinName').value = ''; document.getElementById('skinCategory').value = 'free skins'; document.getElementById('uploadPreview').style.display = 'none'; uploadedSkinImage = null; showToast('Skin added!'); };
+            document.getElementById('fileInput').addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 200; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 200, 200); uploadedSkinImage = canvas.toDataURL('image/png'); document.getElementById('uploadPreview').style.backgroundImage = `url(${uploadedSkinImage})`; document.getElementById('uploadPreview').style.display = 'block'; }; img.src = e.target.result; }; reader.readAsDataURL(file); });
+            function renderAdminSkinsList() { const container = document.getElementById('adminSkinsList'); if (!container) return; container.innerHTML = skins.length ? '' : '<p>No skins.</p>'; skins.forEach(skin => { const div = document.createElement('div'); div.className = 'skin-card'; div.style.flexDirection = 'row'; div.style.justifyContent = 'space-between'; let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`; div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><div class="skin-blob-preview" style="width:40px;height:40px;background:${bg};"></div><span>${skin.name} <small style="color:var(--text-muted);">(${skin.category})</small></span></div><button class="btn-sm btn-danger" onclick="deleteSkin('${skin.id}')">🗑</button>`; container.appendChild(div); }); }
+            window.deleteSkin = function(id) { skins = skins.filter(s => s.id !== id); saveSkins(); renderAdminSkinsList(); };
 
-        window.renameUser = function(id) { const name = prompt('New username:'); if (name) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.username = name; saveUsers(users); renderAdminPage(); } } };
-        window.changePass = function(id) { const pass = prompt('New password:'); if (pass) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.password = pass; saveUsers(users); renderAdminPage(); } } };
-        window.toggleAdmin = function(id) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.role = user.role === 'admin' ? 'user' : 'admin'; saveUsers(users); renderAdminPage(); } };
-        window.toggleBlock = function(id) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.blocked = !user.blocked; saveUsers(users); renderAdminPage(); } };
-        window.deleteUser = function(id) { if (confirm('Delete user permanently?')) { let users = getUsers(); users = users.filter(u => u.id !== id); saveUsers(users); renderAdminPage(); } };
+            function renderAdminPage() {
+                if (!currentUser || currentUser.email !== ADMIN_EMAIL) { document.getElementById('userTableContainer').innerHTML = '<p>Access denied.</p>'; document.getElementById('adminSkinsList').innerHTML = ''; return; }
+                const users = getUsers();
+                let html = `<table class="user-table"><thead><tr><th>Logo</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody>`;
+                users.forEach(u => { html += `<tr><td><img src="${u.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E'}" class="user-avatar"></td><td>${u.username}</td><td>${u.email}</td><td><span class="role-badge ${u.role==='admin'?'admin':''}">${u.role}</span></td><td><span class="status-badge ${u.blocked?'status-blocked':'status-active'}">${u.blocked ? '🚫 Blocked' : '✅ Active'}</span></td><td><button class="btn-sm" onclick="renameUser('${u.id}')" title="Rename">✏️</button><button class="btn-sm" onclick="changePass('${u.id}')" title="Password">🔑</button><button class="btn-sm ${u.role==='admin'?'btn-warning':''}" onclick="toggleAdmin('${u.id}')" title="Toggle admin">${u.role==='admin'?'⬇️':'⬆️'}</button><button class="btn-sm btn-danger" onclick="toggleBlock('${u.id}')" title="${u.blocked?'Unblock':'Block'}">${u.blocked?'🔓':'🔒'}</button><button class="btn-sm btn-danger" onclick="deleteUser('${u.id}')" title="Delete">🗑</button></td></tr>`; });
+                html += '</tbody></table>'; document.getElementById('userTableContainer').innerHTML = html;
+                loadSkins(); renderAdminSkinsList();
+            }
 
-        loadSkins();
+            window.renameUser = function(id) { const name = prompt('New username:'); if (name) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.username = name; saveUsers(users); renderAdminPage(); } } };
+            window.changePass = function(id) { const pass = prompt('New password:'); if (pass) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.password = pass; saveUsers(users); renderAdminPage(); } } };
+            window.toggleAdmin = function(id) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.role = user.role === 'admin' ? 'user' : 'admin'; saveUsers(users); renderAdminPage(); } };
+            window.toggleBlock = function(id) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.blocked = !user.blocked; saveUsers(users); renderAdminPage(); } };
+            window.deleteUser = function(id) { if (confirm('Delete user permanently?')) { let users = getUsers(); users = users.filter(u => u.id !== id); saveUsers(users); renderAdminPage(); } };
+
+            loadSkins();
+
+            // ---- Auto-login now at the very end, after all functions are defined ----
+            (function autoLogin() {
+                const rememberedId = localStorage.getItem(REMEMBER_KEY);
+                if (rememberedId) {
+                    const users = getUsers();
+                    const user = users.find(u => u.id === rememberedId && !u.blocked);
+                    if (user) {
+                        currentUser = user;
+                        showApp();
+                    } else {
+                        localStorage.removeItem(REMEMBER_KEY);
+                    }
+                }
+            })();
+        });
     </script>
 </body>
 </html>
