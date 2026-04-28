@@ -25,6 +25,7 @@
             --border: #1e2e1e;
             --border-light: #263626;
             --danger: #ef4444;
+            --warn: #f59e0b;
             --radius: 16px;
             --radius-sm: 10px;
             --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -43,7 +44,7 @@
             -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none;
         }
         button:focus, a:focus, input:focus, textarea:focus, select:focus, .btn:focus, .drawer-link:focus {
-            outline:none; box-shadow:none; background-color:inherit;
+            outline:none; box-shadow:none;
         }
 
         .auth-container {
@@ -57,11 +58,12 @@
         .auth-container h2 { text-align:center; margin-bottom:24px; color:var(--green-bright); }
         .form-group { margin-bottom:16px; }
         .form-group label { display:block; font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:6px; }
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width:100%; padding:10px 14px; border-radius:var(--radius-sm);
             border:1px solid var(--border-light); background:#0d160d; color:#fff; font-size:0.9rem;
+            font-family: inherit;
         }
-        .form-group input:focus, .form-group select:focus { border-color:var(--green); box-shadow:0 0 10px var(--green-glow); }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--green); box-shadow:0 0 10px var(--green-glow); }
         .password-wrapper { position:relative; }
         .password-wrapper input { padding-right:45px; }
         .eye-toggle {
@@ -73,9 +75,9 @@
         .upload-zone {
             border:2px dashed var(--border-light); border-radius:var(--radius-sm);
             padding:20px; text-align:center; cursor:pointer; margin-bottom:12px;
-            background:#0d160d; position:relative;
+            background:#0d160d; position:relative; transition: var(--transition);
         }
-        .upload-zone:hover { border-color:var(--green); }
+        .upload-zone:hover, .upload-zone.dragging { border-color:var(--green); background:#0f1c0f; }
         .upload-zone input { position:absolute; inset:0; opacity:0; cursor:pointer; }
         .logo-preview {
             width:60px; height:60px; border-radius:50%; margin:8px auto;
@@ -85,8 +87,14 @@
             padding:11px 22px; border-radius:40px; border:none; cursor:pointer;
             font-weight:700; text-transform:uppercase; font-size:0.85rem; transition:var(--transition);
             width:100%; background:var(--green); color:#000; box-shadow:0 0 18px var(--green-glow);
+            font-family: inherit;
         }
         .btn:hover { background:var(--green-bright); }
+        .btn:disabled { opacity:0.5; cursor:not-allowed; }
+        .btn.secondary { background: transparent; color: var(--green); border: 1px solid var(--green); box-shadow: none; }
+        .btn.secondary:hover { background: rgba(74,222,128,0.1); }
+        .btn.danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger); box-shadow: none; }
+        .btn.danger-outline:hover { background: var(--danger); color:#fff; }
         .auth-toggle { text-align:center; margin-top:16px; color:var(--text-muted); }
         .auth-toggle span { color:var(--green); cursor:pointer; font-weight:600; }
         .remember-row { display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--text-muted); margin-bottom:16px; }
@@ -113,10 +121,13 @@
         .menu-toggle:hover { background:rgba(74,222,128,0.1); }
         .user-dropdown {
             position:absolute; top:100%; left:0; margin-top:8px; background:var(--bg-card); border:1px solid var(--border-light);
-            border-radius:var(--radius-sm); padding:10px; min-width:160px; box-shadow:0 8px 20px rgba(0,0,0,0.6); display:none; z-index:60;
+            border-radius:var(--radius-sm); padding:10px; min-width:180px; box-shadow:0 8px 20px rgba(0,0,0,0.6); display:none; z-index:60;
         }
         .user-dropdown.open { display:block; }
-        .user-dropdown button { width:100%; background:transparent; border:none; color:var(--text); padding:10px 14px; text-align:left; border-radius:var(--radius-sm); cursor:pointer; }
+        .user-dropdown .dd-user { padding:8px 14px; border-bottom:1px solid var(--border-light); margin-bottom:6px; }
+        .user-dropdown .dd-user .name { font-weight:700; color:#fff; font-size:0.9rem; }
+        .user-dropdown .dd-user .email { font-size:0.72rem; color:var(--text-muted); word-break:break-all; }
+        .user-dropdown button { width:100%; background:transparent; border:none; color:var(--text); padding:10px 14px; text-align:left; border-radius:var(--radius-sm); cursor:pointer; font-family: inherit; font-size: 0.85rem; }
         .user-dropdown button:hover { background:rgba(74,222,128,0.1); }
 
         .drawer-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; opacity:0; visibility:hidden; transition:0.3s; }
@@ -132,7 +143,7 @@
         .drawer-link {
             padding:12px 18px; border-radius:var(--radius-sm); cursor:pointer; font-weight:600; font-size:0.9rem;
             border:none; background:transparent; color:var(--text-muted); width:100%; text-align:center;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
+            display: flex; justify-content: center; align-items: center; gap: 8px; font-family:inherit;
         }
         .drawer-link.active { background:var(--green-dark); color:#fff; box-shadow:0 0 18px var(--green-glow); }
         .drawer-link:hover:not(.active) { color:#c8e6c9; background:rgba(255,255,255,0.04); }
@@ -143,7 +154,20 @@
         @keyframes fadeSlideIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
         .section-header { margin-bottom:28px; text-align:center; }
         .section-header h2 { font-size:3.5rem; font-weight:800; color:#fff; margin-bottom:6px; }
+        .section-header p { color: var(--text-muted); font-size:0.95rem; max-width:600px; margin:0 auto; }
         .page-name-indicator { text-align:center; padding:12px 0 4px; color:var(--green-muted); font-size:0.8rem; text-transform:uppercase; opacity:0.8; }
+
+        /* ===== TABS ===== */
+        .skin-tabs { display:flex; justify-content:center; gap:8px; margin-bottom:32px; flex-wrap:wrap; }
+        .skin-tab {
+            padding:10px 20px; border-radius:40px; cursor:pointer; font-weight:600; font-size:0.85rem;
+            border:1px solid var(--border-light); background:rgba(255,255,255,0.02); color:var(--text-muted);
+            transition:var(--transition); display:inline-flex; align-items:center; gap:8px; font-family:inherit;
+        }
+        .skin-tab:hover { color:#c8e6c9; border-color:var(--green-muted); }
+        .skin-tab.active { background:var(--green); color:#000; border-color:var(--green); box-shadow:0 0 18px var(--green-glow); }
+        .skin-subpage { display:none; animation:fadeSlideIn 0.3s; }
+        .skin-subpage.active { display:block; }
 
         .category-section { margin-bottom: 40px; }
         .category-title {
@@ -156,11 +180,130 @@
         .skin-card {
             background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius);
             padding:20px 16px 18px; cursor:pointer; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px;
+            position:relative; transition: var(--transition);
         }
         .skin-card:hover { background:var(--bg-card-hover); border-color:#335533; transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,0.5); }
         .skin-blob-preview {
             width:100px; height:100px; border-radius:43% 57% 44% 56% / 51% 49% 55% 45%;
             background-size:cover; background-position:center; box-shadow:inset 0 2px 6px rgba(255,255,255,0.1);
+        }
+        .skin-circle-preview {
+            width:100px; height:100px; border-radius:50%;
+            background-size:cover; background-position:center;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.06);
+        }
+        .skin-name { font-size:0.95rem; font-weight:600; color:#fff; word-break:break-word; }
+        .skin-meta { font-size:0.7rem; color: var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; }
+        .skin-card .card-actions { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; }
+        .skin-card.active-skin { border-color: var(--green); box-shadow: 0 0 22px var(--green-glow); }
+        .skin-card .active-badge {
+            position:absolute; top:10px; right:10px; background:var(--green); color:#000;
+            font-size:0.65rem; padding:3px 8px; border-radius:20px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;
+        }
+        .empty-state {
+            text-align:center; padding:60px 20px; color:var(--text-muted);
+            background: rgba(255,255,255,0.02); border:1px dashed var(--border-light); border-radius:var(--radius);
+        }
+        .empty-state .es-icon { font-size:3rem; margin-bottom:12px; opacity:0.6; }
+        .empty-state .es-title { color:#fff; font-weight:700; font-size:1.1rem; margin-bottom:6px; }
+
+        /* ===== SKIN EDITOR ===== */
+        .editor-shell {
+            display:grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap:24px;
+            background: rgba(255,255,255,0.02);
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            border:1px solid var(--border-light); border-radius:var(--radius);
+            padding:24px; box-shadow:0 12px 40px rgba(0,0,0,0.5);
+        }
+        .editor-preview-col {
+            display:flex; flex-direction:column; align-items:center; gap:18px;
+            padding:16px; background: radial-gradient(circle at center, #0e1a0e 0%, #060a06 100%);
+            border-radius: var(--radius-sm); border:1px solid var(--border);
+        }
+        .preview-canvas-wrap {
+            position:relative; width:100%; max-width:340px; aspect-ratio:1/1;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .preview-canvas-wrap::before {
+            content:""; position:absolute; inset:-8px; border-radius:50%;
+            background: conic-gradient(from 0deg, var(--green), transparent 30%, var(--green) 60%, transparent 90%, var(--green));
+            opacity:0.18; filter:blur(20px); z-index:0; animation: spin 8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #previewCanvas { position:relative; z-index:1; width:100%; height:100%; border-radius:50%; image-rendering:auto; background: #050805; }
+        .preview-info { font-size:0.75rem; color: var(--text-muted); text-align:center; }
+        .preview-info b { color: var(--green-bright); }
+
+        .export-sizes-row { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+        .export-size-card {
+            display:flex; flex-direction:column; align-items:center; gap:6px;
+            padding:8px 10px; background: rgba(255,255,255,0.03); border:1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+        }
+        .export-size-card canvas { background:#050805; border-radius:50%; }
+        .export-size-card span { font-size:0.7rem; color:var(--text-muted); font-weight:600; letter-spacing:0.5px; }
+
+        .editor-controls-col { display:flex; flex-direction:column; gap:18px; }
+        .control-group {
+            background: rgba(255,255,255,0.02); border:1px solid var(--border-light);
+            border-radius: var(--radius-sm); padding:14px;
+        }
+        .control-group h4 { font-size:0.78rem; text-transform:uppercase; letter-spacing:1px; color: var(--green-bright); margin-bottom:12px; font-weight:700; }
+        .source-tabs { display:flex; gap:6px; margin-bottom:12px; }
+        .source-tab {
+            flex:1; padding:8px; border-radius: var(--radius-sm); font-size:0.75rem;
+            background: transparent; color: var(--text-muted); border:1px solid var(--border-light);
+            cursor:pointer; font-weight:600; font-family:inherit; transition: var(--transition);
+        }
+        .source-tab:hover { color:#c8e6c9; }
+        .source-tab.active { background: var(--green-dark); color:#fff; border-color: var(--green-dark); }
+        .source-panel { display:none; }
+        .source-panel.active { display:block; }
+        .url-row { display:flex; gap:8px; }
+        .url-row input { flex:1; }
+        .url-row button {
+            padding:0 14px; border-radius: var(--radius-sm); border:1px solid var(--green);
+            background: transparent; color: var(--green); font-weight:700; cursor:pointer; font-family:inherit; font-size:0.8rem;
+            white-space:nowrap;
+        }
+        .url-row button:hover { background: var(--green); color:#000; }
+
+        .slider-row { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+        .slider-row .slider-label { display:flex; justify-content:space-between; align-items:center; font-size:0.78rem; color: var(--text-muted); font-weight:600; }
+        .slider-row .slider-label b { color: var(--green-bright); font-weight:700; }
+        input[type=range] {
+            -webkit-appearance:none; appearance:none; width:100%; height:6px; background: #0d160d;
+            border-radius: 6px; border:1px solid var(--border-light); outline:none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%;
+            background: var(--green); border:2px solid #0a0f0a; cursor:pointer; box-shadow:0 0 10px var(--green-glow);
+        }
+        input[type=range]::-moz-range-thumb {
+            width:18px; height:18px; border-radius:50%;
+            background: var(--green); border:2px solid #0a0f0a; cursor:pointer;
+        }
+        .color-row { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+        .color-cell { display:flex; flex-direction:column; gap:6px; }
+        .color-cell label { font-size:0.75rem; color: var(--text-muted); font-weight:600; }
+        .color-cell-inputs { display:flex; gap:6px; align-items:center; }
+        .color-cell input[type=color] {
+            width:40px; height:40px; padding:2px; border:1px solid var(--border-light); border-radius: var(--radius-sm);
+            background: #0d160d; cursor:pointer;
+        }
+        .color-cell input[type=text] { flex:1; }
+        .switch-row { display:flex; align-items:center; gap:10px; font-size:0.8rem; color: var(--text-muted); margin-top:8px; }
+        .switch-row input { width:18px; height:18px; accent-color: var(--green); cursor:pointer; }
+
+        .editor-actions { display:flex; gap:10px; flex-wrap:wrap; }
+        .editor-actions .btn { flex:1; min-width:140px; }
+
+        .progress-bar { height:6px; width:100%; background:#0d160d; border-radius:6px; overflow:hidden; margin-top:8px; display:none; }
+        .progress-bar.active { display:block; }
+        .progress-bar-fill { height:100%; background: linear-gradient(90deg, var(--green-dark), var(--green-bright)); width:0%; transition: width 0.3s ease; }
+
+        @media (max-width: 850px) {
+            .editor-shell { grid-template-columns: 1fr; }
         }
 
         .admin-centered { max-width: 420px; margin: 0 auto; width: 100%; }
@@ -192,29 +335,44 @@
         .status-blocked { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
         .role-badge { font-weight: 600; color: var(--green-bright); }
         .role-badge.admin { color: #f59e0b; }
-        .btn-sm { padding: 5px 10px; font-size: 0.7rem; margin: 2px; border-radius: 8px; background: transparent; border: 1px solid var(--green); color: var(--green); cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; min-width: 30px; }
+        .btn-sm { padding: 5px 10px; font-size: 0.7rem; margin: 2px; border-radius: 8px; background: transparent; border: 1px solid var(--green); color: var(--green); cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; min-width: 30px; font-family: inherit; }
         .btn-sm:hover { background: var(--green); color: #000; }
         .btn-danger { border-color: var(--danger); color: var(--danger); }
         .btn-danger:hover { background: var(--danger); color: #fff; }
-        .btn-warning { border-color: #f59e0b; color: #f59e0b; }
-        .btn-warning:hover { background: #f59e0b; color: #000; }
+        .btn-warning { border-color: var(--warn); color: var(--warn); }
+        .btn-warning:hover { background: var(--warn); color: #000; }
 
         .footer { text-align:center; padding:16px 0; color:var(--text-muted); font-size:0.75rem; border-top:1px solid var(--border); margin-top:auto; }
         .toast {
             position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(120px);
             background:#1a2e1a; border:1px solid var(--green-dark); color:#c8e6c9; padding:12px 24px;
             border-radius:40px; font-weight:600; z-index:200; pointer-events:none; transition:0.35s;
-            box-shadow:0 8px 28px rgba(0,0,0,0.6);
+            box-shadow:0 8px 28px rgba(0,0,0,0.6); max-width: 90vw; text-align:center;
         }
         .toast.show { transform:translateX(-50%) translateY(0); }
         .toast.error { border-color:var(--danger); color:#fca5a5; background:#1e1515; }
+        .toast.warn { border-color: var(--warn); color: #fde68a; background:#1e1a10; }
+
+        /* Modal (for edit confirmations etc.) */
+        .modal-overlay {
+            position:fixed; inset:0; background:rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+            z-index:300; display:none; align-items:center; justify-content:center; padding:20px;
+        }
+        .modal-overlay.open { display:flex; }
+        .modal {
+            background: var(--bg-card); border:1px solid var(--border-light); border-radius: var(--radius);
+            padding: 24px; max-width: 420px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+        }
+        .modal h3 { margin-bottom:12px; color:#fff; }
+        .modal p { color: var(--text-muted); margin-bottom:18px; font-size:0.9rem; }
+        .modal-actions { display:flex; gap:10px; }
 
         @media (max-width:850px) { .section-header h2 { font-size:2.5rem; } }
         @media (max-width:480px) { .section-header h2 { font-size:2rem; } .logo-name { font-size:1.4rem; } .admin-centered { max-width: 100%; } .user-table { min-width: 400px; } }
     </style>
 </head>
 <body>
-    <!-- AUTH PAGE (hidden on auto-login) -->
+    <!-- AUTH PAGE -->
     <div id="authContainer" class="auth-container">
         <div id="loginForm">
             <h2>Sign In</h2>
@@ -222,7 +380,7 @@
             <div class="form-group"><label>Password</label><div class="password-wrapper"><input type="password" id="loginPass" placeholder="••••••"><button type="button" class="eye-toggle" onclick="togglePassword('loginPass', this)">👁️</button></div></div>
             <div class="remember-row"><input type="checkbox" id="rememberMe"> Remember me</div>
             <button class="btn" onclick="login()">Sign In</button>
-            <div class="auth-toggle">Don't have an account? <span onclick="showSignup()">Sign up</span></div>
+            <div class="auth-toggle">Don&apos;t have an account? <span onclick="showSignup()">Sign up</span></div>
         </div>
         <div id="signupForm" style="display:none;">
             <h2>Create Account</h2>
@@ -240,7 +398,14 @@
         <header class="header">
             <div class="logo-area" onclick="toggleUserMenu()">
                 <img id="headerLogo" class="logo-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E" alt="Logo">
-                <div class="user-dropdown" id="userDropdown"><button onclick="logout()">Logout</button></div>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="dd-user">
+                        <div class="name" id="ddUserName">User</div>
+                        <div class="email" id="ddUserEmail"></div>
+                    </div>
+                    <button onclick="navigateTo('myskins'); document.getElementById('userDropdown').classList.remove('open');">👤 My Skins</button>
+                    <button onclick="logout()">🚪 Logout</button>
+                </div>
             </div>
             <span class="logo-name">Dasgar</span>
             <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
@@ -251,33 +416,219 @@
             <nav class="drawer-nav">
                 <button class="drawer-link active" id="nav-home" onclick="navigateTo('home')">🏠 Home</button>
                 <button class="drawer-link" id="nav-skins" onclick="navigateTo('skins')">🎨 Skins</button>
+                <button class="drawer-link" id="nav-myskins" onclick="navigateTo('myskins')">👤 My Skins</button>
+                <button class="drawer-link" id="nav-create" onclick="navigateTo('create')">✨ Create Skin</button>
                 <button class="drawer-link" id="nav-about" onclick="navigateTo('about')">ℹ️ About</button>
                 <button class="drawer-link" id="nav-admin" onclick="navigateTo('admin')" style="display:none;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green-bright);"></span> Admin</button>
             </nav>
         </aside>
+
         <main class="main-content">
-            <section class="page active" id="page-home"><div class="page-name-indicator">Home</div><div class="section-header"><h2>Welcome</h2></div></section>
+            <!-- HOME -->
+            <section class="page active" id="page-home">
+                <div class="page-name-indicator">Home</div>
+                <div class="section-header">
+                    <h2>Welcome</h2>
+                    <p>Browse the skin catalog, design your own custom skin in the editor, and manage your personal collection.</p>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:24px;">
+                    <div class="skin-card" onclick="navigateTo('skins')">
+                        <div class="skin-circle-preview" style="background:linear-gradient(135deg,#4ade80,#166534);"></div>
+                        <div class="skin-name">Browse Catalog</div>
+                        <div class="skin-meta">All published skins</div>
+                    </div>
+                    <div class="skin-card" onclick="navigateTo('create')">
+                        <div class="skin-circle-preview" style="background:linear-gradient(135deg,#22c55e,#0e3d1d);"></div>
+                        <div class="skin-name">Create Skin</div>
+                        <div class="skin-meta">Custom editor</div>
+                    </div>
+                    <div class="skin-card" onclick="navigateTo('myskins')">
+                        <div class="skin-circle-preview" style="background:linear-gradient(135deg,#a3e635,#365314);"></div>
+                        <div class="skin-name">My Skins</div>
+                        <div class="skin-meta">Your library</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BROWSE SKINS -->
             <section class="page" id="page-skins">
-                <div class="page-name-indicator">Skins</div><div class="section-header"><h2>Choose Your Skin</h2></div>
+                <div class="page-name-indicator">Skins</div>
+                <div class="section-header"><h2>Skin Catalog</h2><p>Discover skins published by the Dasgar team.</p></div>
                 <div id="skinsCategoriesContainer"></div>
             </section>
-            <section class="page" id="page-about"><div class="page-name-indicator">About</div><div class="section-header"><h2>About</h2></div></section>
+
+            <!-- MY SKINS -->
+            <section class="page" id="page-myskins">
+                <div class="page-name-indicator">My Skins</div>
+                <div class="section-header">
+                    <h2>My Skin Library</h2>
+                    <p>Your personal saved skins. Activate the one you want to use, edit them, or remove old designs.</p>
+                </div>
+                <div style="display:flex;justify-content:center;margin-bottom:24px;">
+                    <button class="btn" style="max-width:280px;" onclick="navigateTo('create')">✨ Create New Skin</button>
+                </div>
+                <div id="mySkinsContainer"></div>
+            </section>
+
+            <!-- CREATE / EDIT SKIN -->
+            <section class="page" id="page-create">
+                <div class="page-name-indicator">Custom Skin Editor</div>
+                <div class="section-header">
+                    <h2 id="editorTitle">Create Skin</h2>
+                    <p>Upload an image or paste a URL, then customize border, background, zoom and position. Output is exported at 512, 256 and 128 pixels — circular cropped and optimized.</p>
+                </div>
+
+                <div class="editor-shell">
+                    <!-- LEFT: PREVIEW -->
+                    <div class="editor-preview-col">
+                        <div class="preview-canvas-wrap">
+                            <canvas id="previewCanvas" width="512" height="512" aria-label="Skin preview"></canvas>
+                        </div>
+                        <div class="preview-info">
+                            Live preview · Source: <b id="previewSourceInfo">No image loaded</b>
+                        </div>
+
+                        <div>
+                            <div class="preview-info" style="margin-bottom:8px;">Export sizes (auto-generated)</div>
+                            <div class="export-sizes-row">
+                                <div class="export-size-card"><canvas id="exp512" width="64" height="64"></canvas><span>512 px</span></div>
+                                <div class="export-size-card"><canvas id="exp256" width="56" height="56"></canvas><span>256 px</span></div>
+                                <div class="export-size-card"><canvas id="exp128" width="48" height="48"></canvas><span>128 px</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: CONTROLS -->
+                    <div class="editor-controls-col">
+                        <!-- Source -->
+                        <div class="control-group">
+                            <h4>1. Image Source</h4>
+                            <div class="source-tabs">
+                                <button type="button" class="source-tab active" data-source="file" onclick="SkinEditor.switchSource('file')">📁 File</button>
+                                <button type="button" class="source-tab" data-source="url" onclick="SkinEditor.switchSource('url')">🔗 URL</button>
+                            </div>
+                            <div class="source-panel active" data-panel="file">
+                                <div class="upload-zone" id="editorUploadZone">
+                                    <p style="font-size:0.85rem;">📁 Click or drop an image<br><span style="font-size:0.7rem;color:var(--text-muted);">PNG · JPG · WEBP · GIF — up to 8K+ resolution</span></p>
+                                    <input type="file" id="editorFileInput" accept="image/*">
+                                </div>
+                                <div class="progress-bar" id="editorProgress"><div class="progress-bar-fill" id="editorProgressFill"></div></div>
+                            </div>
+                            <div class="source-panel" data-panel="url">
+                                <div class="url-row">
+                                    <input type="text" id="editorUrlInput" placeholder="https://example.com/image.png">
+                                    <button type="button" onclick="SkinEditor.loadFromURL()">Load</button>
+                                </div>
+                                <p style="font-size:0.7rem;color:var(--text-muted);margin-top:6px;">URL must allow CORS, or the image cannot be processed.</p>
+                            </div>
+                        </div>
+
+                        <!-- Skin Info -->
+                        <div class="control-group">
+                            <h4>2. Skin Details</h4>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Skin Name</label>
+                                <input type="text" id="editorSkinName" placeholder="My Awesome Skin" maxlength="40">
+                            </div>
+                        </div>
+
+                        <!-- Adjustments -->
+                        <div class="control-group">
+                            <h4>3. Adjustments</h4>
+                            <div class="slider-row">
+                                <div class="slider-label"><span>Zoom</span><b id="lblZoom">1.00x</b></div>
+                                <input type="range" id="ctrlZoom" min="0.5" max="3" step="0.01" value="1">
+                            </div>
+                            <div class="slider-row">
+                                <div class="slider-label"><span>Position X</span><b id="lblOffX">0</b></div>
+                                <input type="range" id="ctrlOffX" min="-256" max="256" step="1" value="0">
+                            </div>
+                            <div class="slider-row">
+                                <div class="slider-label"><span>Position Y</span><b id="lblOffY">0</b></div>
+                                <input type="range" id="ctrlOffY" min="-256" max="256" step="1" value="0">
+                            </div>
+                            <button type="button" class="btn secondary" onclick="SkinEditor.resetAdjustments()">↺ Reset Adjustments</button>
+                        </div>
+
+                        <!-- Border + BG -->
+                        <div class="control-group">
+                            <h4>4. Border & Background</h4>
+                            <div class="slider-row">
+                                <div class="slider-label"><span>Border thickness</span><b id="lblBorder">0 px</b></div>
+                                <input type="range" id="ctrlBorder" min="0" max="40" step="1" value="0">
+                            </div>
+                            <div class="color-row">
+                                <div class="color-cell">
+                                    <label>Border color</label>
+                                    <div class="color-cell-inputs">
+                                        <input type="color" id="ctrlBorderColor" value="#4ade80">
+                                        <input type="text" id="ctrlBorderColorText" value="#4ade80" maxlength="7">
+                                    </div>
+                                </div>
+                                <div class="color-cell">
+                                    <label>Background</label>
+                                    <div class="color-cell-inputs">
+                                        <input type="color" id="ctrlBgColor" value="#0a0f0a">
+                                        <input type="text" id="ctrlBgColorText" value="#0a0f0a" maxlength="7">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="switch-row">
+                                <input type="checkbox" id="ctrlBgTransparent" checked>
+                                <label for="ctrlBgTransparent">Transparent background</label>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="editor-actions">
+                            <button class="btn secondary" type="button" onclick="SkinEditor.downloadPNG()">⬇️ Download PNG</button>
+                            <button class="btn" type="button" onclick="SkinEditor.saveSkin()">💾 Save to My Skins</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ABOUT -->
+            <section class="page" id="page-about">
+                <div class="page-name-indicator">About</div>
+                <div class="section-header">
+                    <h2>About</h2>
+                    <p>Dasgar is a community-driven gaming hub featuring a full custom-skin design and management ecosystem. Build skins from any image, save them to your account, and apply them whenever you want.</p>
+                </div>
+            </section>
+
+            <!-- ADMIN -->
             <section class="page" id="page-admin">
-                <div class="page-name-indicator">Admin</div><div class="section-header"><h2>Admin Panel</h2></div>
+                <div class="page-name-indicator">Admin</div>
+                <div class="section-header"><h2>Admin Panel</h2></div>
                 <div class="admin-centered">
                     <div class="admin-panel"><h3 style="text-align:center;">👥 User Management</h3><div class="user-table-wrapper" id="userTableContainer"></div></div>
                     <div class="admin-panel">
-                        <h3 style="text-align:center;">🎨 Skin Manager</h3>
+                        <h3 style="text-align:center;">🎨 Catalog Skin Manager</h3>
                         <div style="display:flex;flex-direction:column;gap:20px;">
                             <div>
-                                <h4 style="text-align:center;">Add New Skin</h4>
+                                <h4 style="text-align:center;">Add New Catalog Skin</h4>
                                 <div class="form-group"><label>Skin Name</label><input type="text" id="skinName" placeholder="e.g. Emerald Blob" maxlength="30"></div>
-                                <div class="form-group"><label>Category</label><select id="skinCategory"><option value="free skins">Free Skins</option><option value="vip skins">VIP Skins</option><option value="exclusive skins">Exclusive Skins</option><option value="premium skins">Premium Skins</option><option value="custom skins">Custom Skins</option><option value="mystery skins">Mystery Skins</option><option value="golden pass skins">Golden Pass Skins</option><option value="adventure skins">Adventure Skins</option><option value="veteran skins">Veteran Skins</option><option value="quest skins">Quest Skins</option><option value="youtuber skins">Youtuber Skins</option><option value="pokemon skins">Pokemon Skins</option><option value="thunderbirds skins">Thunderbirds Skins</option></select></div>
-                                <div class="form-group"><label>Upload Image (optional)</label><div class="upload-zone" id="uploadZone"><p>📁 Click or drag & drop an image</p><input type="file" id="fileInput" accept="image/*"></div><div class="logo-preview" id="uploadPreview" style="display:none;"></div></div>
+                                <div class="form-group"><label>Category</label><select id="skinCategory">
+                                    <option value="free skins">Free Skins</option>
+                                    <option value="vip skins">VIP Skins</option>
+                                    <option value="exclusive skins">Exclusive Skins</option>
+                                    <option value="premium skins">Premium Skins</option>
+                                    <option value="custom skins">Custom Skins</option>
+                                    <option value="mystery skins">Mystery Skins</option>
+                                    <option value="golden pass skins">Golden Pass Skins</option>
+                                    <option value="adventure skins">Adventure Skins</option>
+                                    <option value="veteran skins">Veteran Skins</option>
+                                    <option value="quest skins">Quest Skins</option>
+                                    <option value="youtuber skins">Youtuber Skins</option>
+                                    <option value="pokemon skins">Pokemon Skins</option>
+                                    <option value="thunderbirds skins">Thunderbirds Skins</option>
+                                </select></div>
+                                <div class="form-group"><label>Upload Image (optional)</label><div class="upload-zone" id="uploadZone"><p>📁 Click or drag &amp; drop an image</p><input type="file" id="fileInput" accept="image/*"></div><div class="logo-preview" id="uploadPreview" style="display:none;"></div></div>
                                 <div class="form-group"><label>Or Pick Color</label><input type="color" id="skinColor" value="#4ade80"></div>
                                 <button class="btn" onclick="addSkin()">💾 Save Skin</button>
                             </div>
-                            <div><h4 style="text-align:center;">Existing Skins</h4><div id="adminSkinsList"></div></div>
+                            <div><h4 style="text-align:center;">Existing Catalog Skins</h4><div id="adminSkinsList"></div></div>
                         </div>
                     </div>
                 </div>
@@ -285,140 +636,877 @@
         </main>
         <footer class="footer">Dasgar &copy; 2024</footer>
     </div>
+
+    <!-- Toast + Modal -->
     <div class="toast" id="toast"></div>
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h3 id="modalTitle">Confirm</h3>
+            <p id="modalMessage">Are you sure?</p>
+            <div class="modal-actions">
+                <button class="btn secondary" id="modalCancel">Cancel</button>
+                <button class="btn" id="modalConfirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // PWA setup
-            function generateIcon() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 192; const ctx = canvas.getContext('2d'); ctx.beginPath(); ctx.arc(96, 96, 80, 0, Math.PI*2); ctx.fillStyle = '#4ade80'; ctx.fill(); ctx.shadowColor = '#000'; ctx.shadowBlur = 20; ctx.fill(); ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(70, 70, 20, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill(); return canvas.toDataURL('image/png'); }
-            function registerServiceWorker() { if ('serviceWorker' in navigator) { const swCode = `const CACHE_NAME='dasgar-cache-v1';self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll([self.location.href])).then(()=>self.skipWaiting())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`; navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode],{type:'application/javascript'}))).catch(()=>{}); } }
-            function setupManifest() { const manifest = {name:'Dasgar',short_name:'Dasgar',start_url:window.location.href,display:'standalone',background_color:'#0a0f0a',theme_color:'#0a0f0a',icons:[{src:generateIcon(),sizes:'192x192',type:'image/png'}]}; document.getElementById('manifest-link').href = URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/json'})); }
-            setupManifest(); registerServiceWorker();
-
-            window.togglePassword = function(inputId, btn) { const input = document.getElementById(inputId); if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; } else { input.type = 'password'; btn.textContent = '👁️'; } };
-
-            const USERS_KEY = 'site_users_v2', SKINS_KEY = 'agarskins_data_v2', ADMIN_EMAIL = 'dasgari769@gmail.com';
-            const REMEMBER_KEY = 'remembered_user_id';
-            let currentUser = null, signupLogoData = null, uploadedSkinImage = null;
-            const CATEGORIES = ['free skins','vip skins','exclusive skins','premium skins','custom skins','mystery skins','golden pass skins','adventure skins','veteran skins','quest skins','youtuber skins','pokemon skins','thunderbirds skins'];
-
-            function migrateEmailsToLowercase() { const users = getUsers(); let changed = false; users.forEach(u => { if (u.email !== u.email.toLowerCase()) { u.email = u.email.toLowerCase(); changed = true; } }); if (changed) saveUsers(users); }
-            function showToast(msg, type='') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + type + ' show'; clearTimeout(t._time); t._time = setTimeout(() => t.classList.remove('show'), 2500); }
-            function getUsers() { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch(e) { return []; } }
-            function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
-
-            migrateEmailsToLowercase();
-
-            window.showSignup = () => { document.getElementById('loginForm').style.display='none'; document.getElementById('signupForm').style.display='block'; };
-            window.showLogin = () => { document.getElementById('signupForm').style.display='none'; document.getElementById('loginForm').style.display='block'; };
-
-            document.getElementById('signupLogoFile').addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 100; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 100, 100); signupLogoData = canvas.toDataURL('image/png'); document.getElementById('signupLogoPreview').style.backgroundImage = `url(${signupLogoData})`; document.getElementById('signupLogoPreview').style.display = 'block'; }; img.src = e.target.result; }; reader.readAsDataURL(file); });
-
-            // ---- all functions defined before any calls ----
-            window.login = function() {
-                const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-                const pass = document.getElementById('loginPass').value;
-                const users = getUsers();
-                const user = users.find(u => u.email === email);
-                if (!user) return showToast('User not found', 'error');
-                if (user.blocked) return showToast('Account blocked', 'error');
-                if (user.password !== pass) return showToast('Wrong password', 'error');
-                currentUser = user;
-                if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, user.id);
-                else localStorage.removeItem(REMEMBER_KEY);
-                showApp();
-            };
-            window.signup = function() {
-                const username = document.getElementById('signupUsername').value.trim();
-                const email = document.getElementById('signupEmail').value.trim().toLowerCase();
-                const pass = document.getElementById('signupPass').value;
-                if (!username || !email || !pass) return showToast('All fields required', 'error');
-                const users = getUsers();
-                if (users.find(u => u.email === email)) return showToast('Email already used', 'error');
-                const newUser = { id: Date.now().toString(), username, email, password: pass, logo: signupLogoData || '', role: (email === ADMIN_EMAIL ? 'admin' : 'user'), blocked: false };
-                users.push(newUser); saveUsers(users); currentUser = newUser;
-                if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, newUser.id);
-                else localStorage.removeItem(REMEMBER_KEY);
-                showApp();
-            };
-            window.logout = function() {
-                currentUser = null;
-                localStorage.removeItem(REMEMBER_KEY);
-                document.getElementById('mainApp').style.display = 'none';
-                document.getElementById('authContainer').style.display = 'block';
-                document.body.style.display = 'flex';
-                document.getElementById('loginEmail').value = ''; document.getElementById('loginPass').value = '';
-                hideAllPages();
-                document.getElementById('userDropdown').classList.remove('open');
-            };
-
-            function showApp() {
-                document.getElementById('authContainer').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'flex';
-                document.body.style.display = 'block';
-                document.getElementById('headerLogo').src = currentUser.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E";
-                if (currentUser.email === ADMIN_EMAIL) document.getElementById('nav-admin').style.display='flex';
-                else document.getElementById('nav-admin').style.display='none';
-                navigateTo('home');
+    document.addEventListener('DOMContentLoaded', function() {
+        /* =========================================================
+         *  PWA + UTIL SETUP
+         * ========================================================= */
+        function generateIcon() {
+            const canvas = document.createElement('canvas'); canvas.width = canvas.height = 192;
+            const ctx = canvas.getContext('2d');
+            ctx.beginPath(); ctx.arc(96, 96, 80, 0, Math.PI*2); ctx.fillStyle = '#4ade80'; ctx.fill();
+            ctx.shadowColor = '#000'; ctx.shadowBlur = 20; ctx.fill(); ctx.shadowBlur = 0;
+            ctx.beginPath(); ctx.arc(70, 70, 20, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill();
+            return canvas.toDataURL('image/png');
+        }
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                const swCode = `const CACHE_NAME='dasgar-cache-v2';self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll([self.location.href])).then(()=>self.skipWaiting())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+                navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode],{type:'application/javascript'}))).catch(()=>{});
             }
+        }
+        function setupManifest() {
+            const manifest = {name:'Dasgar',short_name:'Dasgar',start_url:window.location.href,display:'standalone',background_color:'#0a0f0a',theme_color:'#0a0f0a',icons:[{src:generateIcon(),sizes:'192x192',type:'image/png'}]};
+            document.getElementById('manifest-link').href = URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/json'}));
+        }
+        setupManifest(); registerServiceWorker();
 
-            function hideAllPages() { ['home','skins','about','admin'].forEach(p => { document.getElementById('page-'+p).classList.remove('active'); document.getElementById('nav-'+p).classList.remove('active'); }); }
-            window.navigateTo = function(page) { hideAllPages(); document.getElementById('page-'+page).classList.add('active'); document.getElementById('nav-'+page).classList.add('active'); if (page === 'admin') renderAdminPage(); else if (page === 'skins') renderSkinsPage(); window.scrollTo(0,0); };
+        window.togglePassword = function(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+            else { input.type = 'password'; btn.textContent = '👁️'; }
+        };
 
-            window.toggleUserMenu = function() { document.getElementById('userDropdown').classList.toggle('open'); };
-            document.addEventListener('click', function(e) { const logo = document.querySelector('.logo-area'), dropdown = document.getElementById('userDropdown'); if (logo && dropdown && !logo.contains(e.target) && dropdown.classList.contains('open')) dropdown.classList.remove('open'); });
+        function showToast(msg, type='') {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.className = 'toast ' + type + ' show';
+            clearTimeout(t._time); t._time = setTimeout(() => t.classList.remove('show'), 2800);
+        }
 
-            const $menuToggle = document.getElementById('menuToggle'), $drawerOverlay = document.getElementById('drawerOverlay'), $drawerPanel = document.getElementById('drawerPanel');
-            function openPanel() { $drawerPanel.classList.add('open'); $drawerOverlay.classList.add('open'); }
-            function closePanel() { $drawerPanel.classList.remove('open'); $drawerOverlay.classList.remove('open'); }
-            $menuToggle.addEventListener('click', () => $drawerPanel.classList.contains('open') ? closePanel() : openPanel());
-            document.getElementById('drawerClose').addEventListener('click', closePanel);
-            $drawerOverlay.addEventListener('click', closePanel);
-            document.querySelectorAll('.drawer-link').forEach(link => link.addEventListener('click', closePanel));
+        function confirmDialog({ title='Confirm', message='Are you sure?', confirmText='Confirm', danger=false }) {
+            return new Promise(resolve => {
+                const overlay = document.getElementById('modalOverlay');
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modalMessage').textContent = message;
+                const btnConfirm = document.getElementById('modalConfirm');
+                const btnCancel = document.getElementById('modalCancel');
+                btnConfirm.textContent = confirmText;
+                btnConfirm.className = 'btn' + (danger ? ' danger-outline' : '');
+                overlay.classList.add('open');
+                const cleanup = (val) => { overlay.classList.remove('open'); btnConfirm.onclick = null; btnCancel.onclick = null; resolve(val); };
+                btnConfirm.onclick = () => cleanup(true);
+                btnCancel.onclick = () => cleanup(false);
+            });
+        }
 
-            // Skins logic
-            let skins = [];
-            function loadSkins() { try { skins = JSON.parse(localStorage.getItem(SKINS_KEY)) || []; skins = skins.map(s => ({ ...s, category: s.category || 'free skins' })); } catch(e) { skins = []; } }
-            function saveSkins() { localStorage.setItem(SKINS_KEY, JSON.stringify(skins)); }
+        /* =========================================================
+         *  AUTH (existing, lightly extended)
+         * ========================================================= */
+        const USERS_KEY = 'site_users_v2';
+        const SKINS_KEY = 'agarskins_data_v2';        // Catalog (admin-managed) skins
+        const ADMIN_EMAIL = 'dasgari769@gmail.com';
+        const REMEMBER_KEY = 'remembered_user_id';
+        const CATEGORIES = ['free skins','vip skins','exclusive skins','premium skins','custom skins','mystery skins','golden pass skins','adventure skins','veteran skins','quest skins','youtuber skins','pokemon skins','thunderbirds skins'];
 
-            function renderSkinsPage() { const container = document.getElementById('skinsCategoriesContainer'); if (!container) return; loadSkins(); container.innerHTML = ''; const grouped = {}; CATEGORIES.forEach(cat => grouped[cat] = []); skins.forEach(skin => { if (!grouped[skin.category]) grouped[skin.category] = []; grouped[skin.category].push(skin); }); CATEGORIES.forEach(cat => { const skinsInCat = grouped[cat] || []; if (skinsInCat.length === 0) return; const section = document.createElement('div'); section.className = 'category-section'; const title = document.createElement('div'); title.className = 'category-title'; title.textContent = cat.toUpperCase(); section.appendChild(title); const grid = document.createElement('div'); grid.className = 'skins-grid'; skinsInCat.forEach(skin => { const card = document.createElement('div'); card.className = 'skin-card'; let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`; card.innerHTML = `<div class="skin-blob-preview" style="background:${bg};"></div><div class="skin-name">${skin.name}</div>`; grid.appendChild(card); }); section.appendChild(grid); container.appendChild(section); }); if (skins.length === 0) { container.innerHTML = '<p style="text-align:center;color:var(--text-muted);">No skins yet.</p>'; } }
+        let currentUser = null, signupLogoData = null, uploadedSkinImage = null;
 
-            window.addSkin = function() { const name = document.getElementById('skinName').value.trim(); if (!name) return showToast('Enter a skin name', 'error'); const category = document.getElementById('skinCategory').value; const color = document.getElementById('skinColor').value; const imageData = uploadedSkinImage; const newSkin = { id: 'sk_' + Date.now(), name, category, color, imageData: imageData || null, type: imageData ? 'image' : 'color' }; skins.push(newSkin); saveSkins(); renderAdminSkinsList(); document.getElementById('skinName').value = ''; document.getElementById('skinCategory').value = 'free skins'; document.getElementById('uploadPreview').style.display = 'none'; uploadedSkinImage = null; showToast('Skin added!'); };
-            document.getElementById('fileInput').addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 200; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 200, 200); uploadedSkinImage = canvas.toDataURL('image/png'); document.getElementById('uploadPreview').style.backgroundImage = `url(${uploadedSkinImage})`; document.getElementById('uploadPreview').style.display = 'block'; }; img.src = e.target.result; }; reader.readAsDataURL(file); });
-            function renderAdminSkinsList() { const container = document.getElementById('adminSkinsList'); if (!container) return; container.innerHTML = skins.length ? '' : '<p>No skins.</p>'; skins.forEach(skin => { const div = document.createElement('div'); div.className = 'skin-card'; div.style.flexDirection = 'row'; div.style.justifyContent = 'space-between'; let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`; div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><div class="skin-blob-preview" style="width:40px;height:40px;background:${bg};"></div><span>${skin.name} <small style="color:var(--text-muted);">(${skin.category})</small></span></div><button class="btn-sm btn-danger" onclick="deleteSkin('${skin.id}')">🗑</button>`; container.appendChild(div); }); }
-            window.deleteSkin = function(id) { skins = skins.filter(s => s.id !== id); saveSkins(); renderAdminSkinsList(); };
+        function getUsers() { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch(e) { return []; } }
+        function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+        function migrateEmailsToLowercase() { const users = getUsers(); let changed = false; users.forEach(u => { if (u.email !== u.email.toLowerCase()) { u.email = u.email.toLowerCase(); changed = true; } }); if (changed) saveUsers(users); }
+        migrateEmailsToLowercase();
 
-            function renderAdminPage() {
-                if (!currentUser || currentUser.email !== ADMIN_EMAIL) { document.getElementById('userTableContainer').innerHTML = '<p>Access denied.</p>'; document.getElementById('adminSkinsList').innerHTML = ''; return; }
-                const users = getUsers();
-                let html = `<table class="user-table"><thead><tr><th>Logo</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody>`;
-                users.forEach(u => { html += `<tr><td><img src="${u.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E'}" class="user-avatar"></td><td>${u.username}</td><td>${u.email}</td><td><span class="role-badge ${u.role==='admin'?'admin':''}">${u.role}</span></td><td><span class="status-badge ${u.blocked?'status-blocked':'status-active'}">${u.blocked ? '🚫 Blocked' : '✅ Active'}</span></td><td><button class="btn-sm" onclick="renameUser('${u.id}')" title="Rename">✏️</button><button class="btn-sm" onclick="changePass('${u.id}')" title="Password">🔑</button><button class="btn-sm ${u.role==='admin'?'btn-warning':''}" onclick="toggleAdmin('${u.id}')" title="Toggle admin">${u.role==='admin'?'⬇️':'⬆️'}</button><button class="btn-sm btn-danger" onclick="toggleBlock('${u.id}')" title="${u.blocked?'Unblock':'Block'}">${u.blocked?'🔓':'🔒'}</button><button class="btn-sm btn-danger" onclick="deleteUser('${u.id}')" title="Delete">🗑</button></td></tr>`; });
-                html += '</tbody></table>'; document.getElementById('userTableContainer').innerHTML = html;
-                loadSkins(); renderAdminSkinsList();
+        function persistCurrentUser() {
+            if (!currentUser) return;
+            const users = getUsers();
+            const idx = users.findIndex(u => u.id === currentUser.id);
+            if (idx >= 0) { users[idx] = currentUser; saveUsers(users); }
+        }
+
+        window.showSignup = () => { document.getElementById('loginForm').style.display='none'; document.getElementById('signupForm').style.display='block'; };
+        window.showLogin  = () => { document.getElementById('signupForm').style.display='none'; document.getElementById('loginForm').style.display='block'; };
+
+        document.getElementById('signupLogoFile').addEventListener('change', function(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    const c = document.createElement('canvas'); c.width = c.height = 100;
+                    const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, 100, 100);
+                    signupLogoData = c.toDataURL('image/png');
+                    document.getElementById('signupLogoPreview').style.backgroundImage = `url(${signupLogoData})`;
+                    document.getElementById('signupLogoPreview').style.display = 'block';
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        window.login = function() {
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const pass  = document.getElementById('loginPass').value;
+            const users = getUsers();
+            const user  = users.find(u => u.email === email);
+            if (!user) return showToast('User not found', 'error');
+            if (user.blocked) return showToast('Account blocked', 'error');
+            if (user.password !== pass) return showToast('Wrong password', 'error');
+            currentUser = user;
+            if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, user.id);
+            else localStorage.removeItem(REMEMBER_KEY);
+            showApp();
+        };
+
+        window.signup = function() {
+            const username = document.getElementById('signupUsername').value.trim();
+            const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+            const pass  = document.getElementById('signupPass').value;
+            if (!username || !email || !pass) return showToast('All fields required', 'error');
+            const users = getUsers();
+            if (users.find(u => u.email === email)) return showToast('Email already used', 'error');
+            const newUser = { id: Date.now().toString(), username, email, password: pass, logo: signupLogoData || '', role: (email === ADMIN_EMAIL ? 'admin' : 'user'), blocked: false, activeSkinId: null };
+            users.push(newUser); saveUsers(users); currentUser = newUser;
+            if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, newUser.id);
+            else localStorage.removeItem(REMEMBER_KEY);
+            showApp();
+        };
+
+        window.logout = function() {
+            currentUser = null;
+            localStorage.removeItem(REMEMBER_KEY);
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('authContainer').style.display = 'block';
+            document.body.style.display = 'flex';
+            document.getElementById('loginEmail').value = ''; document.getElementById('loginPass').value = '';
+            hideAllPages();
+            document.getElementById('userDropdown').classList.remove('open');
+        };
+
+        function showApp() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'flex';
+            document.body.style.display = 'block';
+            document.getElementById('headerLogo').src = currentUser.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E";
+            document.getElementById('ddUserName').textContent = currentUser.username || 'User';
+            document.getElementById('ddUserEmail').textContent = currentUser.email || '';
+            document.getElementById('nav-admin').style.display = (currentUser.email === ADMIN_EMAIL) ? 'flex' : 'none';
+            navigateTo('home');
+        }
+
+        const PAGES = ['home','skins','myskins','create','about','admin'];
+        function hideAllPages() {
+            PAGES.forEach(p => {
+                const pageEl = document.getElementById('page-'+p);
+                const navEl  = document.getElementById('nav-'+p);
+                if (pageEl) pageEl.classList.remove('active');
+                if (navEl)  navEl.classList.remove('active');
+            });
+        }
+        window.navigateTo = function(page) {
+            hideAllPages();
+            document.getElementById('page-'+page).classList.add('active');
+            const navEl = document.getElementById('nav-'+page);
+            if (navEl) navEl.classList.add('active');
+            if      (page === 'admin')   renderAdminPage();
+            else if (page === 'skins')   renderSkinsPage();
+            else if (page === 'myskins') SkinLibrary.render();
+            else if (page === 'create')  SkinEditor.onPageEnter();
+            window.scrollTo(0,0);
+        };
+
+        window.toggleUserMenu = function() { document.getElementById('userDropdown').classList.toggle('open'); };
+        document.addEventListener('click', function(e) {
+            const logo = document.querySelector('.logo-area'), dropdown = document.getElementById('userDropdown');
+            if (logo && dropdown && !logo.contains(e.target) && dropdown.classList.contains('open')) dropdown.classList.remove('open');
+        });
+
+        const $menuToggle = document.getElementById('menuToggle'),
+              $drawerOverlay = document.getElementById('drawerOverlay'),
+              $drawerPanel = document.getElementById('drawerPanel');
+        function openPanel() { $drawerPanel.classList.add('open'); $drawerOverlay.classList.add('open'); }
+        function closePanel() { $drawerPanel.classList.remove('open'); $drawerOverlay.classList.remove('open'); }
+        $menuToggle.addEventListener('click', () => $drawerPanel.classList.contains('open') ? closePanel() : openPanel());
+        document.getElementById('drawerClose').addEventListener('click', closePanel);
+        $drawerOverlay.addEventListener('click', closePanel);
+        document.querySelectorAll('.drawer-link').forEach(link => link.addEventListener('click', closePanel));
+
+        /* =========================================================
+         *  CATALOG SKINS (existing admin-managed catalog)
+         * ========================================================= */
+        let catalogSkins = [];
+        function loadCatalog() { try { catalogSkins = JSON.parse(localStorage.getItem(SKINS_KEY)) || []; catalogSkins = catalogSkins.map(s => ({ ...s, category: s.category || 'free skins' })); } catch(e) { catalogSkins = []; } }
+        function saveCatalog() { localStorage.setItem(SKINS_KEY, JSON.stringify(catalogSkins)); }
+
+        function renderSkinsPage() {
+            const container = document.getElementById('skinsCategoriesContainer'); if (!container) return;
+            loadCatalog(); container.innerHTML = '';
+            const grouped = {}; CATEGORIES.forEach(cat => grouped[cat] = []);
+            catalogSkins.forEach(s => { if (!grouped[s.category]) grouped[s.category] = []; grouped[s.category].push(s); });
+            let any = false;
+            CATEGORIES.forEach(cat => {
+                const list = grouped[cat] || []; if (!list.length) return; any = true;
+                const section = document.createElement('div'); section.className = 'category-section';
+                const title = document.createElement('div'); title.className = 'category-title'; title.textContent = cat.toUpperCase();
+                section.appendChild(title);
+                const grid = document.createElement('div'); grid.className = 'skins-grid';
+                list.forEach(skin => {
+                    const card = document.createElement('div'); card.className = 'skin-card';
+                    let bg = skin.color || '#4ade80';
+                    if (skin.imageData) bg = `url(${skin.imageData}) center/cover`;
+                    card.innerHTML = `<div class="skin-blob-preview" style="background:${bg};"></div><div class="skin-name">${escapeHTML(skin.name)}</div>`;
+                    grid.appendChild(card);
+                });
+                section.appendChild(grid); container.appendChild(section);
+            });
+            if (!any) container.innerHTML = '<div class="empty-state"><div class="es-icon">🎨</div><div class="es-title">No catalog skins yet</div><div>Catalog skins are added by admins and shown here for everyone.</div></div>';
+        }
+
+        window.addSkin = function() {
+            const name = document.getElementById('skinName').value.trim();
+            if (!name) return showToast('Enter a skin name', 'error');
+            const category = document.getElementById('skinCategory').value;
+            const color = document.getElementById('skinColor').value;
+            const imageData = uploadedSkinImage;
+            const newSkin = { id: 'sk_' + Date.now(), name, category, color, imageData: imageData || null, type: imageData ? 'image' : 'color' };
+            catalogSkins.push(newSkin); saveCatalog(); renderAdminSkinsList();
+            document.getElementById('skinName').value = '';
+            document.getElementById('skinCategory').value = 'free skins';
+            document.getElementById('uploadPreview').style.display = 'none';
+            uploadedSkinImage = null;
+            showToast('Skin added!');
+        };
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    const c = document.createElement('canvas'); c.width = c.height = 200;
+                    const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, 200, 200);
+                    uploadedSkinImage = c.toDataURL('image/png');
+                    document.getElementById('uploadPreview').style.backgroundImage = `url(${uploadedSkinImage})`;
+                    document.getElementById('uploadPreview').style.display = 'block';
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+        function renderAdminSkinsList() {
+            const container = document.getElementById('adminSkinsList'); if (!container) return;
+            container.innerHTML = catalogSkins.length ? '' : '<p style="text-align:center;color:var(--text-muted);">No skins.</p>';
+            catalogSkins.forEach(skin => {
+                const div = document.createElement('div'); div.className = 'skin-card';
+                div.style.flexDirection = 'row'; div.style.justifyContent = 'space-between';
+                let bg = skin.color || '#4ade80';
+                if (skin.imageData) bg = `url(${skin.imageData}) center/cover`;
+                div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><div class="skin-blob-preview" style="width:40px;height:40px;background:${bg};"></div><span>${escapeHTML(skin.name)} <small style="color:var(--text-muted);">(${skin.category})</small></span></div><button class="btn-sm btn-danger" onclick="deleteCatalogSkin('${skin.id}')">🗑</button>`;
+                container.appendChild(div);
+            });
+        }
+        window.deleteCatalogSkin = function(id) { catalogSkins = catalogSkins.filter(s => s.id !== id); saveCatalog(); renderAdminSkinsList(); };
+        window.deleteSkin = window.deleteCatalogSkin; // backward compat
+
+        function renderAdminPage() {
+            if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+                document.getElementById('userTableContainer').innerHTML = '<p style="text-align:center;color:var(--text-muted);">Access denied.</p>';
+                document.getElementById('adminSkinsList').innerHTML = '';
+                return;
             }
+            const users = getUsers();
+            let html = `<table class="user-table"><thead><tr><th>Logo</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody>`;
+            users.forEach(u => {
+                html += `<tr><td><img src="${u.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E'}" class="user-avatar"></td><td>${escapeHTML(u.username)}</td><td>${escapeHTML(u.email)}</td><td><span class="role-badge ${u.role==='admin'?'admin':''}">${u.role}</span></td><td><span class="status-badge ${u.blocked?'status-blocked':'status-active'}">${u.blocked ? '🚫 Blocked' : '✅ Active'}</span></td><td><button class="btn-sm" onclick="renameUser('${u.id}')" title="Rename">✏️</button><button class="btn-sm" onclick="changePass('${u.id}')" title="Password">🔑</button><button class="btn-sm ${u.role==='admin'?'btn-warning':''}" onclick="toggleAdmin('${u.id}')" title="Toggle admin">${u.role==='admin'?'⬇️':'⬆️'}</button><button class="btn-sm btn-danger" onclick="toggleBlock('${u.id}')" title="${u.blocked?'Unblock':'Block'}">${u.blocked?'🔓':'🔒'}</button><button class="btn-sm btn-danger" onclick="deleteUser('${u.id}')" title="Delete">🗑</button></td></tr>`;
+            });
+            html += '</tbody></table>';
+            document.getElementById('userTableContainer').innerHTML = html;
+            loadCatalog(); renderAdminSkinsList();
+        }
+        window.renameUser  = function(id) { const name = prompt('New username:'); if (name) { const users = getUsers(); const u = users.find(x => x.id === id); if (u) { u.username = name; saveUsers(users); renderAdminPage(); } } };
+        window.changePass  = function(id) { const pass = prompt('New password:'); if (pass) { const users = getUsers(); const u = users.find(x => x.id === id); if (u) { u.password = pass; saveUsers(users); renderAdminPage(); } } };
+        window.toggleAdmin = function(id) { const users = getUsers(); const u = users.find(x => x.id === id); if (u) { u.role = u.role === 'admin' ? 'user' : 'admin'; saveUsers(users); renderAdminPage(); } };
+        window.toggleBlock = function(id) { const users = getUsers(); const u = users.find(x => x.id === id); if (u) { u.blocked = !u.blocked; saveUsers(users); renderAdminPage(); } };
+        window.deleteUser  = function(id) { if (confirm('Delete user permanently?')) { let users = getUsers(); users = users.filter(u => u.id !== id); saveUsers(users); renderAdminPage(); } };
 
-            window.renameUser = function(id) { const name = prompt('New username:'); if (name) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.username = name; saveUsers(users); renderAdminPage(); } } };
-            window.changePass = function(id) { const pass = prompt('New password:'); if (pass) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.password = pass; saveUsers(users); renderAdminPage(); } } };
-            window.toggleAdmin = function(id) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.role = user.role === 'admin' ? 'user' : 'admin'; saveUsers(users); renderAdminPage(); } };
-            window.toggleBlock = function(id) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.blocked = !user.blocked; saveUsers(users); renderAdminPage(); } };
-            window.deleteUser = function(id) { if (confirm('Delete user permanently?')) { let users = getUsers(); users = users.filter(u => u.id !== id); saveUsers(users); renderAdminPage(); } };
+        function escapeHTML(str) { return String(str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-            loadSkins();
+        /* =========================================================
+         *  SKIN STORAGE — modular, async, API-ready
+         *  ---------------------------------------------------------
+         *  Drop-in replacement for a remote backend:
+         *  Just swap each method body with a `fetch()` call. The
+         *  signatures already mirror REST conventions:
+         *
+         *    GET    /api/users/:userId/skins
+         *    POST   /api/users/:userId/skins
+         *    PUT    /api/users/:userId/skins/:skinId
+         *    DELETE /api/users/:userId/skins/:skinId
+         *    POST   /api/users/:userId/skins/active  { skinId }
+         * ========================================================= */
+        const SkinStorage = {
+            KEY_PREFIX: 'user_skins_v1_',
 
-            // ---- Auto-login now at the very end, after all functions are defined ----
-            (function autoLogin() {
-                const rememberedId = localStorage.getItem(REMEMBER_KEY);
-                if (rememberedId) {
-                    const users = getUsers();
-                    const user = users.find(u => u.id === rememberedId && !u.blocked);
-                    if (user) {
-                        currentUser = user;
-                        showApp();
+            async list(userId) {
+                // BACKEND: return fetch(`/api/users/${userId}/skins`, { credentials:'include' }).then(r => r.json());
+                try {
+                    const raw = localStorage.getItem(this.KEY_PREFIX + userId);
+                    return raw ? JSON.parse(raw) : [];
+                } catch(e) { return []; }
+            },
+
+            async save(userId, skin) {
+                // BACKEND:
+                //   const method = skin.id ? 'PUT' : 'POST';
+                //   const url = skin.id ? `/api/users/${userId}/skins/${skin.id}` : `/api/users/${userId}/skins`;
+                //   return fetch(url, { method, credentials:'include', headers:{'Content-Type':'application/json'}, body: JSON.stringify(skin) }).then(r => r.json());
+                const all = await this.list(userId);
+                if (!skin.id) skin.id = 'usk_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+                const idx = all.findIndex(s => s.id === skin.id);
+                skin.updatedAt = Date.now();
+                if (idx >= 0) all[idx] = { ...all[idx], ...skin };
+                else { skin.createdAt = Date.now(); all.push(skin); }
+                this._persist(userId, all);
+                return skin;
+            },
+
+            async delete(userId, skinId) {
+                // BACKEND: return fetch(`/api/users/${userId}/skins/${skinId}`, { method:'DELETE', credentials:'include' });
+                const all = await this.list(userId);
+                const filtered = all.filter(s => s.id !== skinId);
+                this._persist(userId, filtered);
+                return true;
+            },
+
+            async get(userId, skinId) {
+                const all = await this.list(userId);
+                return all.find(s => s.id === skinId) || null;
+            },
+
+            async setActive(userId, skinId) {
+                // BACKEND: return fetch(`/api/users/${userId}/skins/active`, { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ skinId }) });
+                const users = getUsers();
+                const u = users.find(x => x.id === userId);
+                if (!u) throw new Error('User not found');
+                u.activeSkinId = skinId;
+                saveUsers(users);
+                if (currentUser && currentUser.id === userId) currentUser.activeSkinId = skinId;
+                return true;
+            },
+
+            _persist(userId, all) {
+                try {
+                    localStorage.setItem(this.KEY_PREFIX + userId, JSON.stringify(all));
+                } catch(e) {
+                    // localStorage quota exceeded: drop the oldest by createdAt to make room
+                    if (all.length > 1) {
+                        all.sort((a,b) => (a.createdAt||0) - (b.createdAt||0));
+                        all.shift();
+                        try { localStorage.setItem(this.KEY_PREFIX + userId, JSON.stringify(all)); }
+                        catch(_) { showToast('Storage full — could not save', 'error'); }
                     } else {
-                        localStorage.removeItem(REMEMBER_KEY);
+                        showToast('Storage full — image too large', 'error');
                     }
                 }
-            })();
-        });
+            }
+        };
+
+        /* =========================================================
+         *  SKIN PROCESSOR — canvas-based image engine
+         * ========================================================= */
+        const SkinProcessor = {
+            EXPORT_SIZES: [512, 256, 128],
+            MAX_SOURCE_DIM: 8192,        // accept up to 8K source
+            MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB safety cap
+
+            isSupportedType(file) {
+                if (!file || !file.type) return false;
+                return /^image\/(png|jpe?g|webp|gif|bmp|svg\+xml|avif)$/i.test(file.type);
+            },
+
+            loadFromFile(file, onProgress) {
+                return new Promise((resolve, reject) => {
+                    if (!this.isSupportedType(file)) return reject(new Error('Unsupported file type'));
+                    if (file.size > this.MAX_FILE_SIZE) return reject(new Error('File too large (max 50MB)'));
+                    const reader = new FileReader();
+                    reader.onprogress = (e) => { if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total); };
+                    reader.onload = (e) => {
+                        if (onProgress) onProgress(1);
+                        this._loadImageFromSrc(e.target.result).then(resolve, reject);
+                    };
+                    reader.onerror = () => reject(new Error('Could not read file'));
+                    reader.readAsDataURL(file);
+                });
+            },
+
+            loadFromURL(url) {
+                return new Promise((resolve, reject) => {
+                    if (!/^https?:\/\//i.test(url) && !/^data:image\//i.test(url)) {
+                        return reject(new Error('URL must start with http(s):// or be a data URL'));
+                    }
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => {
+                        if (img.naturalWidth > this.MAX_SOURCE_DIM || img.naturalHeight > this.MAX_SOURCE_DIM) {
+                            return reject(new Error(`Image exceeds maximum dimension (${this.MAX_SOURCE_DIM}px)`));
+                        }
+                        resolve(img);
+                    };
+                    img.onerror = () => reject(new Error('Could not load image (CORS-blocked or invalid URL)'));
+                    img.src = url;
+                });
+            },
+
+            _loadImageFromSrc(src) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        if (img.naturalWidth > this.MAX_SOURCE_DIM || img.naturalHeight > this.MAX_SOURCE_DIM) {
+                            return reject(new Error(`Image exceeds maximum dimension (${this.MAX_SOURCE_DIM}px)`));
+                        }
+                        resolve(img);
+                    };
+                    img.onerror = () => reject(new Error('Invalid image data'));
+                    img.src = src;
+                });
+            },
+
+            /**
+             * Render the skin into a target canvas using the supplied options.
+             * opts: { size, borderColor, borderWidth, bgColor, bgTransparent, zoom, offsetX, offsetY }
+             */
+            render(img, canvas, opts) {
+                const o = Object.assign({
+                    size: 512, borderColor: '#4ade80', borderWidth: 0,
+                    bgColor: '#0a0f0a', bgTransparent: true,
+                    zoom: 1, offsetX: 0, offsetY: 0
+                }, opts || {});
+                canvas.width = canvas.height = o.size;
+                const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.clearRect(0, 0, o.size, o.size);
+
+                const half = o.size / 2;
+                const innerR = half - o.borderWidth;
+
+                // background fill within the circle
+                if (!o.bgTransparent && o.bgColor) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(half, half, innerR, 0, Math.PI * 2);
+                    ctx.fillStyle = o.bgColor;
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                if (img) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(half, half, innerR, 0, Math.PI * 2);
+                    ctx.clip();
+
+                    const innerSize = innerR * 2;
+                    // cover-fit the inner circle, then apply user zoom
+                    const baseScale = Math.max(innerSize / img.naturalWidth, innerSize / img.naturalHeight);
+                    const scale = baseScale * o.zoom;
+                    const drawW = img.naturalWidth * scale;
+                    const drawH = img.naturalHeight * scale;
+                    // offsets are expressed relative to a 512 reference, scale to size
+                    const sf = o.size / 512;
+                    const dx = (o.size - drawW) / 2 + (o.offsetX * sf);
+                    const dy = (o.size - drawH) / 2 + (o.offsetY * sf);
+                    ctx.drawImage(img, dx, dy, drawW, drawH);
+                    ctx.restore();
+                }
+
+                if (o.borderWidth > 0) {
+                    ctx.beginPath();
+                    ctx.arc(half, half, half - o.borderWidth / 2, 0, Math.PI * 2);
+                    ctx.strokeStyle = o.borderColor;
+                    ctx.lineWidth = o.borderWidth;
+                    ctx.stroke();
+                }
+            },
+
+            /**
+             * Generate exported PNG data URLs at the standard sizes.
+             * Border thickness and offsets scale proportionally with output size.
+             */
+            exportSizes(img, opts, sizes = this.EXPORT_SIZES) {
+                const out = {};
+                const tmp = document.createElement('canvas');
+                for (const size of sizes) {
+                    const ratio = size / 512;
+                    const sized = Object.assign({}, opts, {
+                        size,
+                        borderWidth: Math.round((opts.borderWidth || 0) * ratio),
+                    });
+                    this.render(img, tmp, sized);
+                    out[size] = tmp.toDataURL('image/png');
+                }
+                return out;
+            }
+        };
+
+        /* =========================================================
+         *  SKIN EDITOR — UI controller w/ live preview
+         * ========================================================= */
+        const SkinEditor = (function() {
+            const state = {
+                img: null,
+                sourceMeta: null,
+                editingId: null,
+                opts: {
+                    borderColor: '#4ade80',
+                    borderWidth: 0,
+                    bgColor: '#0a0f0a',
+                    bgTransparent: true,
+                    zoom: 1,
+                    offsetX: 0,
+                    offsetY: 0
+                },
+                rafScheduled: false
+            };
+
+            const $ = id => document.getElementById(id);
+
+            function scheduleRender() {
+                if (state.rafScheduled) return;
+                state.rafScheduled = true;
+                requestAnimationFrame(() => {
+                    state.rafScheduled = false;
+                    SkinProcessor.render(state.img, $('previewCanvas'), Object.assign({}, state.opts, { size: 512 }));
+                    SkinProcessor.render(state.img, $('exp512'), Object.assign({}, state.opts, { size: 64,  borderWidth: state.opts.borderWidth * (64 / 512) }));
+                    SkinProcessor.render(state.img, $('exp256'), Object.assign({}, state.opts, { size: 56,  borderWidth: state.opts.borderWidth * (56 / 512) }));
+                    SkinProcessor.render(state.img, $('exp128'), Object.assign({}, state.opts, { size: 48,  borderWidth: state.opts.borderWidth * (48 / 512) }));
+                });
+            }
+
+            function bindControls() {
+                // sliders
+                $('ctrlZoom').addEventListener('input',   e => { state.opts.zoom    = parseFloat(e.target.value); $('lblZoom').textContent   = state.opts.zoom.toFixed(2) + 'x'; scheduleRender(); });
+                $('ctrlOffX').addEventListener('input',   e => { state.opts.offsetX = parseInt(e.target.value, 10); $('lblOffX').textContent = state.opts.offsetX; scheduleRender(); });
+                $('ctrlOffY').addEventListener('input',   e => { state.opts.offsetY = parseInt(e.target.value, 10); $('lblOffY').textContent = state.opts.offsetY; scheduleRender(); });
+                $('ctrlBorder').addEventListener('input', e => { state.opts.borderWidth = parseInt(e.target.value, 10); $('lblBorder').textContent = state.opts.borderWidth + ' px'; scheduleRender(); });
+
+                // colors (color + text in sync)
+                const wireColor = (colorInputId, textInputId, key) => {
+                    const ci = $(colorInputId), ti = $(textInputId);
+                    ci.addEventListener('input', () => {
+                        ti.value = ci.value;
+                        state.opts[key] = ci.value;
+                        scheduleRender();
+                    });
+                    ti.addEventListener('input', () => {
+                        let v = ti.value.trim();
+                        if (!v.startsWith('#')) v = '#' + v;
+                        if (/^#([0-9a-fA-F]{6})$/.test(v)) {
+                            ci.value = v;
+                            state.opts[key] = v;
+                            scheduleRender();
+                        }
+                    });
+                };
+                wireColor('ctrlBorderColor', 'ctrlBorderColorText', 'borderColor');
+                wireColor('ctrlBgColor',     'ctrlBgColorText',     'bgColor');
+
+                // transparent bg
+                $('ctrlBgTransparent').addEventListener('change', e => {
+                    state.opts.bgTransparent = e.target.checked;
+                    scheduleRender();
+                });
+
+                // file upload (input + drag/drop)
+                const zone = $('editorUploadZone');
+                const fileInput = $('editorFileInput');
+                fileInput.addEventListener('change', async (e) => {
+                    const file = e.target.files[0]; if (!file) return;
+                    await ingestFile(file);
+                    fileInput.value = ''; // allow re-selecting same file
+                });
+                ['dragenter','dragover'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('dragging'); }));
+                ['dragleave','drop'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove('dragging'); }));
+                zone.addEventListener('drop', async (e) => {
+                    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+                    if (file) await ingestFile(file);
+                });
+            }
+
+            async function ingestFile(file) {
+                const progress = $('editorProgress'), fill = $('editorProgressFill');
+                progress.classList.add('active'); fill.style.width = '0%';
+                try {
+                    const img = await SkinProcessor.loadFromFile(file, p => fill.style.width = (p * 100).toFixed(0) + '%');
+                    setImage(img, { name: file.name, size: file.size });
+                    showToast(`Loaded ${file.name} (${img.naturalWidth}×${img.naturalHeight})`);
+                } catch (err) {
+                    showToast(err.message || 'Could not load image', 'error');
+                } finally {
+                    setTimeout(() => { progress.classList.remove('active'); fill.style.width = '0%'; }, 600);
+                }
+            }
+
+            async function loadFromURL() {
+                const url = $('editorUrlInput').value.trim();
+                if (!url) return showToast('Paste an image URL first', 'error');
+                try {
+                    const img = await SkinProcessor.loadFromURL(url);
+                    setImage(img, { name: url.split('/').pop() || 'remote-image', url });
+                    showToast(`Loaded image (${img.naturalWidth}×${img.naturalHeight})`);
+                } catch (err) {
+                    showToast(err.message || 'URL load failed', 'error');
+                }
+            }
+
+            function switchSource(which) {
+                document.querySelectorAll('.source-tab').forEach(t => t.classList.toggle('active', t.dataset.source === which));
+                document.querySelectorAll('.source-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === which));
+            }
+
+            function setImage(img, meta) {
+                state.img = img;
+                state.sourceMeta = meta || null;
+                $('previewSourceInfo').textContent = meta
+                    ? `${meta.name} · ${img.naturalWidth}×${img.naturalHeight}`
+                    : 'No image loaded';
+                scheduleRender();
+            }
+
+            function resetAdjustments() {
+                state.opts.zoom = 1; state.opts.offsetX = 0; state.opts.offsetY = 0;
+                $('ctrlZoom').value = 1;     $('lblZoom').textContent = '1.00x';
+                $('ctrlOffX').value = 0;     $('lblOffX').textContent = '0';
+                $('ctrlOffY').value = 0;     $('lblOffY').textContent = '0';
+                scheduleRender();
+            }
+
+            function fullReset() {
+                state.editingId = null;
+                state.img = null; state.sourceMeta = null;
+                state.opts = { borderColor:'#4ade80', borderWidth:0, bgColor:'#0a0f0a', bgTransparent:true, zoom:1, offsetX:0, offsetY:0 };
+                $('editorTitle').textContent = 'Create Skin';
+                $('editorSkinName').value = '';
+                $('editorUrlInput').value = '';
+                $('ctrlZoom').value = 1;     $('lblZoom').textContent = '1.00x';
+                $('ctrlOffX').value = 0;     $('lblOffX').textContent = '0';
+                $('ctrlOffY').value = 0;     $('lblOffY').textContent = '0';
+                $('ctrlBorder').value = 0;   $('lblBorder').textContent = '0 px';
+                $('ctrlBorderColor').value = '#4ade80';   $('ctrlBorderColorText').value = '#4ade80';
+                $('ctrlBgColor').value = '#0a0f0a';       $('ctrlBgColorText').value = '#0a0f0a';
+                $('ctrlBgTransparent').checked = true;
+                $('previewSourceInfo').textContent = 'No image loaded';
+                scheduleRender();
+            }
+
+            function loadIntoEditor(skin) {
+                state.editingId = skin.id;
+                state.opts = Object.assign({
+                    borderColor:'#4ade80', borderWidth:0, bgColor:'#0a0f0a', bgTransparent:true,
+                    zoom:1, offsetX:0, offsetY:0
+                }, skin.opts || {});
+                $('editorSkinName').value = skin.name || '';
+                $('editorTitle').textContent = 'Edit Skin';
+                $('ctrlZoom').value = state.opts.zoom;       $('lblZoom').textContent = state.opts.zoom.toFixed(2) + 'x';
+                $('ctrlOffX').value = state.opts.offsetX;    $('lblOffX').textContent = state.opts.offsetX;
+                $('ctrlOffY').value = state.opts.offsetY;    $('lblOffY').textContent = state.opts.offsetY;
+                $('ctrlBorder').value = state.opts.borderWidth; $('lblBorder').textContent = state.opts.borderWidth + ' px';
+                $('ctrlBorderColor').value = state.opts.borderColor; $('ctrlBorderColorText').value = state.opts.borderColor;
+                $('ctrlBgColor').value = state.opts.bgColor;          $('ctrlBgColorText').value = state.opts.bgColor;
+                $('ctrlBgTransparent').checked = !!state.opts.bgTransparent;
+
+                // try to reload image from stored source
+                if (skin.sourceImage) {
+                    SkinProcessor._loadImageFromSrc(skin.sourceImage)
+                        .then(img => setImage(img, { name: skin.name || 'edited' }))
+                        .catch(() => { setImage(null, null); showToast('Original image not available — re-upload to edit', 'warn'); });
+                } else {
+                    setImage(null, null);
+                    showToast('Re-upload an image to continue editing', 'warn');
+                }
+                navigateTo('create');
+            }
+
+            async function saveSkin() {
+                if (!currentUser) return showToast('Not signed in', 'error');
+                if (!state.img) return showToast('Load an image first', 'error');
+                const name = ($('editorSkinName').value || '').trim();
+                if (!name) return showToast('Give your skin a name', 'error');
+
+                // Normalize source image to a data URL for re-edit support
+                let sourceDataURL = null;
+                try {
+                    const tmp = document.createElement('canvas');
+                    tmp.width = state.img.naturalWidth; tmp.height = state.img.naturalHeight;
+                    tmp.getContext('2d').drawImage(state.img, 0, 0);
+                    sourceDataURL = tmp.toDataURL('image/png');
+                } catch(e) {
+                    // CORS-tainted canvas — original source can't be persisted; we'll still save processed output
+                    sourceDataURL = null;
+                }
+
+                // Final processed image (512px) used for previews + Use action
+                const finalCanvas = document.createElement('canvas');
+                SkinProcessor.render(state.img, finalCanvas, Object.assign({}, state.opts, { size: 512 }));
+                const finalImage = finalCanvas.toDataURL('image/png');
+
+                // Multi-size exports
+                const exports = SkinProcessor.exportSizes(state.img, state.opts);
+
+                const skin = {
+                    id: state.editingId || null,
+                    name,
+                    opts: { ...state.opts },
+                    image: finalImage,
+                    exports,
+                    sourceImage: sourceDataURL,
+                    type: 'custom'
+                };
+                try {
+                    const saved = await SkinStorage.save(currentUser.id, skin);
+                    state.editingId = saved.id;
+                    showToast(state.editingId ? 'Skin saved!' : 'Skin saved!');
+                    navigateTo('myskins');
+                } catch(e) {
+                    showToast('Save failed: ' + (e.message || e), 'error');
+                }
+            }
+
+            function downloadPNG() {
+                if (!state.img) return showToast('Load an image first', 'error');
+                const c = document.createElement('canvas');
+                SkinProcessor.render(state.img, c, Object.assign({}, state.opts, { size: 512 }));
+                const a = document.createElement('a');
+                const safe = (($('editorSkinName').value || 'skin').replace(/[^a-z0-9-_]+/gi, '-')) || 'skin';
+                a.download = `${safe}-512.png`;
+                a.href = c.toDataURL('image/png');
+                document.body.appendChild(a); a.click(); a.remove();
+                showToast('Downloaded PNG');
+            }
+
+            function onPageEnter() {
+                // first time on this page, ensure preview is rendered (placeholder)
+                scheduleRender();
+            }
+
+            // ====== Public API ======
+            return {
+                init() { bindControls(); fullReset(); },
+                switchSource, loadFromURL, saveSkin, resetAdjustments,
+                downloadPNG, fullReset, loadIntoEditor, onPageEnter
+            };
+        })();
+        SkinEditor.init();
+        window.SkinEditor = SkinEditor; // expose for inline handlers
+
+        /* =========================================================
+         *  SKIN LIBRARY — user dashboard for saved skins
+         * ========================================================= */
+        const SkinLibrary = {
+            async render() {
+                const container = document.getElementById('mySkinsContainer');
+                if (!container) return;
+                if (!currentUser) { container.innerHTML = '<div class="empty-state">Please sign in.</div>'; return; }
+
+                container.innerHTML = '<div class="empty-state"><div class="es-icon">⏳</div><div>Loading…</div></div>';
+                const skins = await SkinStorage.list(currentUser.id);
+                if (!skins.length) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="es-icon">👤</div>
+                            <div class="es-title">No skins yet</div>
+                            <div>Open the editor and design your first custom skin.</div>
+                        </div>`;
+                    return;
+                }
+
+                // Sort newest first
+                skins.sort((a,b) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0));
+
+                const grid = document.createElement('div');
+                grid.className = 'skins-grid';
+                skins.forEach(skin => {
+                    const card = document.createElement('div');
+                    card.className = 'skin-card' + (currentUser.activeSkinId === skin.id ? ' active-skin' : '');
+                    const isActive = currentUser.activeSkinId === skin.id;
+                    card.innerHTML = `
+                        ${isActive ? '<div class="active-badge">Active</div>' : ''}
+                        <div class="skin-circle-preview" style="background-image:url('${skin.image}');"></div>
+                        <div class="skin-name">${escapeHTML(skin.name)}</div>
+                        <div class="skin-meta">${new Date(skin.updatedAt || skin.createdAt || Date.now()).toLocaleDateString()}</div>
+                        <div class="card-actions">
+                            <button class="btn-sm" data-act="use">${isActive ? '✓ Active' : '✓ Use'}</button>
+                            <button class="btn-sm" data-act="edit">✏️ Edit</button>
+                            <button class="btn-sm" data-act="export">⬇️</button>
+                            <button class="btn-sm btn-danger" data-act="delete">🗑</button>
+                        </div>
+                    `;
+                    card.querySelector('[data-act="use"]').onclick = () => this.use(skin.id);
+                    card.querySelector('[data-act="edit"]').onclick = () => this.edit(skin.id);
+                    card.querySelector('[data-act="export"]').onclick = () => this.exportSkin(skin);
+                    card.querySelector('[data-act="delete"]').onclick = () => this.delete(skin.id, skin.name);
+                    grid.appendChild(card);
+                });
+                container.innerHTML = '';
+                container.appendChild(grid);
+            },
+
+            async use(skinId) {
+                await SkinStorage.setActive(currentUser.id, skinId);
+                showToast('Skin activated!');
+                this.render();
+            },
+
+            async edit(skinId) {
+                const skin = await SkinStorage.get(currentUser.id, skinId);
+                if (!skin) return showToast('Skin not found', 'error');
+                SkinEditor.loadIntoEditor(skin);
+            },
+
+            exportSkin(skin) {
+                // Download PNG (512)
+                const a = document.createElement('a');
+                const safe = (skin.name || 'skin').replace(/[^a-z0-9-_]+/gi, '-');
+                a.download = `${safe}-512.png`;
+                a.href = (skin.exports && skin.exports[512]) || skin.image;
+                document.body.appendChild(a); a.click(); a.remove();
+                showToast('Exported PNG');
+            },
+
+            async delete(skinId, name) {
+                const ok = await confirmDialog({
+                    title: 'Delete skin?',
+                    message: `Permanently delete "${name}"? This cannot be undone.`,
+                    confirmText: 'Delete',
+                    danger: true
+                });
+                if (!ok) return;
+                await SkinStorage.delete(currentUser.id, skinId);
+                if (currentUser.activeSkinId === skinId) {
+                    currentUser.activeSkinId = null;
+                    persistCurrentUser();
+                }
+                showToast('Skin deleted');
+                this.render();
+            }
+        };
+        window.SkinLibrary = SkinLibrary;
+
+        /* =========================================================
+         *  AUTO-LOGIN (last)
+         * ========================================================= */
+        loadCatalog();
+        (function autoLogin() {
+            const rememberedId = localStorage.getItem(REMEMBER_KEY);
+            if (rememberedId) {
+                const users = getUsers();
+                const user = users.find(u => u.id === rememberedId && !u.blocked);
+                if (user) { currentUser = user; showApp(); }
+                else { localStorage.removeItem(REMEMBER_KEY); }
+            }
+        })();
+    });
     </script>
 </body>
 </html>
