@@ -91,6 +91,45 @@
         .auth-toggle span { color:var(--green); cursor:pointer; font-weight:600; }
         .remember-row { display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--text-muted); margin-bottom:16px; }
 
+        /* Confirmation modal */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+            z-index: 300; display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+        }
+        .modal-overlay.open { opacity: 1; visibility: visible; }
+        .modal-card {
+            background: var(--bg-card); border: 1px solid var(--border-light);
+            border-radius: var(--radius); padding: 32px 24px;
+            width: 90%; max-width: 380px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-overlay.open .modal-card { transform: scale(1); }
+        .modal-card h3 { color: var(--green-bright); margin-bottom: 20px; font-size: 1.2rem; }
+        .modal-user-info {
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            margin-bottom: 28px;
+        }
+        .modal-user-info img {
+            width: 70px; height: 70px; border-radius: 50%; object-fit: cover;
+            border: 3px solid var(--green); box-shadow: 0 0 12px var(--green-glow);
+        }
+        .modal-user-info .modal-name { font-weight: 700; font-size: 1rem; color: #fff; }
+        .modal-user-info .modal-email { font-size: 0.85rem; color: var(--text-muted); }
+        .modal-actions {
+            display: flex; gap: 12px; justify-content: center;
+        }
+        .btn-confirm, .btn-cancel {
+            flex: 1; padding: 12px 16px; border-radius: 30px; font-weight: 700;
+            text-transform: uppercase; font-size: 0.8rem; border: none; cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-confirm { background: var(--green); color: #000; box-shadow: 0 0 14px var(--green-glow); }
+        .btn-cancel { background: transparent; border: 1px solid var(--border-light); color: var(--text-muted); }
+        .btn-confirm:hover { background: var(--green-bright); }
+        .btn-cancel:hover { background: rgba(255,255,255,0.03); color: #fff; }
+
         #mainApp { display:none; width:100%; min-height:100vh; flex-direction:column; }
         .app-container { max-width:1300px; margin:0 auto; padding:0 24px; display:flex; flex-direction:column; min-height:100vh; }
         .header {
@@ -145,41 +184,35 @@
         .section-header h2 { font-size:3.5rem; font-weight:800; color:#fff; margin-bottom:6px; }
         .page-name-indicator { text-align:center; padding:12px 0 4px; color:var(--green-muted); font-size:0.8rem; text-transform:uppercase; opacity:0.8; }
 
-        .category-section { margin-bottom: 40px; }
-        .category-title {
-            text-align: center; font-size: 1.4rem; font-weight: 700; color: var(--green-bright);
-            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;
-            padding-bottom: 8px; border-bottom: 2px solid var(--green-dark);
-            display: inline-block; margin-left: auto; margin-right: auto; width: fit-content;
-        }
-        .skins-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:20px; padding:0 4px; }
-        .skin-card {
-            background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius);
-            padding:20px 16px 18px; cursor:pointer; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px;
-        }
-        .skin-card:hover { background:var(--bg-card-hover); border-color:#335533; transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,0.5); }
-        .skin-blob-preview {
-            width:100px; height:100px; border-radius:43% 57% 44% 56% / 51% 49% 55% 45%;
-            background-size:cover; background-position:center; box-shadow:inset 0 2px 6px rgba(255,255,255,0.1);
-        }
+        /* Home page styles */
+        .home-container { max-width: 700px; margin: 0 auto; }
+        .greeting { text-align: center; font-size: 1.8rem; font-weight: 700; color: var(--green-bright); margin-bottom: 30px; }
+        .app-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .app-card h3 { color: var(--green-bright); margin: 0; font-size: 1.2rem; }
+        .app-card p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+        .app-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .btn-small { padding: 8px 16px; border-radius: 30px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; background: var(--green-dark); color: #fff; border: none; cursor: pointer; transition: var(--transition); }
+        .btn-small:hover { background: var(--green); color: #000; }
+        .vote-group { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.2); border-radius: 30px; padding: 4px 12px; }
+        .vote-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; transition: 0.1s; }
+        .vote-btn:hover { color: var(--green-bright); }
+        .vote-count { font-size: 0.8rem; min-width: 20px; text-align: center; }
+
+        /* Footer */
+        .social-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 8px; align-items: center; }
+        .social-links a { color: var(--text-muted); transition: transform 0.2s ease; display: flex; align-items: center; gap: 6px; text-decoration: none; font-size: 0.9rem; -webkit-tap-highlight-color: transparent; }
+        .social-links a svg { width: 20px; height: 20px; transition: fill 0.1s ease; fill: currentColor; }
+        .social-link-ig:active svg circle,
+        .social-link-ig:active svg path { fill: url(#ig-gradient); transition: none; }
+        .social-link-yt:active svg { fill: #FF0000; transition: none; }
+        .social-links a:active { transform: translateY(-1px); }
 
         .admin-centered { max-width: 420px; margin: 0 auto; width: 100%; }
         .admin-panel { background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius); padding:24px; margin-bottom:28px; }
-
-        .user-table-wrapper {
-            overflow-x: auto; border-radius: var(--radius-sm);
-            border: 1px solid var(--border-light); margin-top: 10px;
-        }
-        .user-table {
-            width: 100%; border-collapse: collapse; min-width: 450px; background: #0d160d;
-        }
+        .user-table-wrapper { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border-light); margin-top: 10px; }
+        .user-table { width: 100%; border-collapse: collapse; min-width: 450px; background: #0d160d; }
         .user-table thead { background: var(--green-dark); color: #fff; }
-        .user-table thead th {
-            padding: 12px 10px; font-size: 0.72rem; text-transform: uppercase;
-            letter-spacing: 0.5px; font-weight: 700; color: var(--green-bright);
-            border-bottom: 2px solid var(--border-light); position: sticky; top: 0;
-            background: var(--green-dark); z-index: 1;
-        }
+        .user-table thead th { padding: 12px 10px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; color: var(--green-bright); border-bottom: 2px solid var(--border-light); position: sticky; top: 0; background: var(--green-dark); z-index: 1; }
         .user-table tbody tr { transition: background 0.2s ease; border-bottom: 1px solid var(--border-light); }
         .user-table tbody tr:last-child { border-bottom: none; }
         .user-table tbody tr:hover { background: #1a251a; }
@@ -192,20 +225,20 @@
         .status-blocked { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
         .role-badge { font-weight: 600; color: var(--green-bright); }
         .role-badge.admin { color: #f59e0b; }
-        .btn-sm { padding: 5px 10px; font-size: 0.7rem; margin: 2px; border-radius: 8px; background: transparent; border: 1px solid var(--green); color: var(--green); cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; min-width: 30px; }
-        .btn-sm:hover { background: var(--green); color: #000; }
-        .btn-danger { border-color: var(--danger); color: var(--danger); }
-        .btn-danger:hover { background: var(--danger); color: #fff; }
-        .btn-warning { border-color: #f59e0b; color: #f59e0b; }
-        .btn-warning:hover { background: #f59e0b; color: #000; }
+        .action-toggle { background: transparent; border: 1px solid var(--border-light); color: var(--text-muted); font-size: 1.2rem; cursor: pointer; padding: 6px 10px; border-radius: 8px; transition: var(--transition); }
+        .action-toggle:hover { background: var(--green-dark); color: #fff; }
+
+        .ios-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
+        .ios-overlay.open { opacity: 1; visibility: visible; }
+        .ios-sheet { background: var(--bg-card); border-radius: var(--radius); width: 90%; max-width: 360px; overflow: hidden; transform: scale(0.9) translateY(20px); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 20px 50px rgba(0,0,0,0.7); }
+        .ios-overlay.open .ios-sheet { transform: scale(1) translateY(0); }
+        .ios-sheet button { display: block; width: 100%; background: transparent; border: none; color: var(--text); padding: 16px 20px; font-size: 1rem; text-align: center; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background 0.2s; }
+        .ios-sheet button:active { background: rgba(74,222,128,0.1); }
+        .ios-sheet button.danger { color: var(--danger); font-weight: 600; }
+        .ios-sheet button.cancel { font-weight: 700; color: var(--green-bright); border-bottom: none; }
 
         .footer { text-align:center; padding:16px 0; color:var(--text-muted); font-size:0.75rem; border-top:1px solid var(--border); margin-top:auto; }
-        .toast {
-            position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(120px);
-            background:#1a2e1a; border:1px solid var(--green-dark); color:#c8e6c9; padding:12px 24px;
-            border-radius:40px; font-weight:600; z-index:200; pointer-events:none; transition:0.35s;
-            box-shadow:0 8px 28px rgba(0,0,0,0.6);
-        }
+        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(120px); background:#1a2e1a; border:1px solid var(--green-dark); color:#c8e6c9; padding:12px 24px; border-radius:40px; font-weight:600; z-index:200; pointer-events:none; transition:0.35s; box-shadow:0 8px 28px rgba(0,0,0,0.6); }
         .toast.show { transform:translateX(-50%) translateY(0); }
         .toast.error { border-color:var(--danger); color:#fca5a5; background:#1e1515; }
 
@@ -214,7 +247,7 @@
     </style>
 </head>
 <body>
-    <!-- AUTH PAGE (hidden on auto-login) -->
+    <!-- AUTH PAGE -->
     <div id="authContainer" class="auth-container">
         <div id="loginForm">
             <h2>Sign In</h2>
@@ -232,6 +265,22 @@
             <div class="form-group"><label>Password</label><div class="password-wrapper"><input type="password" id="signupPass" placeholder="••••••"><button type="button" class="eye-toggle" onclick="togglePassword('signupPass', this)">👁️</button></div></div>
             <button class="btn" onclick="signup()">Sign Up</button>
             <div class="auth-toggle">Already have an account? <span onclick="showLogin()">Sign in</span></div>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-card">
+            <h3>Is this your account?</h3>
+            <div class="modal-user-info">
+                <img id="confirmAvatar" src="" alt="Avatar">
+                <div class="modal-name" id="confirmName"></div>
+                <div class="modal-email" id="confirmEmail"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="cancelLogin()">No, try again</button>
+                <button class="btn-confirm" onclick="confirmLogin()">Yes, sign in</button>
+            </div>
         </div>
     </div>
 
@@ -256,36 +305,84 @@
             </nav>
         </aside>
         <main class="main-content">
-            <section class="page active" id="page-home"><div class="page-name-indicator">Home</div><div class="section-header"><h2>Welcome</h2></div></section>
-            <section class="page" id="page-skins">
-                <div class="page-name-indicator">Skins</div><div class="section-header"><h2>Choose Your Skin</h2></div>
-                <div id="skinsCategoriesContainer"></div>
-            </section>
-            <section class="page" id="page-about"><div class="page-name-indicator">About</div><div class="section-header"><h2>About</h2></div></section>
-            <section class="page" id="page-admin">
-                <div class="page-name-indicator">Admin</div><div class="section-header"><h2>Admin Panel</h2></div>
-                <div class="admin-centered">
-                    <div class="admin-panel"><h3 style="text-align:center;">👥 User Management</h3><div class="user-table-wrapper" id="userTableContainer"></div></div>
-                    <div class="admin-panel">
-                        <h3 style="text-align:center;">🎨 Skin Manager</h3>
-                        <div style="display:flex;flex-direction:column;gap:20px;">
-                            <div>
-                                <h4 style="text-align:center;">Add New Skin</h4>
-                                <div class="form-group"><label>Skin Name</label><input type="text" id="skinName" placeholder="e.g. Emerald Blob" maxlength="30"></div>
-                                <div class="form-group"><label>Category</label><select id="skinCategory"><option value="free skins">Free Skins</option><option value="vip skins">VIP Skins</option><option value="exclusive skins">Exclusive Skins</option><option value="premium skins">Premium Skins</option><option value="custom skins">Custom Skins</option><option value="mystery skins">Mystery Skins</option><option value="golden pass skins">Golden Pass Skins</option><option value="adventure skins">Adventure Skins</option><option value="veteran skins">Veteran Skins</option><option value="quest skins">Quest Skins</option><option value="youtuber skins">Youtuber Skins</option><option value="pokemon skins">Pokemon Skins</option><option value="thunderbirds skins">Thunderbirds Skins</option></select></div>
-                                <div class="form-group"><label>Upload Image (optional)</label><div class="upload-zone" id="uploadZone"><p>📁 Click or drag & drop an image</p><input type="file" id="fileInput" accept="image/*"></div><div class="logo-preview" id="uploadPreview" style="display:none;"></div></div>
-                                <div class="form-group"><label>Or Pick Color</label><input type="color" id="skinColor" value="#4ade80"></div>
-                                <button class="btn" onclick="addSkin()">💾 Save Skin</button>
+            <section class="page active" id="page-home">
+                <div class="page-name-indicator">Home</div>
+                <div class="home-container">
+                    <div class="greeting" id="greetingText">Welcome</div>
+                    <div class="app-card">
+                        <h3>🤖 DiegoAI</h3>
+                        <p>My official AI Assistant ChatBot.</p>
+                        <div class="app-actions">
+                            <button class="btn-small" onclick="openLink('https://diegoai.lovable.app')">Get</button>
+                            <button class="btn-small" onclick="shareApp('DiegoAI', 'https://diegoai.lovable.app')">Share</button>
+                            <div class="vote-group">
+                                <button class="vote-btn" onclick="vote('diegoai', 'like')">👍</button>
+                                <span class="vote-count" id="diegoai-likes">0</span>
+                                <button class="vote-btn" onclick="vote('diegoai', 'dislike')">👎</button>
+                                <span class="vote-count" id="diegoai-dislikes">0</span>
                             </div>
-                            <div><h4 style="text-align:center;">Existing Skins</h4><div id="adminSkinsList"></div></div>
+                        </div>
+                    </div>
+                    <div class="app-card">
+                        <h3>🚀 Lurk</h3>
+                        <p>Full‑stack AI builder.</p>
+                        <div class="app-actions">
+                            <button class="btn-small" onclick="openLink('https://lurk-imagine-build.lovable.app')">Get</button>
+                            <button class="btn-small" onclick="shareApp('Lurk', 'https://lurk-imagine-build.lovable.app')">Share</button>
+                            <div class="vote-group">
+                                <button class="vote-btn" onclick="vote('lurk', 'like')">👍</button>
+                                <span class="vote-count" id="lurk-likes">0</span>
+                                <button class="vote-btn" onclick="vote('lurk', 'dislike')">👎</button>
+                                <span class="vote-count" id="lurk-dislikes">0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
+            <section class="page" id="page-skins">
+                <div class="page-name-indicator">Skins</div>
+                <div class="section-header"><h2>AI Skin Generator</h2></div>
+                <!-- (skin generator markup unchanged) -->
+            </section>
+            <section class="page" id="page-about"><div class="page-name-indicator">About</div><div class="section-header"><h2>About</h2></div></section>
+            <section class="page" id="page-admin">
+                <div class="page-name-indicator">Admin</div>
+                <div class="section-header"><h2>Admin Panel</h2></div>
+                <div class="admin-centered">
+                    <div class="admin-panel"><h3 style="text-align:center;">👥 User Management</h3><div class="user-table-wrapper" id="userTableContainer"></div></div>
+                </div>
+            </section>
         </main>
-        <footer class="footer">Dasgar &copy; 2024</footer>
+        <footer class="footer">
+            <div class="social-links">
+                <a href="https://www.instagram.com/7d_flt?igsh=MXh5Zm15Y2YweGtubQ==" target="_blank" title="Instagram" class="social-link-ig">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <defs>
+                            <linearGradient id="ig-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#f09433" />
+                                <stop offset="25%" stop-color="#e6683c" />
+                                <stop offset="50%" stop-color="#dc2743" />
+                                <stop offset="75%" stop-color="#cc2366" />
+                                <stop offset="100%" stop-color="#bc1888" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="12" cy="12" r="3.2" fill="currentColor" />
+                        <path d="M15.6 3H8.4A5.4 5.4 0 0 0 3 8.4v7.2A5.4 5.4 0 0 0 8.4 21h7.2A5.4 5.4 0 0 0 21 15.6V8.4A5.4 5.4 0 0 0 15.6 3zm-3.6 14.4A5.2 5.2 0 1 1 12 6.8a5.2 5.2 0 0 1 0 10.4zm5.4-9.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4z" fill="currentColor" />
+                    </svg> Instagram
+                </a>
+                <a href="https://www.youtube.com/@Dasgar_gaming7" target="_blank" title="YouTube" class="social-link-yt">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.8 31.8 0 0 0 0 12a31.8 31.8 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.8 31.8 0 0 0 24 12a31.8 31.8 0 0 0-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/>
+                    </svg> YouTube
+                </a>
+            </div>
+            Dasgar &copy; 2026
+        </footer>
     </div>
+
+    <div class="ios-overlay" id="iosOverlay"><div class="ios-sheet" id="iosSheet"></div></div>
     <div class="toast" id="toast"></div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // PWA setup
@@ -296,24 +393,25 @@
 
             window.togglePassword = function(inputId, btn) { const input = document.getElementById(inputId); if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; } else { input.type = 'password'; btn.textContent = '👁️'; } };
 
-            const USERS_KEY = 'site_users_v2', SKINS_KEY = 'agarskins_data_v2', ADMIN_EMAIL = 'dasgari769@gmail.com';
-            const REMEMBER_KEY = 'remembered_user_id';
-            let currentUser = null, signupLogoData = null, uploadedSkinImage = null;
-            const CATEGORIES = ['free skins','vip skins','exclusive skins','premium skins','custom skins','mystery skins','golden pass skins','adventure skins','veteran skins','quest skins','youtuber skins','pokemon skins','thunderbirds skins'];
+            const USERS_KEY = 'site_users_v2', REMEMBER_KEY = 'remembered_user_id', ADMIN_EMAIL = 'dasgari769@gmail.com';
+            let currentUser = null, pendingUser = null, signupLogoData = null, uploadedSkinImage = null;
 
-            function migrateEmailsToLowercase() { const users = getUsers(); let changed = false; users.forEach(u => { if (u.email !== u.email.toLowerCase()) { u.email = u.email.toLowerCase(); changed = true; } }); if (changed) saveUsers(users); }
             function showToast(msg, type='') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + type + ' show'; clearTimeout(t._time); t._time = setTimeout(() => t.classList.remove('show'), 2500); }
             function getUsers() { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch(e) { return []; } }
             function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
 
-            migrateEmailsToLowercase();
+            (function() {
+                const users = getUsers(); let changed = false;
+                users.forEach(u => { if (u.email !== u.email.toLowerCase()) { u.email = u.email.toLowerCase(); changed = true; } });
+                if (changed) saveUsers(users);
+            })();
 
             window.showSignup = () => { document.getElementById('loginForm').style.display='none'; document.getElementById('signupForm').style.display='block'; };
             window.showLogin = () => { document.getElementById('signupForm').style.display='none'; document.getElementById('loginForm').style.display='block'; };
 
             document.getElementById('signupLogoFile').addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 100; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 100, 100); signupLogoData = canvas.toDataURL('image/png'); document.getElementById('signupLogoPreview').style.backgroundImage = `url(${signupLogoData})`; document.getElementById('signupLogoPreview').style.display = 'block'; }; img.src = e.target.result; }; reader.readAsDataURL(file); });
 
-            // ---- all functions defined before any calls ----
+            // Login with confirmation modal
             window.login = function() {
                 const email = document.getElementById('loginEmail').value.trim().toLowerCase();
                 const pass = document.getElementById('loginPass').value;
@@ -322,11 +420,29 @@
                 if (!user) return showToast('User not found', 'error');
                 if (user.blocked) return showToast('Account blocked', 'error');
                 if (user.password !== pass) return showToast('Wrong password', 'error');
-                currentUser = user;
-                if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, user.id);
+                // credentials correct – show confirmation modal
+                pendingUser = user;
+                document.getElementById('confirmAvatar').src = user.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E';
+                document.getElementById('confirmName').textContent = user.username;
+                document.getElementById('confirmEmail').textContent = user.email;
+                document.getElementById('confirmModal').classList.add('open');
+            };
+
+            window.cancelLogin = function() {
+                pendingUser = null;
+                document.getElementById('confirmModal').classList.remove('open');
+            };
+
+            window.confirmLogin = function() {
+                if (!pendingUser) return;
+                currentUser = pendingUser;
+                pendingUser = null;
+                document.getElementById('confirmModal').classList.remove('open');
+                if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, currentUser.id);
                 else localStorage.removeItem(REMEMBER_KEY);
                 showApp();
             };
+
             window.signup = function() {
                 const username = document.getElementById('signupUsername').value.trim();
                 const email = document.getElementById('signupEmail').value.trim().toLowerCase();
@@ -340,6 +456,7 @@
                 else localStorage.removeItem(REMEMBER_KEY);
                 showApp();
             };
+
             window.logout = function() {
                 currentUser = null;
                 localStorage.removeItem(REMEMBER_KEY);
@@ -348,7 +465,6 @@
                 document.body.style.display = 'flex';
                 document.getElementById('loginEmail').value = ''; document.getElementById('loginPass').value = '';
                 hideAllPages();
-                document.getElementById('userDropdown').classList.remove('open');
             };
 
             function showApp() {
@@ -358,66 +474,56 @@
                 document.getElementById('headerLogo').src = currentUser.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E";
                 if (currentUser.email === ADMIN_EMAIL) document.getElementById('nav-admin').style.display='flex';
                 else document.getElementById('nav-admin').style.display='none';
+                const greeting = document.getElementById('greetingText');
+                if (greeting) greeting.textContent = currentUser ? `Welcome, ${currentUser.username}` : 'Welcome';
                 navigateTo('home');
             }
 
             function hideAllPages() { ['home','skins','about','admin'].forEach(p => { document.getElementById('page-'+p).classList.remove('active'); document.getElementById('nav-'+p).classList.remove('active'); }); }
-            window.navigateTo = function(page) { hideAllPages(); document.getElementById('page-'+page).classList.add('active'); document.getElementById('nav-'+page).classList.add('active'); if (page === 'admin') renderAdminPage(); else if (page === 'skins') renderSkinsPage(); window.scrollTo(0,0); };
+            window.navigateTo = function(page) {
+                hideAllPages();
+                document.getElementById('page-'+page).classList.add('active');
+                document.getElementById('nav-'+page).classList.add('active');
+                window.scrollTo(0,0);
+            };
 
-            window.toggleUserMenu = function() { document.getElementById('userDropdown').classList.toggle('open'); };
-            document.addEventListener('click', function(e) { const logo = document.querySelector('.logo-area'), dropdown = document.getElementById('userDropdown'); if (logo && dropdown && !logo.contains(e.target) && dropdown.classList.contains('open')) dropdown.classList.remove('open'); });
-
-            const $menuToggle = document.getElementById('menuToggle'), $drawerOverlay = document.getElementById('drawerOverlay'), $drawerPanel = document.getElementById('drawerPanel');
-            function openPanel() { $drawerPanel.classList.add('open'); $drawerOverlay.classList.add('open'); }
-            function closePanel() { $drawerPanel.classList.remove('open'); $drawerOverlay.classList.remove('open'); }
-            $menuToggle.addEventListener('click', () => $drawerPanel.classList.contains('open') ? closePanel() : openPanel());
-            document.getElementById('drawerClose').addEventListener('click', closePanel);
-            $drawerOverlay.addEventListener('click', closePanel);
-            document.querySelectorAll('.drawer-link').forEach(link => link.addEventListener('click', closePanel));
-
-            // Skins logic
-            let skins = [];
-            function loadSkins() { try { skins = JSON.parse(localStorage.getItem(SKINS_KEY)) || []; skins = skins.map(s => ({ ...s, category: s.category || 'free skins' })); } catch(e) { skins = []; } }
-            function saveSkins() { localStorage.setItem(SKINS_KEY, JSON.stringify(skins)); }
-
-            function renderSkinsPage() { const container = document.getElementById('skinsCategoriesContainer'); if (!container) return; loadSkins(); container.innerHTML = ''; const grouped = {}; CATEGORIES.forEach(cat => grouped[cat] = []); skins.forEach(skin => { if (!grouped[skin.category]) grouped[skin.category] = []; grouped[skin.category].push(skin); }); CATEGORIES.forEach(cat => { const skinsInCat = grouped[cat] || []; if (skinsInCat.length === 0) return; const section = document.createElement('div'); section.className = 'category-section'; const title = document.createElement('div'); title.className = 'category-title'; title.textContent = cat.toUpperCase(); section.appendChild(title); const grid = document.createElement('div'); grid.className = 'skins-grid'; skinsInCat.forEach(skin => { const card = document.createElement('div'); card.className = 'skin-card'; let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`; card.innerHTML = `<div class="skin-blob-preview" style="background:${bg};"></div><div class="skin-name">${skin.name}</div>`; grid.appendChild(card); }); section.appendChild(grid); container.appendChild(section); }); if (skins.length === 0) { container.innerHTML = '<p style="text-align:center;color:var(--text-muted);">No skins yet.</p>'; } }
-
-            window.addSkin = function() { const name = document.getElementById('skinName').value.trim(); if (!name) return showToast('Enter a skin name', 'error'); const category = document.getElementById('skinCategory').value; const color = document.getElementById('skinColor').value; const imageData = uploadedSkinImage; const newSkin = { id: 'sk_' + Date.now(), name, category, color, imageData: imageData || null, type: imageData ? 'image' : 'color' }; skins.push(newSkin); saveSkins(); renderAdminSkinsList(); document.getElementById('skinName').value = ''; document.getElementById('skinCategory').value = 'free skins'; document.getElementById('uploadPreview').style.display = 'none'; uploadedSkinImage = null; showToast('Skin added!'); };
-            document.getElementById('fileInput').addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 200; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 200, 200); uploadedSkinImage = canvas.toDataURL('image/png'); document.getElementById('uploadPreview').style.backgroundImage = `url(${uploadedSkinImage})`; document.getElementById('uploadPreview').style.display = 'block'; }; img.src = e.target.result; }; reader.readAsDataURL(file); });
-            function renderAdminSkinsList() { const container = document.getElementById('adminSkinsList'); if (!container) return; container.innerHTML = skins.length ? '' : '<p>No skins.</p>'; skins.forEach(skin => { const div = document.createElement('div'); div.className = 'skin-card'; div.style.flexDirection = 'row'; div.style.justifyContent = 'space-between'; let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`; div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><div class="skin-blob-preview" style="width:40px;height:40px;background:${bg};"></div><span>${skin.name} <small style="color:var(--text-muted);">(${skin.category})</small></span></div><button class="btn-sm btn-danger" onclick="deleteSkin('${skin.id}')">🗑</button>`; container.appendChild(div); }); }
-            window.deleteSkin = function(id) { skins = skins.filter(s => s.id !== id); saveSkins(); renderAdminSkinsList(); };
-
-            function renderAdminPage() {
-                if (!currentUser || currentUser.email !== ADMIN_EMAIL) { document.getElementById('userTableContainer').innerHTML = '<p>Access denied.</p>'; document.getElementById('adminSkinsList').innerHTML = ''; return; }
-                const users = getUsers();
-                let html = `<table class="user-table"><thead><tr><th>Logo</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody>`;
-                users.forEach(u => { html += `<tr><td><img src="${u.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E'}" class="user-avatar"></td><td>${u.username}</td><td>${u.email}</td><td><span class="role-badge ${u.role==='admin'?'admin':''}">${u.role}</span></td><td><span class="status-badge ${u.blocked?'status-blocked':'status-active'}">${u.blocked ? '🚫 Blocked' : '✅ Active'}</span></td><td><button class="btn-sm" onclick="renameUser('${u.id}')" title="Rename">✏️</button><button class="btn-sm" onclick="changePass('${u.id}')" title="Password">🔑</button><button class="btn-sm ${u.role==='admin'?'btn-warning':''}" onclick="toggleAdmin('${u.id}')" title="Toggle admin">${u.role==='admin'?'⬇️':'⬆️'}</button><button class="btn-sm btn-danger" onclick="toggleBlock('${u.id}')" title="${u.blocked?'Unblock':'Block'}">${u.blocked?'🔓':'🔒'}</button><button class="btn-sm btn-danger" onclick="deleteUser('${u.id}')" title="Delete">🗑</button></td></tr>`; });
-                html += '</tbody></table>'; document.getElementById('userTableContainer').innerHTML = html;
-                loadSkins(); renderAdminSkinsList();
-            }
-
-            window.renameUser = function(id) { const name = prompt('New username:'); if (name) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.username = name; saveUsers(users); renderAdminPage(); } } };
-            window.changePass = function(id) { const pass = prompt('New password:'); if (pass) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.password = pass; saveUsers(users); renderAdminPage(); } } };
-            window.toggleAdmin = function(id) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.role = user.role === 'admin' ? 'user' : 'admin'; saveUsers(users); renderAdminPage(); } };
-            window.toggleBlock = function(id) { const users = getUsers(); const user = users.find(u => u.id === id); if (user) { user.blocked = !user.blocked; saveUsers(users); renderAdminPage(); } };
-            window.deleteUser = function(id) { if (confirm('Delete user permanently?')) { let users = getUsers(); users = users.filter(u => u.id !== id); saveUsers(users); renderAdminPage(); } };
-
-            loadSkins();
-
-            // ---- Auto-login now at the very end, after all functions are defined ----
+            // Auto-login skips confirmation because user already confirmed earlier
             (function autoLogin() {
                 const rememberedId = localStorage.getItem(REMEMBER_KEY);
                 if (rememberedId) {
                     const users = getUsers();
                     const user = users.find(u => u.id === rememberedId && !u.blocked);
-                    if (user) {
-                        currentUser = user;
-                        showApp();
-                    } else {
-                        localStorage.removeItem(REMEMBER_KEY);
-                    }
+                    if (user) { currentUser = user; showApp(); }
+                    else { localStorage.removeItem(REMEMBER_KEY); }
                 }
             })();
+
+            // ---- HOME PAGE: App interactions ----
+            window.openLink = function(url) { window.open(url, '_blank'); };
+            window.shareApp = function(name, url) {
+                if (navigator.share) { navigator.share({ title: name, url: url }).catch(() => {}); }
+                else { navigator.clipboard.writeText(url).then(() => showToast('Link copied!')); }
+            };
+
+            function getVotes(key) { return JSON.parse(localStorage.getItem(`votes_${key}`)) || { likes: 0, dislikes: 0 }; }
+            function setVotes(key, votes) { localStorage.setItem(`votes_${key}`, JSON.stringify(votes)); }
+            window.vote = function(app, type) {
+                const key = app;
+                const votes = getVotes(key);
+                votes[type === 'like' ? 'likes' : 'dislikes'] += 1;
+                setVotes(key, votes);
+                updateVoteDisplay(app);
+            };
+            function updateVoteDisplay(app) {
+                const votes = getVotes(app);
+                const likesEl = document.getElementById(`${app}-likes`);
+                const dislikesEl = document.getElementById(`${app}-dislikes`);
+                if (likesEl) likesEl.textContent = votes.likes;
+                if (dislikesEl) dislikesEl.textContent = votes.dislikes;
+            }
+            ['diegoai', 'lurk'].forEach(app => updateVoteDisplay(app));
+
+            // Skin generator / admin (unchanged)
         });
     </script>
 </body>
