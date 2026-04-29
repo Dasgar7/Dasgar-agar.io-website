@@ -45,6 +45,7 @@
         button:focus, a:focus, input:focus, textarea:focus, select:focus, .btn:focus, .drawer-link:focus {
             outline:none; box-shadow:none; background-color:inherit;
         }
+        svg { display:inline-block; vertical-align:middle; flex-shrink:0; }
 
         .auth-container {
             background: var(--bg-card);
@@ -68,6 +69,7 @@
             position:absolute; right:10px; top:50%; transform:translateY(-50%);
             background:none; border:none; color:var(--text-muted); font-size:1.2rem;
             cursor:pointer; padding:4px; line-height:1; transition: var(--transition);
+            display:flex; align-items:center; justify-content:center;
         }
         .eye-toggle:hover { color: var(--green-bright); }
         .upload-zone {
@@ -85,13 +87,13 @@
             padding:11px 22px; border-radius:40px; border:none; cursor:pointer;
             font-weight:700; text-transform:uppercase; font-size:0.85rem; transition:var(--transition);
             width:100%; background:var(--green); color:#000; box-shadow:0 0 18px var(--green-glow);
+            display:inline-flex; align-items:center; justify-content:center; gap:6px;
         }
         .btn:hover { background:var(--green-bright); }
         .auth-toggle { text-align:center; margin-top:16px; color:var(--text-muted); }
         .auth-toggle span { color:var(--green); cursor:pointer; font-weight:600; }
         .remember-row { display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--text-muted); margin-bottom:16px; }
 
-        /* Guest button – more visible */
         .btn-guest {
             background: transparent;
             border: 2px solid var(--green);
@@ -105,7 +107,6 @@
             color: #fff;
         }
 
-        /* Modals (general) */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
             z-index: 300; display: flex; align-items: center; justify-content: center;
@@ -120,7 +121,7 @@
             transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .modal-overlay.open .modal-card { transform: scale(1); }
-        .modal-card h3 { color: var(--green-bright); margin-bottom: 20px; font-size: 1.2rem; }
+        .modal-card h3 { color: var(--green-bright); margin-bottom: 20px; font-size: 1.2rem; display:flex; align-items:center; justify-content:center; gap:8px; }
         .modal-user-info {
             display: flex; flex-direction: column; align-items: center; gap: 12px;
             margin-bottom: 28px;
@@ -144,7 +145,6 @@
         .btn-confirm:hover { background: var(--green-bright); }
         .btn-cancel:hover { background: rgba(255,255,255,0.03); color: #fff; }
 
-        /* CAPTCHA specific */
         .captcha-question {
             font-size: 1.4rem;
             font-weight: 700;
@@ -162,6 +162,56 @@
             text-align: center;
             margin-bottom: 16px;
         }
+
+        .guest-contact-box {
+            background: #0d160d;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .guest-contact-box p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        .guest-contact-box .ig-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            background-size: 300% 300%;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: transform 0.2s;
+            animation: gradientShift 3s ease infinite;
+        }
+        .guest-contact-box .ig-link:active { transform: scale(0.95); }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .key-input {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-light);
+            background: #0d160d;
+            color: #fff;
+            font-size: 1.1rem;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .key-input:focus { border-color: var(--green); box-shadow: 0 0 10px var(--green-glow); }
 
         #mainApp { display:none; width:100%; min-height:100vh; flex-direction:column; }
         .app-container { max-width:1300px; margin:0 auto; padding:0 24px; display:flex; flex-direction:column; min-height:100vh; }
@@ -181,7 +231,7 @@
         @keyframes greenGradientShift {
             0% { background-position:0% 50%; } 50% { background-position:100% 50%; } 100% { background-position:0% 50%; }
         }
-        .menu-toggle { background:transparent; border:none; color:var(--green-bright); font-size:1.8rem; cursor:pointer; padding:6px 12px; border-radius:8px; z-index:99; }
+        .menu-toggle { background:transparent; border:none; color:var(--green-bright); font-size:1.4rem; cursor:pointer; padding:6px 12px; border-radius:8px; z-index:99; display:flex; align-items:center; justify-content:center; }
         .menu-toggle:hover { background:rgba(74,222,128,0.1); }
         .user-dropdown {
             position:absolute; top:100%; left:0; margin-top:8px; background:var(--bg-card); border:1px solid var(--border-light);
@@ -199,7 +249,7 @@
             justify-content:flex-start; padding:20px; transform:translateY(-100%); transition:transform 0.35s; overflow-y:auto; max-height:80vh;
         }
         .drawer-panel.open { transform:translateY(0); }
-        .drawer-close { position:absolute; top:14px; right:20px; background:none; border:none; color:var(--green-bright); font-size:1.8rem; cursor:pointer; z-index:2; }
+        .drawer-close { position:absolute; top:14px; right:20px; background:none; border:none; color:var(--green-bright); font-size:1.4rem; cursor:pointer; z-index:2; display:flex; align-items:center; justify-content:center; padding:4px; }
         .drawer-nav { display:flex; flex-direction:column; align-items:center; gap:12px; width:100%; max-width:320px; margin-top:20px; }
         .drawer-link {
             padding:12px 18px; border-radius:var(--radius-sm); cursor:pointer; font-weight:600; font-size:0.9rem;
@@ -217,21 +267,19 @@
         .section-header h2 { font-size:3.5rem; font-weight:800; color:#fff; margin-bottom:6px; }
         .page-name-indicator { text-align:center; padding:12px 0 4px; color:var(--green-muted); font-size:0.8rem; text-transform:uppercase; opacity:0.8; }
 
-        /* Home page */
         .home-container { max-width: 700px; margin: 0 auto; }
         .greeting { text-align: center; font-size: 1.8rem; font-weight: 700; color: var(--green-bright); margin-bottom: 30px; }
         .app-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .app-card h3 { color: var(--green-bright); margin: 0; font-size: 1.2rem; }
+        .app-card h3 { color: var(--green-bright); margin: 0; font-size: 1.2rem; display:flex; align-items:center; gap:8px; }
         .app-card p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
         .app-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-        .btn-small { padding: 8px 16px; border-radius: 30px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; background: var(--green-dark); color: #fff; border: none; cursor: pointer; transition: var(--transition); }
+        .btn-small { padding: 8px 16px; border-radius: 30px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; background: var(--green-dark); color: #fff; border: none; cursor: pointer; transition: var(--transition); display:inline-flex; align-items:center; gap:4px; }
         .btn-small:hover { background: var(--green); color: #000; }
         .vote-group { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.2); border-radius: 30px; padding: 4px 12px; }
-        .vote-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; transition: 0.1s; }
+        .vote-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; transition: 0.1s; display:flex; align-items:center; justify-content:center; padding:4px; }
         .vote-btn:hover { color: var(--green-bright); }
         .vote-count { font-size: 0.8rem; min-width: 20px; text-align: center; }
 
-        /* Skins page categories */
         .category-section { margin-bottom: 40px; }
         .category-title {
             text-align: center; font-size: 1.4rem; font-weight: 700; color: var(--green-bright);
@@ -250,8 +298,7 @@
             background-size:cover; background-position:center; box-shadow:inset 0 2px 6px rgba(255,255,255,0.1);
         }
 
-        /* Admin */
-        .admin-centered { max-width: 420px; margin: 0 auto; width: 100%; }
+        .admin-centered { max-width: 600px; margin: 0 auto; width: 100%; }
         .admin-panel { background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius); padding:24px; margin-bottom:28px; }
         .user-table-wrapper { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border-light); margin-top: 10px; }
         .user-table { width: 100%; border-collapse: collapse; min-width: 450px; background: #0d160d; }
@@ -264,7 +311,7 @@
         .user-table tbody tr:nth-child(even):hover { background: #1a251a; }
         .user-table tbody td { padding: 10px 8px; font-size: 0.82rem; vertical-align: middle; color: var(--text); text-align: center; }
         .user-table .user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--green); box-shadow: 0 0 8px var(--green-glow); }
-        .status-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
+        .status-badge { display: inline-flex; align-items:center; gap:4px; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
         .status-active { background: rgba(74, 222, 128, 0.15); color: var(--green-bright); }
         .status-blocked { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
         .role-badge { font-weight: 600; color: var(--green-bright); }
@@ -272,11 +319,56 @@
         .action-toggle { background: transparent; border: 1px solid var(--border-light); color: var(--text-muted); font-size: 1.2rem; cursor: pointer; padding: 6px 10px; border-radius: 8px; transition: var(--transition); }
         .action-toggle:hover { background: var(--green-dark); color: #fff; }
 
+        .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 16px; }
+        .key-chip {
+            background: #0d160d;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 10px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 0.9rem;
+            position: relative;
+            transition: var(--transition);
+        }
+        .key-chip:hover { border-color: var(--green); }
+        .key-chip.used { opacity: 0.4; border-color: var(--border); }
+        .key-chip .key-code { color: var(--green-bright); font-weight: 700; letter-spacing: 1px; }
+        .key-chip .key-status { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
+        .key-chip .key-actions {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        .key-chip .key-actions button {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display:inline-flex; align-items:center; gap:4px;
+        }
+        .key-chip .key-actions button:hover { background: var(--green-dark); color: #fff; }
+        .key-gen-row { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; }
+        .key-gen-row input {
+            width: 80px;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-light);
+            background: #0d160d;
+            color: #fff;
+            text-align: center;
+        }
+
         .ios-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
         .ios-overlay.open { opacity: 1; visibility: visible; }
         .ios-sheet { background: var(--bg-card); border-radius: var(--radius); width: 90%; max-width: 360px; overflow: hidden; transform: scale(0.9) translateY(20px); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 20px 50px rgba(0,0,0,0.7); }
         .ios-overlay.open .ios-sheet { transform: scale(1) translateY(0); }
-        .ios-sheet button { display: block; width: 100%; background: transparent; border: none; color: var(--text); padding: 16px 20px; font-size: 1rem; text-align: center; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background 0.2s; }
+        .ios-sheet button { display: block; width: 100%; background: transparent; border: none; color: var(--text); padding: 16px 20px; font-size: 1rem; text-align: center; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; }
         .ios-sheet button:active { background: rgba(74,222,128,0.1); }
         .ios-sheet button.danger { color: var(--danger); font-weight: 600; }
         .ios-sheet button.cancel { font-weight: 700; color: var(--green-bright); border-bottom: none; }
@@ -297,14 +389,14 @@
         @media (max-width:850px) { .section-header h2 { font-size:2.5rem; } }
         @media (max-width:480px) { .section-header h2 { font-size:2rem; } .logo-name { font-size:1.4rem; } .admin-centered { max-width: 100%; } .user-table { min-width: 400px; } }
     </style>
+<base target="_blank">
 </head>
 <body>
-    <!-- AUTH PAGE -->
     <div id="authContainer" class="auth-container">
         <div id="loginForm">
             <h2>Sign In</h2>
             <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
-            <div class="form-group"><label>Password</label><div class="password-wrapper"><input type="password" id="loginPass" placeholder="••••••"><button type="button" class="eye-toggle" onclick="togglePassword('loginPass', this)">👁️</button></div></div>
+            <div class="form-group"><label>Password</label><div class="password-wrapper"><input type="password" id="loginPass" placeholder="••••••"><button type="button" class="eye-toggle" onclick="togglePassword('loginPass', this)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
             <div class="remember-row"><input type="checkbox" id="rememberMe"> Remember me</div>
             <button class="btn" onclick="login()">Sign In</button>
             <button class="btn btn-guest" onclick="guestLogin()">Continue as Guest</button>
@@ -312,16 +404,15 @@
         </div>
         <div id="signupForm" style="display:none;">
             <h2>Create Account</h2>
-            <div class="form-group"><label>Logo (optional)</label><div class="upload-zone" id="signupLogoZone"><p>📁 Click or drop image</p><input type="file" id="signupLogoFile" accept="image/*"></div><div class="logo-preview" id="signupLogoPreview" style="display:none;"></div></div>
+            <div class="form-group"><label>Logo (optional)</label><div class="upload-zone" id="signupLogoZone"><p><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Click or drop image</p><input type="file" id="signupLogoFile" accept="image/*"></div><div class="logo-preview" id="signupLogoPreview" style="display:none;"></div></div>
             <div class="form-group"><label>Username</label><input type="text" id="signupUsername" placeholder="John"></div>
             <div class="form-group"><label>Email</label><input type="email" id="signupEmail" placeholder="you@example.com"></div>
-            <div class="form-group"><label>Password</label><div class="password-wrapper"><input type="password" id="signupPass" placeholder="••••••"><button type="button" class="eye-toggle" onclick="togglePassword('signupPass', this)">👁️</button></div></div>
+            <div class="form-group"><label>Password</label><div class="password-wrapper"><input type="password" id="signupPass" placeholder="••••••"><button type="button" class="eye-toggle" onclick="togglePassword('signupPass', this)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
             <button class="btn" onclick="signup()">Sign Up</button>
             <div class="auth-toggle">Already have an account? <span onclick="showLogin()">Sign in</span></div>
         </div>
     </div>
 
-    <!-- CONFIRMATION MODAL (for registered users) -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal-card">
             <h3>Is this your account?</h3>
@@ -337,10 +428,9 @@
         </div>
     </div>
 
-    <!-- CAPTCHA MODAL -->
     <div class="modal-overlay" id="captchaModal">
         <div class="modal-card">
-            <h3>🤖 Are you a robot?</h3>
+            <h3><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg> Are you a robot?</h3>
             <p style="color:var(--text-muted);margin-bottom:12px;">Solve this to continue</p>
             <div class="captcha-question" id="captchaQuestion"></div>
             <input type="number" class="captcha-input" id="captchaAnswer" placeholder="Your answer">
@@ -351,11 +441,10 @@
         </div>
     </div>
 
-    <!-- WAITLIST CONFIRMATION MODAL -->
     <div class="modal-overlay" id="waitlistModal">
         <div class="modal-card">
-            <h3>⏳ Waitlist</h3>
-            <p style="color:var(--text-muted);margin-bottom:16px;">You are about to continue as a guest. <br>Your account is on a waitlist. <br>The admin will review and verify your account from the admin panel.</p>
+            <h3><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg> Waitlist</h3>
+            <p style="color:var(--text-muted);margin-bottom:16px;">You are about to continue as a guest.<br>Your account is on a waitlist.<br>The admin will review and verify your account from the admin panel.</p>
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="closeWaitlist()">Cancel</button>
                 <button class="btn-confirm" onclick="confirmGuest()">Yes, continue as guest</button>
@@ -363,7 +452,25 @@
         </div>
     </div>
 
-    <!-- MAIN APP -->
+    <div class="modal-overlay" id="guestActivationModal">
+        <div class="modal-card">
+            <h3><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg> Guest Activation</h3>
+            <div class="guest-contact-box">
+                <p>To get access, contact me on Instagram and request an activation key.</p>
+                <a href="https://www.instagram.com/7d_flt?igsh=MXh5Zm15Y2YweGtubQ==" target="_blank" class="ig-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    @7d_flt
+                </a>
+            </div>
+            <p style="color:var(--text-muted);margin-bottom:12px;font-size:0.85rem;">Enter your activation key below:</p>
+            <input type="text" class="key-input" id="guestKeyInput" placeholder="XXXX-XXXX" maxlength="10">
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeGuestActivation()">Back</button>
+                <button class="btn-confirm" onclick="validateGuestKey()">Activate</button>
+            </div>
+        </div>
+    </div>
+
     <div id="mainApp" class="app-container">
         <header class="header">
             <div class="logo-area" onclick="toggleUserMenu()">
@@ -371,48 +478,47 @@
                 <div class="user-dropdown" id="userDropdown"><button onclick="logout()">Logout</button></div>
             </div>
             <span class="logo-name">Dasgar</span>
-            <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+            <button class="menu-toggle" id="menuToggle" aria-label="Open menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
         </header>
         <div class="drawer-overlay" id="drawerOverlay"></div>
         <aside class="drawer-panel" id="drawerPanel">
-            <button class="drawer-close" id="drawerClose" aria-label="Close menu">✕</button>
+            <button class="drawer-close" id="drawerClose" aria-label="Close menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             <nav class="drawer-nav">
-                <button class="drawer-link active" id="nav-home" onclick="navigateTo('home')">🏠 Home</button>
-                <button class="drawer-link" id="nav-skins" onclick="navigateTo('skins')">🎨 Skins</button>
-                <button class="drawer-link" id="nav-about" onclick="navigateTo('about')">ℹ️ About</button>
-                <button class="drawer-link" id="nav-admin" onclick="navigateTo('admin')" style="display:none;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green-bright);"></span> Admin</button>
+                <button class="drawer-link active" id="nav-home" onclick="navigateTo('home')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home</button>
+                <button class="drawer-link" id="nav-skins" onclick="navigateTo('skins')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.01 17.461 2 12 2z"/></svg> Skins</button>
+                <button class="drawer-link" id="nav-about" onclick="navigateTo('about')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> About</button>
+                <button class="drawer-link" id="nav-admin" onclick="navigateTo('admin')" style="display:none;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green-bright);display:inline-block;"></span> Admin</button>
             </nav>
         </aside>
         <main class="main-content">
-            <!-- HOME PAGE -->
             <section class="page active" id="page-home">
                 <div class="page-name-indicator">Home</div>
                 <div class="home-container">
                     <div class="greeting" id="greetingText">Welcome</div>
                     <div class="app-card">
-                        <h3>🤖 DiegoAI</h3>
+                        <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg> DiegoAI</h3>
                         <p>My official AI Assistant ChatBot.</p>
                         <div class="app-actions">
                             <button class="btn-small" onclick="openLink('https://diegoai.lovable.app')">Get</button>
                             <button class="btn-small" onclick="shareApp('DiegoAI', 'https://diegoai.lovable.app')">Share</button>
                             <div class="vote-group">
-                                <button class="vote-btn" onclick="vote('diegoai', 'like')">👍</button>
+                                <button class="vote-btn" onclick="vote('diegoai', 'like')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></button>
                                 <span class="vote-count" id="diegoai-likes">0</span>
-                                <button class="vote-btn" onclick="vote('diegoai', 'dislike')">👎</button>
+                                <button class="vote-btn" onclick="vote('diegoai', 'dislike')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg></button>
                                 <span class="vote-count" id="diegoai-dislikes">0</span>
                             </div>
                         </div>
                     </div>
                     <div class="app-card">
-                        <h3>🚀 Lurk</h3>
+                        <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg> Lurk</h3>
                         <p>Full‑stack AI builder.</p>
                         <div class="app-actions">
                             <button class="btn-small" onclick="openLink('https://lurk-imagine-build.lovable.app')">Get</button>
                             <button class="btn-small" onclick="shareApp('Lurk', 'https://lurk-imagine-build.lovable.app')">Share</button>
                             <div class="vote-group">
-                                <button class="vote-btn" onclick="vote('lurk', 'like')">👍</button>
+                                <button class="vote-btn" onclick="vote('lurk', 'like')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></button>
                                 <span class="vote-count" id="lurk-likes">0</span>
-                                <button class="vote-btn" onclick="vote('lurk', 'dislike')">👎</button>
+                                <button class="vote-btn" onclick="vote('lurk', 'dislike')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg></button>
                                 <span class="vote-count" id="lurk-dislikes">0</span>
                             </div>
                         </div>
@@ -420,31 +526,38 @@
                 </div>
             </section>
 
-            <!-- SKINS PAGE (only category display) -->
             <section class="page" id="page-skins">
                 <div class="page-name-indicator">Skins</div>
                 <div class="section-header"><h2>Choose Your Skin</h2></div>
                 <div id="skinsCategoriesContainer"></div>
             </section>
 
-            <!-- ABOUT PAGE -->
             <section class="page" id="page-about"><div class="page-name-indicator">About</div><div class="section-header"><h2>About</h2></div></section>
 
-            <!-- ADMIN PAGE -->
             <section class="page" id="page-admin">
                 <div class="page-name-indicator">Admin</div><div class="section-header"><h2>Admin Panel</h2></div>
                 <div class="admin-centered">
-                    <div class="admin-panel"><h3 style="text-align:center;">👥 User Management</h3><div class="user-table-wrapper" id="userTableContainer"></div></div>
+                    <div class="admin-panel"><h3 style="text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> User Management</h3><div class="user-table-wrapper" id="userTableContainer"></div></div>
+
                     <div class="admin-panel">
-                        <h3 style="text-align:center;">🎨 Skin Manager</h3>
+                        <h3 style="text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg> Guest Key Manager</h3>
+                        <div class="key-gen-row">
+                            <input type="number" id="keyCount" value="5" min="1" max="50">
+                            <button class="btn" onclick="generateKeys()" style="width:auto; padding: 10px 20px;">Generate Keys</button>
+                        </div>
+                        <div id="keysListContainer"></div>
+                    </div>
+
+                    <div class="admin-panel">
+                        <h3 style="text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.01 17.461 2 12 2z"/></svg> Skin Manager</h3>
                         <div style="display:flex;flex-direction:column;gap:20px;">
                             <div>
                                 <h4 style="text-align:center;">Add New Skin</h4>
                                 <div class="form-group"><label>Skin Name</label><input type="text" id="skinName" placeholder="e.g. Emerald Blob" maxlength="30"></div>
                                 <div class="form-group"><label>Category</label><select id="skinCategory"><option value="free skins">Free Skins</option><option value="vip skins">VIP Skins</option><option value="exclusive skins">Exclusive Skins</option><option value="premium skins">Premium Skins</option><option value="custom skins">Custom Skins</option><option value="mystery skins">Mystery Skins</option><option value="golden pass skins">Golden Pass Skins</option><option value="adventure skins">Adventure Skins</option><option value="veteran skins">Veteran Skins</option><option value="quest skins">Quest Skins</option><option value="youtuber skins">Youtuber Skins</option><option value="pokemon skins">Pokemon Skins</option><option value="thunderbirds skins">Thunderbirds Skins</option></select></div>
-                                <div class="form-group"><label>Upload Image (optional)</label><div class="upload-zone" id="uploadZone"><p>📁 Click or drag & drop an image</p><input type="file" id="fileInput" accept="image/*"></div><div class="logo-preview" id="uploadPreview" style="display:none;"></div></div>
+                                <div class="form-group"><label>Upload Image (optional)</label><div class="upload-zone" id="uploadZone"><p><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Click or drag & drop an image</p><input type="file" id="fileInput" accept="image/*"></div><div class="logo-preview" id="uploadPreview" style="display:none;"></div></div>
                                 <div class="form-group"><label>Or Pick Color</label><input type="color" id="skinColor" value="#4ade80"></div>
-                                <button class="btn" onclick="addSkin()">💾 Save Skin</button>
+                                <button class="btn" onclick="addSkin()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Skin</button>
                             </div>
                             <div><h4 style="text-align:center;">Existing Skins</h4><div id="adminSkinsList"></div></div>
                         </div>
@@ -485,25 +598,42 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // PWA
             function generateIcon() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 192; const ctx = canvas.getContext('2d'); ctx.beginPath(); ctx.arc(96, 96, 80, 0, Math.PI*2); ctx.fillStyle = '#4ade80'; ctx.fill(); ctx.shadowColor = '#000'; ctx.shadowBlur = 20; ctx.fill(); ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(70, 70, 20, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill(); return canvas.toDataURL('image/png'); }
             function registerServiceWorker() { if ('serviceWorker' in navigator) { const swCode = `const CACHE_NAME='dasgar-cache-v1';self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll([self.location.href])).then(()=>self.skipWaiting())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`; navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode],{type:'application/javascript'}))).catch(()=>{}); } }
             function setupManifest() { const manifest = {name:'Dasgar',short_name:'Dasgar',start_url:window.location.href,display:'standalone',background_color:'#0a0f0a',theme_color:'#0a0f0a',icons:[{src:generateIcon(),sizes:'192x192',type:'image/png'}]}; document.getElementById('manifest-link').href = URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/json'})); }
             setupManifest(); registerServiceWorker();
 
-            window.togglePassword = function(inputId, btn) { const input = document.getElementById(inputId); if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; } else { input.type = 'password'; btn.textContent = '👁️'; } };
+            const EYE_OPEN = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+            const EYE_CLOSED = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
 
-            const USERS_KEY = 'site_users_v2', SKINS_KEY = 'agarskins_data_v2', ADMIN_EMAIL = 'dasgari769@gmail.com';
+            window.togglePassword = function(inputId, btn) {
+                const input = document.getElementById(inputId);
+                if (input.type === 'password') { input.type = 'text'; btn.innerHTML = EYE_CLOSED; }
+                else { input.type = 'password'; btn.innerHTML = EYE_OPEN; }
+            };
+
+            // ---- SECURITY: Admin credentials are hardcoded and obfuscated ----
+            // Other users CANNOT sign up with the admin email.
+            // Admin login bypasses localStorage and works on ANY environment.
+            const ADMIN_EMAIL = 'dasgari769@gmail.com';
+            const ADMIN_PASS_ENC = 'ZGFzZ2FyYWdhcng='; // base64 encoded password
+
+            function checkAdminCreds(email, password) {
+                if (email !== ADMIN_EMAIL) return false;
+                try { return btoa(password) === ADMIN_PASS_ENC; } catch(e) { return false; }
+            }
+
+            const USERS_KEY = 'site_users_v2', SKINS_KEY = 'agarskins_data_v2', KEYS_KEY = 'dasgar_guest_keys_v1';
             const REMEMBER_KEY = 'remembered_user_id';
             let currentUser = null, pendingUser = null, signupLogoData = null, uploadedSkinImage = null;
             const CATEGORIES = ['free skins','vip skins','exclusive skins','premium skins','custom skins','mystery skins','golden pass skins','adventure skins','veteran skins','quest skins','youtuber skins','pokemon skins','thunderbirds skins'];
-
-            // CAPTCHA state
             let captchaAnswer = 0;
 
             function showToast(msg, type='') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + type + ' show'; clearTimeout(t._time); t._time = setTimeout(() => t.classList.remove('show'), 2500); }
             function getUsers() { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch(e) { return []; } }
             function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+            function getKeys() { try { return JSON.parse(localStorage.getItem(KEYS_KEY)) || []; } catch(e) { return []; } }
+            function saveKeys(keys) { localStorage.setItem(KEYS_KEY, JSON.stringify(keys)); }
 
             (function() { const users = getUsers(); let changed = false; users.forEach(u => { if (u.email !== u.email.toLowerCase()) { u.email = u.email.toLowerCase(); changed = true; } }); if (changed) saveUsers(users); })();
 
@@ -515,6 +645,35 @@
             window.login = function() {
                 const email = document.getElementById('loginEmail').value.trim().toLowerCase();
                 const pass = document.getElementById('loginPass').value;
+
+                // ---- ADMIN OVERRIDE: Works on any device/environment ----
+                if (checkAdminCreds(email, pass)) {
+                    let users = getUsers();
+                    let adminUser = users.find(u => u.email === ADMIN_EMAIL);
+                    if (!adminUser) {
+                        adminUser = {
+                            id: 'admin_' + Date.now(),
+                            username: 'Admin',
+                            email: ADMIN_EMAIL,
+                            password: pass,
+                            logo: '',
+                            role: 'admin',
+                            blocked: false
+                        };
+                        users.push(adminUser);
+                    } else {
+                        adminUser.role = 'admin';
+                        adminUser.blocked = false;
+                        adminUser.password = pass;
+                    }
+                    saveUsers(users);
+                    currentUser = adminUser;
+                    if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, currentUser.id);
+                    else localStorage.removeItem(REMEMBER_KEY);
+                    showApp();
+                    return;
+                }
+
                 const users = getUsers();
                 const user = users.find(u => u.email === email);
                 if (!user) return showToast('User not found', 'error');
@@ -537,7 +696,6 @@
                 showApp();
             };
 
-            // ---- GUEST LOGIN WITH CAPTCHA + WAITLIST ----
             function generateCaptcha() {
                 const a = Math.floor(Math.random() * 10) + 1;
                 const b = Math.floor(Math.random() * 10) + 1;
@@ -562,7 +720,7 @@
                     document.getElementById('waitlistModal').classList.add('open');
                 } else {
                     showToast('Wrong answer. Try again.', 'error');
-                    generateCaptcha(); // new question
+                    generateCaptcha();
                 }
             };
 
@@ -572,6 +730,28 @@
 
             window.confirmGuest = function() {
                 document.getElementById('waitlistModal').classList.remove('open');
+                document.getElementById('guestActivationModal').classList.add('open');
+                document.getElementById('guestKeyInput').value = '';
+            };
+
+            window.closeGuestActivation = function() {
+                document.getElementById('guestActivationModal').classList.remove('open');
+            };
+
+            window.validateGuestKey = function() {
+                const input = document.getElementById('guestKeyInput').value.trim().toUpperCase();
+                if (!input) return showToast('Please enter a key', 'error');
+                const keys = getKeys();
+                const keyObj = keys.find(k => k.code === input && !k.used);
+                if (!keyObj) {
+                    showToast('Invalid or used key', 'error');
+                    return;
+                }
+                keyObj.used = true;
+                keyObj.usedAt = Date.now();
+                keyObj.usedBy = 'guest_' + Date.now();
+                saveKeys(keys);
+                document.getElementById('guestActivationModal').classList.remove('open');
                 const guestUser = {
                     id: 'guest_' + Date.now(),
                     username: 'Guest',
@@ -579,21 +759,94 @@
                     password: '',
                     logo: '',
                     role: 'user',
-                    blocked: false
+                    blocked: false,
+                    activatedByKey: keyObj.code
                 };
                 currentUser = guestUser;
                 document.getElementById('rememberMe').checked = false;
                 showApp();
+                showToast('Welcome, Guest!');
             };
+
+            function generateRandomKey() {
+                const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                let key = '';
+                for (let i = 0; i < 8; i++) {
+                    key += chars.charAt(Math.floor(Math.random() * chars.length));
+                    if (i === 3) key += '-';
+                }
+                return key;
+            }
+
+            window.generateKeys = function() {
+                const count = parseInt(document.getElementById('keyCount').value) || 5;
+                const keys = getKeys();
+                const newKeys = [];
+                for (let i = 0; i < count; i++) {
+                    let code;
+                    do { code = generateRandomKey(); } while (keys.some(k => k.code === code));
+                    newKeys.push({
+                        id: 'key_' + Date.now() + '_' + i,
+                        code: code,
+                        used: false,
+                        usedBy: null,
+                        usedAt: null,
+                        createdAt: Date.now()
+                    });
+                }
+                keys.push(...newKeys);
+                saveKeys(keys);
+                renderKeysList();
+                showToast(`Generated ${count} new keys`);
+            };
+
+            window.copyKey = function(code) {
+                navigator.clipboard.writeText(code).then(() => showToast('Key copied!'));
+            };
+
+            window.deleteKey = function(id) {
+                if (!confirm('Delete this key?')) return;
+                let keys = getKeys();
+                keys = keys.filter(k => k.id !== id);
+                saveKeys(keys);
+                renderKeysList();
+            };
+
+            function renderKeysList() {
+                const container = document.getElementById('keysListContainer');
+                if (!container) return;
+                const keys = getKeys();
+                if (keys.length === 0) {
+                    container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:20px;">No keys generated yet.</p>';
+                    return;
+                }
+                let html = '<div class="key-grid">';
+                keys.slice().reverse().forEach(k => {
+                    html += `
+                        <div class="key-chip ${k.used ? 'used' : ''}">
+                            <div class="key-code">${k.code}</div>
+                            <div class="key-status">${k.used ? 'Used' : 'Active'}</div>
+                            <div class="key-actions">
+                                <button onclick="copyKey('${k.code}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button>
+                                <button onclick="deleteKey('${k.id}')" style="color:var(--danger);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Del</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            }
 
             window.signup = function() {
                 const username = document.getElementById('signupUsername').value.trim();
                 const email = document.getElementById('signupEmail').value.trim().toLowerCase();
                 const pass = document.getElementById('signupPass').value;
                 if (!username || !email || !pass) return showToast('All fields required', 'error');
+                // Block admin email registration
+                if (email === ADMIN_EMAIL) return showToast('This email is reserved', 'error');
                 const users = getUsers();
                 if (users.find(u => u.email === email)) return showToast('Email already used', 'error');
-                const newUser = { id: Date.now().toString(), username, email, password: pass, logo: signupLogoData || '', role: (email === ADMIN_EMAIL ? 'admin' : 'user'), blocked: false };
+                const newUser = { id: Date.now().toString(), username, email, password: pass, logo: signupLogoData || '', role: 'user', blocked: false };
                 users.push(newUser); saveUsers(users); currentUser = newUser;
                 if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, newUser.id);
                 else localStorage.removeItem(REMEMBER_KEY);
@@ -628,7 +881,6 @@
             document.getElementById('drawerClose').addEventListener('click', closePanel); $drawerOverlay.addEventListener('click', closePanel);
             document.querySelectorAll('.drawer-link').forEach(link => link.addEventListener('click', closePanel));
 
-            // ---- HOME PAGE ----
             window.openLink = function(url) { window.open(url, '_blank'); };
             window.shareApp = function(name, url) { if (navigator.share) { navigator.share({ title: name, url: url }).catch(() => {}); } else { navigator.clipboard.writeText(url).then(() => showToast('Link copied!')); } };
             function getVotes(key) { return JSON.parse(localStorage.getItem(`votes_${key}`)) || { likes: 0, dislikes: 0 }; }
@@ -637,7 +889,6 @@
             function updateVoteDisplay(app) { const votes = getVotes(app); const likesEl = document.getElementById(`${app}-likes`); const dislikesEl = document.getElementById(`${app}-dislikes`); if (likesEl) likesEl.textContent = votes.likes; if (dislikesEl) dislikesEl.textContent = votes.dislikes; }
             ['diegoai', 'lurk'].forEach(app => updateVoteDisplay(app));
 
-            // ---- SKINS PAGE (category display) ----
             let skins = [];
             function loadSkins() { try { skins = JSON.parse(localStorage.getItem(SKINS_KEY)) || []; skins = skins.map(s => ({ ...s, category: s.category || 'free skins' })); } catch(e) { skins = []; } }
             function saveSkins() { localStorage.setItem(SKINS_KEY, JSON.stringify(skins)); }
@@ -664,16 +915,34 @@
                 if (skins.length === 0) { container.innerHTML = '<p style="text-align:center;color:var(--text-muted);">No skins yet.</p>'; }
             }
 
-            // ---- ADMIN ----
             window.addSkin = function() { const name = document.getElementById('skinName').value.trim(); if (!name) return showToast('Enter a skin name', 'error'); const category = document.getElementById('skinCategory').value; const color = document.getElementById('skinColor').value; const imageData = uploadedSkinImage; const newSkin = { id: 'sk_' + Date.now(), name, category, color, imageData: imageData || null, type: imageData ? 'image' : 'color' }; skins.push(newSkin); saveSkins(); renderAdminSkinsList(); document.getElementById('skinName').value = ''; document.getElementById('uploadPreview').style.display = 'none'; uploadedSkinImage = null; showToast('Skin added!'); };
             document.getElementById('fileInput').addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 200; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 200, 200); uploadedSkinImage = canvas.toDataURL('image/png'); document.getElementById('uploadPreview').style.backgroundImage = `url(${uploadedSkinImage})`; document.getElementById('uploadPreview').style.display = 'block'; }; img.src = e.target.result; }; reader.readAsDataURL(file); });
-            function renderAdminSkinsList() { const container = document.getElementById('adminSkinsList'); if (!container) return; container.innerHTML = skins.length ? '' : '<p>No skins.</p>'; skins.forEach(skin => { const div = document.createElement('div'); div.className = 'skin-card'; div.style.flexDirection = 'row'; div.style.justifyContent = 'space-between'; let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`; div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><div class="skin-blob-preview" style="width:40px;height:40px;background:${bg};"></div><span>${skin.name} <small style="color:var(--text-muted);">(${skin.category})</small></span></div><button class="btn-sm btn-danger" onclick="deleteSkin('${skin.id}')">🗑</button>`; container.appendChild(div); }); }
+            function renderAdminSkinsList() { const container = document.getElementById('adminSkinsList'); if (!container) return; container.innerHTML = skins.length ? '' : '<p>No skins.</p>'; skins.forEach(skin => { const div = document.createElement('div'); div.className = 'skin-card'; div.style.flexDirection = 'row'; div.style.justifyContent = 'space-between'; let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`; div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><div class="skin-blob-preview" style="width:40px;height:40px;background:${bg};"></div><span>${skin.name} <small style="color:var(--text-muted);">(${skin.category})</small></span></div><button class="btn-sm btn-danger" onclick="deleteSkin('${skin.id}')" style="background:transparent;border:1px solid var(--danger);color:var(--danger);border-radius:6px;padding:4px 8px;cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>`; container.appendChild(div); }); }
             window.deleteSkin = function(id) { skins = skins.filter(s => s.id !== id); saveSkins(); renderAdminSkinsList(); };
 
-            // iOS sheet actions
             let currentActionUserId = null;
             const iosOverlay = document.getElementById('iosOverlay'), iosSheet = document.getElementById('iosSheet');
-            function showIOSActions(userId) { const users = getUsers(); const user = users.find(u => u.id === userId); if (!user) return; currentActionUserId = userId; let actionsHTML = `<button onclick="handleRename()">✏️ Rename</button><button onclick="handlePassword()">🔑 Password</button><button onclick="handleToggleAdmin()">${user.role==='admin'?'⬇️':'⬆️'} Toggle Admin</button><button onclick="handleToggleBlock()">${user.blocked?'🔓 Unblock':'🔒 Block'}</button><button class="danger" onclick="handleDeleteUser()">🗑 Delete</button><button class="cancel" onclick="closeIOSSheet()">Cancel</button>`; iosSheet.innerHTML = actionsHTML; iosOverlay.classList.add('open'); }
+
+            const ICON_EDIT = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+            const ICON_KEY = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>`;
+            const ICON_ARR_UP = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>`;
+            const ICON_ARR_DOWN = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>`;
+            const ICON_LOCK = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+            const ICON_UNLOCK = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>`;
+            const ICON_TRASH = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
+            const ICON_CHECK = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+            const ICON_BAN = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>`;
+
+            function showIOSActions(userId) {
+                const users = getUsers(); const user = users.find(u => u.id === userId); if (!user) return;
+                currentActionUserId = userId;
+                const adminIcon = user.role==='admin' ? ICON_ARR_DOWN : ICON_ARR_UP;
+                const blockIcon = user.blocked ? ICON_UNLOCK : ICON_LOCK;
+                const blockLabel = user.blocked ? 'Unblock' : 'Block';
+                const adminLabel = user.role==='admin' ? 'Demote Admin' : 'Promote Admin';
+                let actionsHTML = `<button onclick="handleRename()">${ICON_EDIT} Rename</button><button onclick="handlePassword()">${ICON_KEY} Password</button><button onclick="handleToggleAdmin()">${adminIcon} ${adminLabel}</button><button onclick="handleToggleBlock()">${blockIcon} ${blockLabel}</button><button class="danger" onclick="handleDeleteUser()">${ICON_TRASH} Delete</button><button class="cancel" onclick="closeIOSSheet()">Cancel</button>`;
+                iosSheet.innerHTML = actionsHTML; iosOverlay.classList.add('open');
+            }
             window.showIOSActions = showIOSActions;
             window.closeIOSSheet = function() { iosOverlay.classList.remove('open'); currentActionUserId = null; };
             iosOverlay.addEventListener('click', (e) => { if (e.target === iosOverlay) closeIOSSheet(); });
@@ -685,10 +954,15 @@
 
             function renderAdminPage() {
                 if (!currentUser || currentUser.email !== ADMIN_EMAIL) { document.getElementById('userTableContainer').innerHTML = '<p>Access denied.</p>'; document.getElementById('adminSkinsList').innerHTML = ''; return; }
-                const users = getUsers(); let html = `<table class="user-table"><thead><tr><th>Logo</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>`;
-                users.forEach(u => { html += `<tr><td><img src="${u.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E'}" class="user-avatar"></td><td>${u.username}</td><td>${u.email}</td><td><span class="role-badge ${u.role==='admin'?'admin':''}">${u.role}</span></td><td><span class="status-badge ${u.blocked?'status-blocked':'status-active'}">${u.blocked ? '🚫 Blocked' : '✅ Active'}</span></td><td><button class="action-toggle" onclick="showIOSActions('${u.id}')">⋯</button></td></tr>`; });
+                const users = getUsers();
+                let html = `<table class="user-table"><thead><tr><th>Logo</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>`;
+                users.forEach(u => {
+                    const statusIcon = u.blocked ? ICON_BAN : ICON_CHECK;
+                    const statusText = u.blocked ? 'Blocked' : 'Active';
+                    html += `<tr><td><img src="${u.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E'}" class="user-avatar"></td><td>${u.username}</td><td>${u.email}</td><td><span class="role-badge ${u.role==='admin'?'admin':''}">${u.role}</span></td><td><span class="status-badge ${u.blocked?'status-blocked':'status-active'}">${statusIcon} ${statusText}</span></td><td><button class="action-toggle" onclick="showIOSActions('${u.id}')">⋯</button></td></tr>`;
+                });
                 html += '</tbody></table>'; document.getElementById('userTableContainer').innerHTML = html;
-                loadSkins(); renderAdminSkinsList();
+                loadSkins(); renderAdminSkinsList(); renderKeysList();
             }
 
             loadSkins();
