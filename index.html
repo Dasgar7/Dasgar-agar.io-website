@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-title" content="Dasgar">
     <meta name="theme-color" content="#0a0f0a">
     <meta name="background-color" content="#0a0f0a">
-    <link rel="manifest" id="manifest-link">
+    <script type="text/javascript" nonce="4178b838a1454e258405d8c2925" src="//local.adguard.org?ts=1777460587217&amp;type=content-script&amp;dmn=prod-chat-kimi.tos-cn-beijing.volces.com&amp;url=https%3A%2F%2Fprod-chat-kimi.tos-cn-beijing.volces.com%2Fkimi-fs%2Fokc%2Fqzz7jgu2xepwi%2Foutput%2Fdasgar.html%3FX-Tos-Algorithm%3DTOS4-HMAC-SHA256%26X-Tos-Credential%3DAKLTYTJlNjgwMjY2ZDBkNDFiYmI5YWNiZDBlZmFmYjIzZTA%252F20260429%252Fcn-beijing%252Ftos%252Frequest%26X-Tos-Date%3D20260429T211130Z%26X-Tos-Expires%3D518400%26X-Tos-Signature%3De0ad05a3929d7cf3a338988f91b543dafe457d932cf7b3172ee2262549c9d698%26X-Tos-SignedHeaders%3Dhost%26response-content-disposition%3Dattachment%253B%2Bfilename%252A%253DUTF-8%2527%2527dasgar.html&amp;app=com.android.chrome&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=0"></script><link rel="manifest" id="manifest-link">
     <style>
         :root {
             --bg: #0a0f0a;
@@ -212,6 +212,34 @@
             margin-bottom: 16px;
         }
         .key-input:focus { border-color: var(--green); box-shadow: 0 0 10px var(--green-glow); }
+
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid var(--border-light);
+            border-top-color: var(--green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .device-info-box {
+            background: #0d160d;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .device-info-box .device-name {
+            color: var(--green-bright);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .device-info-box .device-time {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
 
         #mainApp { display:none; width:100%; min-height:100vh; flex-direction:column; }
         .app-container { max-width:1300px; margin:0 auto; padding:0 24px; display:flex; flex-direction:column; min-height:100vh; }
@@ -471,6 +499,42 @@
         </div>
     </div>
 
+    <!-- DEVICE REQUEST MODAL (shown on NEW device) -->
+    <div class="modal-overlay" id="deviceRequestModal">
+        <div class="modal-card">
+            <h3><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> New Device Detected</h3>
+            <p style="color:var(--text-muted);margin-bottom:20px;">A sign-in request has been sent to your other device.<br>Please approve it to continue.</p>
+            <div style="margin-bottom:20px;">
+                <div class="spinner"></div>
+                <p style="color:var(--text-muted);font-size:0.85rem;margin-top:12px;">Waiting for approval from another device...</p>
+            </div>
+            <div class="device-info-box">
+                <div class="device-name" id="requestDeviceName"></div>
+                <div class="device-time">Requesting device</div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="cancelDeviceRequest()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEVICE VERIFY MODAL (shown on OLD device) -->
+    <div class="modal-overlay" id="deviceVerifyModal">
+        <div class="modal-card">
+            <h3><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Sign-in Request</h3>
+            <p style="color:var(--text-muted);margin-bottom:12px;">Someone is trying to sign in to your account from:</p>
+            <div class="device-info-box">
+                <div class="device-name" id="verifyDeviceName"></div>
+                <div class="device-time" id="verifyDeviceTime"></div>
+            </div>
+            <p style="color:var(--text);margin-bottom:20px;font-weight:600;">Is this you?</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="denyDeviceLogin()">No, it's not me</button>
+                <button class="btn-confirm" onclick="approveDeviceLogin()">Yes, it's me</button>
+            </div>
+        </div>
+    </div>
+
     <div id="mainApp" class="app-container">
         <header class="header">
             <div class="logo-area" onclick="toggleUserMenu()">
@@ -598,6 +662,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // PWA
             function generateIcon() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 192; const ctx = canvas.getContext('2d'); ctx.beginPath(); ctx.arc(96, 96, 80, 0, Math.PI*2); ctx.fillStyle = '#4ade80'; ctx.fill(); ctx.shadowColor = '#000'; ctx.shadowBlur = 20; ctx.fill(); ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(70, 70, 20, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill(); return canvas.toDataURL('image/png'); }
             function registerServiceWorker() { if ('serviceWorker' in navigator) { const swCode = `const CACHE_NAME='dasgar-cache-v1';self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll([self.location.href])).then(()=>self.skipWaiting())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`; navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode],{type:'application/javascript'}))).catch(()=>{}); } }
             function setupManifest() { const manifest = {name:'Dasgar',short_name:'Dasgar',start_url:window.location.href,display:'standalone',background_color:'#0a0f0a',theme_color:'#0a0f0a',icons:[{src:generateIcon(),sizes:'192x192',type:'image/png'}]}; document.getElementById('manifest-link').href = URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/json'})); }
@@ -612,20 +677,19 @@
                 else { input.type = 'password'; btn.innerHTML = EYE_OPEN; }
             };
 
-            // ---- SECURITY: Admin credentials are hardcoded and obfuscated ----
-            // Other users CANNOT sign up with the admin email.
-            // Admin login bypasses localStorage and works on ANY environment.
+            // ---- SECURITY: Admin credentials ----
             const ADMIN_EMAIL = 'dasgari769@gmail.com';
-            const ADMIN_PASS_ENC = 'ZGFzZ2FyYWdhcng='; // base64 encoded password
-
+            const ADMIN_PASS_ENC = 'ZGFzZ2FyYWdhcng=';
             function checkAdminCreds(email, password) {
                 if (email !== ADMIN_EMAIL) return false;
                 try { return btoa(password) === ADMIN_PASS_ENC; } catch(e) { return false; }
             }
 
             const USERS_KEY = 'site_users_v2', SKINS_KEY = 'agarskins_data_v2', KEYS_KEY = 'dasgar_guest_keys_v1';
-            const REMEMBER_KEY = 'remembered_user_id';
+            const SESSIONS_KEY = 'dasgar_sessions_v1', LOGIN_REQ_KEY = 'dasgar_login_requests_v1';
+            const DEVICE_ID_KEY = 'dasgar_device_id', REMEMBER_KEY = 'remembered_user_id';
             let currentUser = null, pendingUser = null, signupLogoData = null, uploadedSkinImage = null;
+            let currentLoginRequestId = null, devicePollInterval = null, approvalPollInterval = null;
             const CATEGORIES = ['free skins','vip skins','exclusive skins','premium skins','custom skins','mystery skins','golden pass skins','adventure skins','veteran skins','quest skins','youtuber skins','pokemon skins','thunderbirds skins'];
             let captchaAnswer = 0;
 
@@ -634,6 +698,26 @@
             function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
             function getKeys() { try { return JSON.parse(localStorage.getItem(KEYS_KEY)) || []; } catch(e) { return []; } }
             function saveKeys(keys) { localStorage.setItem(KEYS_KEY, JSON.stringify(keys)); }
+            function getSessions() { try { return JSON.parse(localStorage.getItem(SESSIONS_KEY)) || []; } catch(e) { return []; } }
+            function saveSessions(sessions) { localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions)); }
+            function getLoginRequests() { try { return JSON.parse(localStorage.getItem(LOGIN_REQ_KEY)) || []; } catch(e) { return []; } }
+            function saveLoginRequests(requests) { localStorage.setItem(LOGIN_REQ_KEY, JSON.stringify(requests)); }
+
+            function getDeviceId() {
+                let id = localStorage.getItem(DEVICE_ID_KEY);
+                if (!id) { id = 'dev_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); localStorage.setItem(DEVICE_ID_KEY, id); }
+                return id;
+            }
+            function getDeviceName() {
+                const ua = navigator.userAgent;
+                if (ua.includes('Windows')) return 'Windows PC';
+                if (ua.includes('Mac') && !ua.includes('iPhone')) return 'Mac';
+                if (ua.includes('Linux')) return 'Linux';
+                if (ua.includes('Android')) return 'Android Device';
+                if (ua.includes('iPhone')) return 'iPhone';
+                if (ua.includes('iPad')) return 'iPad';
+                return 'Web Browser';
+            }
 
             (function() { const users = getUsers(); let changed = false; users.forEach(u => { if (u.email !== u.email.toLowerCase()) { u.email = u.email.toLowerCase(); changed = true; } }); if (changed) saveUsers(users); })();
 
@@ -642,24 +726,60 @@
 
             document.getElementById('signupLogoFile').addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 100; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 100, 100); signupLogoData = canvas.toDataURL('image/png'); document.getElementById('signupLogoPreview').style.backgroundImage = `url(${signupLogoData})`; document.getElementById('signupLogoPreview').style.display = 'block'; }; img.src = e.target.result; }; reader.readAsDataURL(file); });
 
+            // ---- SESSION MANAGEMENT ----
+            function createSession(user) {
+                const sessions = getSessions().filter(s => {
+                    const isStale = (Date.now() - s.lastPing) > 10 * 60 * 1000;
+                    return !isStale && !(s.userId === user.id && s.deviceId === getDeviceId());
+                });
+                sessions.push({
+                    id: 'sess_' + Date.now(),
+                    userId: user.id,
+                    email: user.email,
+                    deviceId: getDeviceId(),
+                    deviceName: getDeviceName(),
+                    startedAt: Date.now(),
+                    lastPing: Date.now()
+                });
+                saveSessions(sessions);
+            }
+            function updateSessionPing() {
+                if (!currentUser) return;
+                const sessions = getSessions();
+                const session = sessions.find(s => s.userId === currentUser.id && s.deviceId === getDeviceId());
+                if (session) { session.lastPing = Date.now(); saveSessions(sessions); }
+            }
+            function hasActiveSessionsOnOtherDevices(email) {
+                const sessions = getSessions();
+                const now = Date.now();
+                return sessions.filter(s => s.email === email && s.deviceId !== getDeviceId() && (now - s.lastPing) < 10 * 60 * 1000);
+            }
+            function cleanupStaleSessions() {
+                const sessions = getSessions().filter(s => (Date.now() - s.lastPing) < 10 * 60 * 1000);
+                saveSessions(sessions);
+            }
+            setInterval(cleanupStaleSessions, 60000);
+            setInterval(() => { if (currentUser) updateSessionPing(); }, 30000);
+
+            // ---- LOGIN WITH DEVICE VERIFICATION ----
+            function completeLogin(user) {
+                currentUser = user;
+                pendingUser = null;
+                createSession(currentUser);
+                if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, currentUser.id);
+                else localStorage.removeItem(REMEMBER_KEY);
+                showApp();
+            }
+
             window.login = function() {
                 const email = document.getElementById('loginEmail').value.trim().toLowerCase();
                 const pass = document.getElementById('loginPass').value;
 
-                // ---- ADMIN OVERRIDE: Works on any device/environment ----
                 if (checkAdminCreds(email, pass)) {
                     let users = getUsers();
                     let adminUser = users.find(u => u.email === ADMIN_EMAIL);
                     if (!adminUser) {
-                        adminUser = {
-                            id: 'admin_' + Date.now(),
-                            username: 'Admin',
-                            email: ADMIN_EMAIL,
-                            password: pass,
-                            logo: '',
-                            role: 'admin',
-                            blocked: false
-                        };
+                        adminUser = { id: 'admin_' + Date.now(), username: 'Admin', email: ADMIN_EMAIL, password: pass, logo: '', role: 'admin', blocked: false };
                         users.push(adminUser);
                     } else {
                         adminUser.role = 'admin';
@@ -667,10 +787,7 @@
                         adminUser.password = pass;
                     }
                     saveUsers(users);
-                    currentUser = adminUser;
-                    if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, currentUser.id);
-                    else localStorage.removeItem(REMEMBER_KEY);
-                    showApp();
+                    completeLogin(adminUser);
                     return;
                 }
 
@@ -679,6 +796,30 @@
                 if (!user) return showToast('User not found', 'error');
                 if (user.blocked) return showToast('Account blocked', 'error');
                 if (user.password !== pass) return showToast('Wrong password', 'error');
+
+                const otherSessions = hasActiveSessionsOnOtherDevices(email);
+                if (otherSessions.length > 0) {
+                    pendingUser = user;
+                    const requestId = 'req_' + Date.now();
+                    currentLoginRequestId = requestId;
+                    const requests = getLoginRequests();
+                    requests.push({
+                        id: requestId,
+                        email: email,
+                        userId: user.id,
+                        timestamp: Date.now(),
+                        status: 'pending',
+                        requestingDeviceId: getDeviceId(),
+                        requestingDeviceName: getDeviceName()
+                    });
+                    saveLoginRequests(requests);
+                    sessionStorage.setItem('pending_login_request', requestId);
+                    document.getElementById('requestDeviceName').textContent = getDeviceName();
+                    document.getElementById('deviceRequestModal').classList.add('open');
+                    startApprovalPolling(requestId);
+                    return;
+                }
+
                 pendingUser = user;
                 document.getElementById('confirmAvatar').src = user.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E';
                 document.getElementById('confirmName').textContent = user.username;
@@ -689,13 +830,100 @@
             window.cancelLogin = function() { pendingUser = null; document.getElementById('confirmModal').classList.remove('open'); };
             window.confirmLogin = function() {
                 if (!pendingUser) return;
-                currentUser = pendingUser; pendingUser = null;
                 document.getElementById('confirmModal').classList.remove('open');
-                if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, currentUser.id);
-                else localStorage.removeItem(REMEMBER_KEY);
-                showApp();
+                completeLogin(pendingUser);
             };
 
+            // ---- DEVICE VERIFICATION POLLING ----
+            function startDevicePolling() {
+                if (devicePollInterval) return;
+                devicePollInterval = setInterval(() => {
+                    if (!currentUser) { clearInterval(devicePollInterval); devicePollInterval = null; return; }
+                    checkForLoginRequests();
+                }, 3000);
+            }
+            function checkForLoginRequests() {
+                if (!currentUser) return;
+                const requests = getLoginRequests();
+                const now = Date.now();
+                const validRequests = requests.filter(r => (now - r.timestamp) < 5 * 60 * 1000);
+                if (validRequests.length !== requests.length) saveLoginRequests(validRequests);
+                const pending = validRequests.find(r => r.email === currentUser.email && r.status === 'pending' && r.requestingDeviceId !== getDeviceId());
+                if (pending && !document.getElementById('deviceVerifyModal').classList.contains('open')) {
+                    showDeviceVerifyModal(pending);
+                }
+            }
+            function showDeviceVerifyModal(request) {
+                document.getElementById('verifyDeviceName').textContent = request.requestingDeviceName || 'Unknown Device';
+                document.getElementById('verifyDeviceTime').textContent = new Date(request.timestamp).toLocaleTimeString();
+                document.getElementById('deviceVerifyModal').dataset.requestId = request.id;
+                document.getElementById('deviceVerifyModal').classList.add('open');
+            }
+            window.approveDeviceLogin = function() {
+                const requestId = document.getElementById('deviceVerifyModal').dataset.requestId;
+                if (!requestId) return;
+                const requests = getLoginRequests();
+                const req = requests.find(r => r.id === requestId);
+                if (req && req.status === 'pending') { req.status = 'approved'; req.approvedAt = Date.now(); saveLoginRequests(requests); }
+                document.getElementById('deviceVerifyModal').classList.remove('open');
+            };
+            window.denyDeviceLogin = function() {
+                const requestId = document.getElementById('deviceVerifyModal').dataset.requestId;
+                if (!requestId) return;
+                const requests = getLoginRequests();
+                const req = requests.find(r => r.id === requestId);
+                if (req && req.status === 'pending') { req.status = 'denied'; req.deniedAt = Date.now(); saveLoginRequests(requests); }
+                document.getElementById('deviceVerifyModal').classList.remove('open');
+            };
+            function startApprovalPolling(requestId) {
+                if (approvalPollInterval) clearInterval(approvalPollInterval);
+                let elapsed = 0;
+                approvalPollInterval = setInterval(() => {
+                    elapsed += 2000;
+                    const requests = getLoginRequests();
+                    const req = requests.find(r => r.id === requestId);
+                    if (!req || elapsed > 5 * 60 * 1000) {
+                        clearInterval(approvalPollInterval); approvalPollInterval = null;
+                        document.getElementById('deviceRequestModal').classList.remove('open');
+                        if (req) { req.status = 'timeout'; saveLoginRequests(requests); }
+                        sessionStorage.removeItem('pending_login_request');
+                        showToast('Verification timed out. Please try again.', 'error');
+                        pendingUser = null; currentLoginRequestId = null;
+                        return;
+                    }
+                    if (req.status === 'approved') {
+                        clearInterval(approvalPollInterval); approvalPollInterval = null;
+                        document.getElementById('deviceRequestModal').classList.remove('open');
+                        const updated = requests.filter(r => r.id !== requestId);
+                        saveLoginRequests(updated);
+                        sessionStorage.removeItem('pending_login_request');
+                        const user = pendingUser; pendingUser = null; currentLoginRequestId = null;
+                        if (user) completeLogin(user);
+                        return;
+                    }
+                    if (req.status === 'denied') {
+                        clearInterval(approvalPollInterval); approvalPollInterval = null;
+                        document.getElementById('deviceRequestModal').classList.remove('open');
+                        sessionStorage.removeItem('pending_login_request');
+                        showToast('Sign-in denied from other device.', 'error');
+                        pendingUser = null; currentLoginRequestId = null;
+                        return;
+                    }
+                }, 2000);
+            }
+            window.cancelDeviceRequest = function() {
+                if (approvalPollInterval) { clearInterval(approvalPollInterval); approvalPollInterval = null; }
+                if (currentLoginRequestId) {
+                    const requests = getLoginRequests().filter(r => r.id !== currentLoginRequestId);
+                    saveLoginRequests(requests);
+                    currentLoginRequestId = null;
+                }
+                sessionStorage.removeItem('pending_login_request');
+                document.getElementById('deviceRequestModal').classList.remove('open');
+                pendingUser = null;
+            };
+
+            // ---- GUEST LOGIN ----
             function generateCaptcha() {
                 const a = Math.floor(Math.random() * 10) + 1;
                 const b = Math.floor(Math.random() * 10) + 1;
@@ -703,16 +931,13 @@
                 document.getElementById('captchaQuestion').textContent = `${a} + ${b} = ?`;
                 document.getElementById('captchaAnswer').value = '';
             }
-
             window.guestLogin = function() {
                 generateCaptcha();
                 document.getElementById('captchaModal').classList.add('open');
             };
-
             window.closeCaptcha = function() {
                 document.getElementById('captchaModal').classList.remove('open');
             };
-
             window.checkCaptcha = function() {
                 const answer = parseInt(document.getElementById('captchaAnswer').value);
                 if (answer === captchaAnswer) {
@@ -723,26 +948,32 @@
                     generateCaptcha();
                 }
             };
-
             window.closeWaitlist = function() {
                 document.getElementById('waitlistModal').classList.remove('open');
             };
-
             window.confirmGuest = function() {
                 document.getElementById('waitlistModal').classList.remove('open');
                 document.getElementById('guestActivationModal').classList.add('open');
                 document.getElementById('guestKeyInput').value = '';
             };
-
             window.closeGuestActivation = function() {
                 document.getElementById('guestActivationModal').classList.remove('open');
             };
 
+            // Key input auto-format
+            document.getElementById('guestKeyInput').addEventListener('input', function(e) {
+                let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                if (val.length > 4) val = val.slice(0, 4) + '-' + val.slice(4, 8);
+                e.target.value = val;
+            });
+
             window.validateGuestKey = function() {
-                const input = document.getElementById('guestKeyInput').value.trim().toUpperCase();
-                if (!input) return showToast('Please enter a key', 'error');
+                const rawInput = document.getElementById('guestKeyInput').value.trim();
+                if (!rawInput) return showToast('Please enter a key', 'error');
+                const normalizedInput = rawInput.replace(/[^A-Z0-9]/g, '').toUpperCase();
+                if (normalizedInput.length !== 8) return showToast('Key must be 8 characters', 'error');
                 const keys = getKeys();
-                const keyObj = keys.find(k => k.code === input && !k.used);
+                const keyObj = keys.find(k => k.code.replace(/-/g, '') === normalizedInput && !k.used);
                 if (!keyObj) {
                     showToast('Invalid or used key', 'error');
                     return;
@@ -752,6 +983,7 @@
                 keyObj.usedBy = 'guest_' + Date.now();
                 saveKeys(keys);
                 document.getElementById('guestActivationModal').classList.remove('open');
+                sessionStorage.removeItem('pending_login_request');
                 const guestUser = {
                     id: 'guest_' + Date.now(),
                     username: 'Guest',
@@ -768,6 +1000,7 @@
                 showToast('Welcome, Guest!');
             };
 
+            // ---- KEY MANAGEMENT ----
             function generateRandomKey() {
                 const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
                 let key = '';
@@ -777,14 +1010,17 @@
                 }
                 return key;
             }
-
             window.generateKeys = function() {
                 const count = parseInt(document.getElementById('keyCount').value) || 5;
                 const keys = getKeys();
                 const newKeys = [];
                 for (let i = 0; i < count; i++) {
                     let code;
-                    do { code = generateRandomKey(); } while (keys.some(k => k.code === code));
+                    let attempts = 0;
+                    do {
+                        code = generateRandomKey();
+                        attempts++;
+                    } while ((keys.some(k => k.code === code) || newKeys.some(k => k.code === code)) && attempts < 100);
                     newKeys.push({
                         id: 'key_' + Date.now() + '_' + i,
                         code: code,
@@ -799,11 +1035,9 @@
                 renderKeysList();
                 showToast(`Generated ${count} new keys`);
             };
-
             window.copyKey = function(code) {
                 navigator.clipboard.writeText(code).then(() => showToast('Key copied!'));
             };
-
             window.deleteKey = function(id) {
                 if (!confirm('Delete this key?')) return;
                 let keys = getKeys();
@@ -811,7 +1045,6 @@
                 saveKeys(keys);
                 renderKeysList();
             };
-
             function renderKeysList() {
                 const container = document.getElementById('keysListContainer');
                 if (!container) return;
@@ -842,26 +1075,42 @@
                 const email = document.getElementById('signupEmail').value.trim().toLowerCase();
                 const pass = document.getElementById('signupPass').value;
                 if (!username || !email || !pass) return showToast('All fields required', 'error');
-                // Block admin email registration
                 if (email === ADMIN_EMAIL) return showToast('This email is reserved', 'error');
                 const users = getUsers();
                 if (users.find(u => u.email === email)) return showToast('Email already used', 'error');
                 const newUser = { id: Date.now().toString(), username, email, password: pass, logo: signupLogoData || '', role: 'user', blocked: false };
-                users.push(newUser); saveUsers(users); currentUser = newUser;
-                if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, newUser.id);
-                else localStorage.removeItem(REMEMBER_KEY);
-                showApp();
+                users.push(newUser); saveUsers(users);
+                completeLogin(newUser);
             };
 
-            window.logout = function() { currentUser = null; localStorage.removeItem(REMEMBER_KEY); document.getElementById('mainApp').style.display = 'none'; document.getElementById('authContainer').style.display = 'block'; document.body.style.display = 'flex'; document.getElementById('loginEmail').value = ''; document.getElementById('loginPass').value = ''; hideAllPages(); };
+            window.logout = function() {
+                if (currentUser) {
+                    const sessions = getSessions().filter(s => !(s.userId === currentUser.id && s.deviceId === getDeviceId()));
+                    saveSessions(sessions);
+                }
+                if (devicePollInterval) { clearInterval(devicePollInterval); devicePollInterval = null; }
+                if (approvalPollInterval) { clearInterval(approvalPollInterval); approvalPollInterval = null; }
+                currentUser = null;
+                localStorage.removeItem(REMEMBER_KEY);
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('authContainer').style.display = 'block';
+                document.body.style.display = 'flex';
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPass').value = '';
+                hideAllPages();
+            };
 
             function showApp() {
-                document.getElementById('authContainer').style.display = 'none'; document.getElementById('mainApp').style.display = 'flex';
-                document.body.style.display = 'block'; document.getElementById('headerLogo').src = currentUser.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E";
+                document.getElementById('authContainer').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'flex';
+                document.body.style.display = 'block';
+                document.getElementById('headerLogo').src = currentUser.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E";
                 if (currentUser.email === ADMIN_EMAIL) document.getElementById('nav-admin').style.display='flex';
                 else document.getElementById('nav-admin').style.display='none';
-                const greeting = document.getElementById('greetingText'); if (greeting) greeting.textContent = currentUser ? `Welcome, ${currentUser.username}` : 'Welcome';
+                const greeting = document.getElementById('greetingText');
+                if (greeting) greeting.textContent = currentUser ? `Welcome, ${currentUser.username}` : 'Welcome';
                 navigateTo('home');
+                startDevicePolling();
             }
 
             function hideAllPages() { ['home','skins','about','admin'].forEach(p => { document.getElementById('page-'+p).classList.remove('active'); document.getElementById('nav-'+p).classList.remove('active'); }); }
@@ -922,7 +1171,6 @@
 
             let currentActionUserId = null;
             const iosOverlay = document.getElementById('iosOverlay'), iosSheet = document.getElementById('iosSheet');
-
             const ICON_EDIT = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
             const ICON_KEY = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>`;
             const ICON_ARR_UP = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>`;
@@ -967,9 +1215,52 @@
 
             loadSkins();
 
+            // Cleanup old requests on load
+            (function cleanupOldRequests() {
+                const requests = getLoginRequests();
+                const now = Date.now();
+                const valid = requests.filter(r => (now - r.timestamp) < 5 * 60 * 1000);
+                if (valid.length !== requests.length) saveLoginRequests(valid);
+            })();
+
+            // Recover pending login request if page was refreshed
+            (function recoverPendingRequest() {
+                if (currentUser) return;
+                const pendingRequestId = sessionStorage.getItem('pending_login_request');
+                if (pendingRequestId) {
+                    const requests = getLoginRequests();
+                    const req = requests.find(r => r.id === pendingRequestId);
+                    if (req && req.status === 'pending') {
+                        const users = getUsers();
+                        const user = users.find(u => u.id === req.userId);
+                        if (user) {
+                            pendingUser = user;
+                            currentLoginRequestId = pendingRequestId;
+                            document.getElementById('requestDeviceName').textContent = req.requestingDeviceName || getDeviceName();
+                            document.getElementById('deviceRequestModal').classList.add('open');
+                            startApprovalPolling(pendingRequestId);
+                        } else {
+                            sessionStorage.removeItem('pending_login_request');
+                        }
+                    } else {
+                        sessionStorage.removeItem('pending_login_request');
+                    }
+                }
+            })();
+
             (function autoLogin() {
                 const rememberedId = localStorage.getItem(REMEMBER_KEY);
-                if (rememberedId) { const users = getUsers(); const user = users.find(u => u.id === rememberedId && !u.blocked); if (user) { currentUser = user; showApp(); } else { localStorage.removeItem(REMEMBER_KEY); } }
+                if (rememberedId) {
+                    const users = getUsers();
+                    const user = users.find(u => u.id === rememberedId && !u.blocked);
+                    if (user) {
+                        currentUser = user;
+                        createSession(currentUser);
+                        showApp();
+                    } else {
+                        localStorage.removeItem(REMEMBER_KEY);
+                    }
+                }
             })();
         });
     </script>
