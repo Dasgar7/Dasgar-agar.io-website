@@ -625,7 +625,9 @@
             function hasActiveSessionsOnOtherDevices(email) {
                 const sessions = getSessions();
                 const now = Date.now();
-                return sessions.filter(s => s.email === email && s.deviceId !== getDeviceId() && (now - s.lastPing) < 10 * 60 * 1000);
+                // Return ALL active sessions on other devices (not just recent pings)
+                // This ensures the verification modal appears even if the session is slightly stale
+                return sessions.filter(s => s.email === email && s.deviceId !== getDeviceId());
             }
             setInterval(() => { const sessions = getSessions().filter(s => (Date.now() - s.lastPing) < 10 * 60 * 1000); saveSessions(sessions); }, 60000);
             setInterval(() => { if (currentUser) updateSessionPing(); }, 30000);
@@ -840,7 +842,7 @@
                 }
 
                 // Normalize: remove dashes, uppercase
-                const normalizedInput = rawInput.replace(/[^A-Z0-9]/g, '').toUpperCase();
+                const normalizedInput = normalizeKey(rawInput);
 
                 if (normalizedInput.length !== 8) {
                     keyError.textContent = 'Key must be exactly 8 characters (format: XXXX-XXXX)';
@@ -855,13 +857,13 @@
 
                 // Find key that matches (compare without dashes)
                 const keyObj = keys.find(k => {
-                    const storedCode = k.code.replace(/-/g, '').toUpperCase();
+                    const storedCode = normalizeKey(k.code);
                     return storedCode === normalizedInput && !k.used;
                 });
 
                 if (!keyObj) {
                     // Check if the key exists but is already used
-                    const usedKey = keys.find(k => k.code.replace(/-/g, '').toUpperCase() === normalizedInput && k.used);
+                    const usedKey = keys.find(k => normalizeKey(k.code) === normalizedInput && k.used);
                     if (usedKey) {
                         keyError.textContent = 'This key has already been used';
                     } else {
@@ -905,6 +907,11 @@
                 result += '-';
                 for (let i = 0; i < 4; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
                 return result;
+            }
+            
+            // Normalize key for comparison (remove dashes, uppercase, filter to valid chars only)
+            function normalizeKey(key) {
+                return key.replace(/[^A-Z0-9]/g, '').toUpperCase();
             }
             window.generateKeys = function() {
                 const count = Math.min(50, Math.max(1, parseInt(document.getElementById('keyCount').value) || 5));
