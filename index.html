@@ -315,15 +315,266 @@
             padding-bottom: 8px; border-bottom: 2px solid var(--green-dark);
             display: inline-block; margin-left: auto; margin-right: auto; width: fit-content;
         }
-        .skins-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:20px; padding:0 4px; }
+        
+        .skins-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 24px; 
+            padding: 0 4px; 
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .skins-grid { grid-template-columns: 1fr; max-width: 300px; }
+        }
+        
         .skin-card {
             background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius);
-            padding:20px 16px 18px; cursor:pointer; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px;
+            padding:24px 20px 20px; cursor:pointer; text-align:center; display:flex; flex-direction:column; align-items:center; gap:16px;
+            transition: var(--transition);
+            position: relative;
         }
         .skin-card:hover { background:var(--bg-card-hover); border-color:#335533; transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,0.5); }
+
         .skin-blob-preview {
-            width:100px; height:100px; border-radius:43% 57% 44% 56% / 51% 49% 55% 45%;
-            background-size:cover; background-position:center; box-shadow:inset 0 2px 6px rgba(255,255,255,0.1);
+            width: 160px; height: 160px; border-radius: var(--radius);
+            background-size: contain; background-position: center; background-repeat: no-repeat;
+            background-color: #0a0f0a;
+            box-shadow: inset 0 2px 6px rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        @media (max-width: 768px) {
+            .skin-blob-preview { width: 100%; height: 200px; }
+        }
+        .skin-blob-preview img {
+            width: 100%; height: 100%; object-fit: contain;
+        }
+
+        .skin-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .btn-download {
+            width: 100%;
+            padding: 10px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: transparent;
+            border: 1px solid var(--green);
+            color: var(--green-bright);
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-download:hover {
+            background: var(--green);
+            color: #000;
+        }
+        .btn-download:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* 3-dot menu button */
+        .skin-menu-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 5;
+            color: var(--text-muted);
+        }
+        .skin-menu-btn:hover {
+            background: var(--green-dark);
+            color: #fff;
+            border-color: var(--green);
+        }
+
+        /* iOS-style sheet overlay */
+        .skin-sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 500;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .skin-sheet-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .skin-sheet {
+            background: var(--bg-card);
+            border-radius: var(--radius) var(--radius) 0 0;
+            width: 100%;
+            max-width: 420px;
+            max-height: 70vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+            padding: 0 0 env(safe-area-inset-bottom, 0);
+        }
+        .skin-sheet-overlay.open .skin-sheet {
+            transform: translateY(0);
+        }
+        .skin-sheet-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 0 8px;
+        }
+        .skin-sheet-handle {
+            width: 40px;
+            height: 5px;
+            background: var(--border-light);
+            border-radius: 3px;
+        }
+        .skin-sheet-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px 24px 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .skin-sheet-preview-img {
+            width: 100px;
+            height: 100px;
+            border-radius: var(--radius-sm);
+            object-fit: contain;
+            background: #0a0f0a;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .skin-sheet-preview-color {
+            width: 100px;
+            height: 100px;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .skin-sheet-preview-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+            margin-top: 12px;
+        }
+        .skin-sheet-actions {
+            padding: 8px 0;
+        }
+        .skin-sheet-action {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            padding: 16px 24px;
+            font-size: 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: background 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .skin-sheet-action:active {
+            background: rgba(74, 222, 128, 0.1);
+        }
+        .skin-sheet-action svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+        }
+        .skin-sheet-cancel {
+            font-weight: 700;
+            color: var(--green-bright);
+            border-bottom: none;
+            padding: 18px 24px;
+        }
+
+        /* Full screen skin viewer */
+        .fullscreen-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(12px);
+            z-index: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            cursor: pointer;
+        }
+        .fullscreen-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .fullscreen-overlay .fullscreen-img {
+            max-width: 90vw;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: var(--radius);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+        }
+        .fullscreen-overlay .fullscreen-color {
+            width: 300px;
+            height: 300px;
+            border-radius: var(--radius);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+        }
+        .fullscreen-overlay .fullscreen-name {
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 20px;
+        }
+        .fullscreen-overlay .fullscreen-hint {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 12px;
+        }
+        .fullscreen-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        .fullscreen-close:hover {
+            background: rgba(255,255,255,0.2);
         }
 
         .admin-centered { max-width: 600px; margin: 0 auto; width: 100%; }
@@ -410,7 +661,7 @@
         .social-link-yt:active svg { fill: #FF0000; transition: none; }
         .social-links a:active { transform: translateY(-1px); }
 
-        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(120px); background:#1a2e1a; border:1px solid var(--green-dark); color:#c8e6c9; padding:12px 24px; border-radius:40px; font-weight:600; z-index:200; pointer-events:none; transition:0.35s; box-shadow:0 8px 28px rgba(0,0,0,0.6); }
+        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(120px); background:#1a2e1a; border:1px solid var(--green-dark); color:#c8e6c9; padding:12px 24px; border-radius:40px; font-weight:600; z-index:700; pointer-events:none; transition:0.35s; box-shadow:0 8px 28px rgba(0,0,0,0.6); }
         .toast.show { transform:translateX(-50%) translateY(0); }
         .toast.error { border-color:var(--danger); color:#fca5a5; background:#1e1515; }
 
@@ -538,10 +789,27 @@
         </div>
     </div>
 
+    <!-- iOS-style skin actions sheet -->
+    <div class="skin-sheet-overlay" id="skinSheetOverlay" onclick="if(event.target===this)closeSkinSheet()">
+        <div class="skin-sheet" id="skinSheet">
+            <div class="skin-sheet-header"><div class="skin-sheet-handle"></div></div>
+            <div class="skin-sheet-preview" id="skinSheetPreview"></div>
+            <div class="skin-sheet-actions" id="skinSheetActions"></div>
+        </div>
+    </div>
+
+    <!-- Full screen skin viewer -->
+    <div class="fullscreen-overlay" id="fullscreenOverlay" onclick="closeFullscreen()">
+        <button class="fullscreen-close" onclick="event.stopPropagation();closeFullscreen()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <div id="fullscreenContent"></div>
+        <div class="fullscreen-name" id="fullscreenName"></div>
+        <div class="fullscreen-hint">Tap anywhere to close</div>
+    </div>
+
     <div id="mainApp" class="app-container">
         <header class="header">
             <div class="logo-area" onclick="toggleUserMenu()">
-                <img id="headerLogo" class="logo-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E" alt="Logo">
+                <img id="headerLogo" class="logo-img" src="image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E" alt="Logo">
                 <div class="user-dropdown" id="userDropdown"><button onclick="logout()">Logout</button></div>
             </div>
             <span class="logo-name">Dasgar</span>
@@ -853,7 +1121,7 @@
                 }
 
                 pendingUser = user;
-                document.getElementById('confirmAvatar').src = user.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E';
+                document.getElementById('confirmAvatar').src = user.logo || 'image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E';
                 document.getElementById('confirmName').textContent = user.username;
                 document.getElementById('confirmEmail').textContent = user.email;
                 document.getElementById('confirmModal').classList.add('open');
@@ -964,7 +1232,6 @@
                 approvalPollInterval = setInterval(() => {
                     const elapsed = Date.now() - approvalStartTime;
                     
-                    // Update timer display
                     const remaining = Math.max(0, 120000 - elapsed);
                     const mins = Math.floor(remaining / 60000);
                     const secs = Math.floor((remaining % 60000) / 1000);
@@ -1053,7 +1320,6 @@
                 const rawInput = document.getElementById('guestKeyInput').value.trim();
                 if (!rawInput) return showToast('Please enter a key', 'error');
                 
-                // Normalize input: remove all non-alphanumeric chars
                 const normalizedInput = rawInput.replace(/[^A-Z0-9]/g, '').toUpperCase();
                 if (normalizedInput.length !== 8) return showToast('Key must be 8 characters (e.g. ABCD-1234)', 'error');
                 
@@ -1062,7 +1328,6 @@
                     return showToast('No activation keys available. Contact admin.', 'error');
                 }
                 
-                // Find matching key - compare without dashes
                 const keyObj = keys.find(k => {
                     const storedCode = k.code.replace(/[^A-Z0-9]/g, '').toUpperCase();
                     return storedCode === normalizedInput && !k.used;
@@ -1200,7 +1465,7 @@
                 document.getElementById('authContainer').style.display = 'none';
                 document.getElementById('mainApp').style.display = 'flex';
                 document.body.style.display = 'block';
-                document.getElementById('headerLogo').src = currentUser.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E";
+                document.getElementById('headerLogo').src = currentUser.logo || "image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='36' r='20' fill='%234ade80'/%3E%3Cpath d='M15 85c0-20 15-35 35-35s35 15 35 35' fill='%234ade80'/%3E%3C/svg%3E";
                 if (currentUser.email === ADMIN_EMAIL) document.getElementById('nav-admin').style.display='flex';
                 else document.getElementById('nav-admin').style.display='none';
                 const greeting = document.getElementById('greetingText');
@@ -1236,7 +1501,117 @@
 
             let skins = [];
             function loadSkins() { try { skins = JSON.parse(localStorage.getItem(SKINS_KEY)) || []; skins = skins.map(s => ({ ...s, category: s.category || 'free skins' })); } catch(e) { skins = []; } }
-            function saveSkins() { localStorage.setItem(SKINS_KEY, JSON.stringify(skins)); }
+            function saveSkins() { localStorage.setItem(SKINS_KEY, JSON.stringify(skins)); triggerCrossTabSync('skins'); }
+
+            // Download skin image properly
+            function downloadSkinImage(skinName, imageData) {
+                if (!imageData) {
+                    showToast('This skin is color only, no image to download', 'error');
+                    return;
+                }
+                try {
+                    // Convert base64 data URL to blob and download
+                    const byteString = atob(imageData.split(',')[1]);
+                    const mimeString = imageData.split(',')[0].split(':')[1].split(';')[0];
+                    const ab = new ArrayBuffer(byteString.length);
+                    const ia = new Uint8Array(ab);
+                    for (let i = 0; i < byteString.length; i++) {
+                        ia[i] = byteString.charCodeAt(i);
+                    }
+                    const blob = new Blob([ab], { type: mimeString });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = (skinName || 'skin').replace(/[^a-zA-Z0-9]/g, '_') + '.png';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showToast('Skin downloaded!');
+                } catch(e) {
+                    showToast('Download failed: ' + e.message, 'error');
+                }
+            }
+
+            // Fullscreen viewer
+            function openFullscreen(skin) {
+                const overlay = document.getElementById('fullscreenOverlay');
+                const content = document.getElementById('fullscreenContent');
+                const nameEl = document.getElementById('fullscreenName');
+                
+                if (skin.imageData) {
+                    content.innerHTML = `<img class="fullscreen-img" src="${skin.imageData}" alt="${skin.name}">`;
+                } else {
+                    content.innerHTML = `<div class="fullscreen-color" style="background:${skin.color || '#4ade80'};"></div>`;
+                }
+                nameEl.textContent = skin.name;
+                overlay.classList.add('open');
+            }
+            window.closeFullscreen = function() {
+                document.getElementById('fullscreenOverlay').classList.remove('open');
+            };
+
+            // iOS-style skin action sheet
+            let currentSkinForSheet = null;
+            function openSkinSheet(skinId) {
+                loadSkins();
+                const skin = skins.find(s => s.id === skinId);
+                if (!skin) return;
+                currentSkinForSheet = skin;
+                
+                const preview = document.getElementById('skinSheetPreview');
+                const actions = document.getElementById('skinSheetActions');
+                
+                if (skin.imageData) {
+                    preview.innerHTML = `<img class="skin-sheet-preview-img" src="${skin.imageData}" alt="${skin.name}">`;
+                } else {
+                    preview.innerHTML = `<div class="skin-sheet-preview-color" style="background:${skin.color || '#4ade80'};"></div>`;
+                }
+                preview.innerHTML += `<div class="skin-sheet-preview-name">${skin.name}</div>`;
+                
+                const hasImage = !!skin.imageData;
+                let actionsHTML = `
+                    <button class="skin-sheet-action" onclick="openFullscreen(currentSkinForSheet); closeSkinSheet();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                        Open Full Screen
+                    </button>
+                    <button class="skin-sheet-action" onclick="copySkinName(currentSkinForSheet.name); closeSkinSheet();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Copy Name
+                    </button>
+                    <button class="skin-sheet-action" onclick="shareSkin(currentSkinForSheet); closeSkinSheet();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        Share Skin
+                    </button>
+                `;
+                if (hasImage) {
+                    actionsHTML += `
+                        <button class="skin-sheet-action" onclick="downloadSkinImage(currentSkinForSheet.name, currentSkinForSheet.imageData); closeSkinSheet();">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Download
+                        </button>
+                    `;
+                }
+                actionsHTML += `<button class="skin-sheet-action skin-sheet-cancel" onclick="closeSkinSheet()">Cancel</button>`;
+                actions.innerHTML = actionsHTML;
+                
+                document.getElementById('skinSheetOverlay').classList.add('open');
+            }
+            window.closeSkinSheet = function() {
+                document.getElementById('skinSheetOverlay').classList.remove('open');
+                currentSkinForSheet = null;
+            };
+            window.copySkinName = function(name) {
+                navigator.clipboard.writeText(name).then(() => showToast('Name copied!')).catch(() => showToast('Failed to copy', 'error'));
+            };
+            window.shareSkin = function(skin) {
+                const shareText = `Check out this skin: ${skin.name} on Dasgar!`;
+                if (navigator.share) {
+                    navigator.share({ title: skin.name, text: shareText, url: window.location.href }).catch(() => {});
+                } else {
+                    navigator.clipboard.writeText(shareText).then(() => showToast('Share text copied!'));
+                }
+            };
 
             function renderSkinsPage() {
                 const container = document.getElementById('skinsCategoriesContainer'); if (!container) return; loadSkins();
@@ -1251,8 +1626,34 @@
                     const grid = document.createElement('div'); grid.className = 'skins-grid';
                     skinsInCat.forEach(skin => {
                         const card = document.createElement('div'); card.className = 'skin-card';
-                        let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`;
-                        card.innerHTML = `<div class="skin-blob-preview" style="background:${bg};"></div><div class="skin-name">${skin.name}</div>`;
+                        let previewContent = '';
+                        if (skin.imageData) {
+                            previewContent = `<img src="${skin.imageData}" alt="${skin.name}" style="width:100%;height:100%;object-fit:contain;border-radius:var(--radius-sm);">`;
+                        } else {
+                            previewContent = `<div style="width:100%;height:100%;background:${skin.color || '#4ade80'};border-radius:var(--radius-sm);"></div>`;
+                        }
+                        
+                        const hasImage = !!skin.imageData;
+                        
+                        card.innerHTML = `
+                            <button class="skin-menu-btn" onclick="event.stopPropagation(); openSkinSheet('${skin.id}');" aria-label="More options">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="12" cy="5" r="2"/>
+                                    <circle cx="12" cy="12" r="2"/>
+                                    <circle cx="12" cy="19" r="2"/>
+                                </svg>
+                            </button>
+                            <div class="skin-blob-preview">${previewContent}</div>
+                            <div class="skin-name">${skin.name}</div>
+                            <button class="btn-download" onclick="event.stopPropagation(); downloadSkinImage('${skin.name.replace(/'/g, "\\'")}', ${hasImage ? "'" + skin.imageData + "'" : "null"});" ${!hasImage ? 'disabled title="No image to download"' : ''}>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                ${hasImage ? 'Download' : 'Color Only'}
+                            </button>
+                        `;
                         grid.appendChild(card);
                     });
                     section.appendChild(grid); container.appendChild(section);
@@ -1262,7 +1663,7 @@
 
             window.addSkin = function() { const name = document.getElementById('skinName').value.trim(); if (!name) return showToast('Enter a skin name', 'error'); const category = document.getElementById('skinCategory').value; const color = document.getElementById('skinColor').value; const imageData = uploadedSkinImage; const newSkin = { id: 'sk_' + Date.now(), name, category, color, imageData: imageData || null, type: imageData ? 'image' : 'color' }; skins.push(newSkin); saveSkins(); renderAdminSkinsList(); document.getElementById('skinName').value = ''; document.getElementById('uploadPreview').style.display = 'none'; uploadedSkinImage = null; showToast('Skin added!'); };
             document.getElementById('fileInput').addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = canvas.height = 200; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 200, 200); uploadedSkinImage = canvas.toDataURL('image/png'); document.getElementById('uploadPreview').style.backgroundImage = `url(${uploadedSkinImage})`; document.getElementById('uploadPreview').style.display = 'block'; }; img.src = e.target.result; }; reader.readAsDataURL(file); });
-            function renderAdminSkinsList() { const container = document.getElementById('adminSkinsList'); if (!container) return; container.innerHTML = skins.length ? '' : '<p>No skins.</p>'; skins.forEach(skin => { const div = document.createElement('div'); div.className = 'skin-card'; div.style.flexDirection = 'row'; div.style.justifyContent = 'space-between'; let bg = skin.color || '#4ade80'; if (skin.imageData) bg = `url(${skin.imageData}) center/cover`; div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><div class="skin-blob-preview" style="width:40px;height:40px;background:${bg};"></div><span>${skin.name} <small style="color:var(--text-muted);">(${skin.category})</small></span></div><button class="btn-sm btn-danger" onclick="deleteSkin('${skin.id}')" style="background:transparent;border:1px solid var(--danger);color:var(--danger);border-radius:6px;padding:4px 8px;cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>`; container.appendChild(div); }); }
+            function renderAdminSkinsList() { const container = document.getElementById('adminSkinsList'); if (!container) return; container.innerHTML = skins.length ? '' : '<p>No skins.</p>'; skins.forEach(skin => { const div = document.createElement('div'); div.className = 'skin-card'; div.style.flexDirection = 'row'; div.style.justifyContent = 'space-between'; let previewHtml = ''; if (skin.imageData) { previewHtml = `<img src="${skin.imageData}" style="width:40px;height:40px;object-fit:contain;border-radius:8px;">`; } else { previewHtml = `<div style="width:40px;height:40px;background:${skin.color || '#4ade80'};border-radius:8px;"></div>`; } div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;">${previewHtml}<span>${skin.name} <small style="color:var(--text-muted);">(${skin.category})</small></span></div><button class="btn-sm btn-danger" onclick="deleteSkin('${skin.id}')" style="background:transparent;border:1px solid var(--danger);color:var(--danger);border-radius:6px;padding:4px 8px;cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>`; container.appendChild(div); }); }
             window.deleteSkin = function(id) { skins = skins.filter(s => s.id !== id); saveSkins(); renderAdminSkinsList(); };
 
             let currentActionUserId = null;
@@ -1303,7 +1704,7 @@
                 users.forEach(u => {
                     const statusIcon = u.blocked ? ICON_BAN : ICON_CHECK;
                     const statusText = u.blocked ? 'Blocked' : 'Active';
-                    html += `<tr><td><img src="${u.logo || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E'}" class="user-avatar"></td><td>${u.username}</td><td>${u.email}</td><td><span class="role-badge ${u.role==='admin'?'admin':''}">${u.role}</span></td><td><span class="status-badge ${u.blocked?'status-blocked':'status-active'}">${statusIcon} ${statusText}</span></td><td><button class="action-toggle" onclick="showIOSActions('${u.id}')">⋯</button></td></tr>`;
+                    html += `<tr><td><img src="${u.logo || 'image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2736%27 r=%2720%27 fill=%27%234ade80%27/%3E%3Cpath d=%27M15 85c0-20 15-35 35-35s35 15 35 35%27 fill=%27%234ade80%27/%3E%3C/svg%3E'}" class="user-avatar"></td><td>${u.username}</td><td>${u.email}</td><td><span class="role-badge ${u.role==='admin'?'admin':''}">${u.role}</span></td><td><span class="status-badge ${u.blocked?'status-blocked':'status-active'}">${statusIcon} ${statusText}</span></td><td><button class="action-toggle" onclick="showIOSActions('${u.id}')">⋯</button></td></tr>`;
                 });
                 html += '</tbody></table>'; document.getElementById('userTableContainer').innerHTML = html;
                 loadSkins(); renderAdminSkinsList(); renderKeysList();
